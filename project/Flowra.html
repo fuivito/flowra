@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flowra — AI Cash Flow Agent</title>
+<template id="__bundler_thumbnail" data-bg-color="#f5f0e8">
+  <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+    <rect width="400" height="300" fill="#f5f0e8"/>
+    <!-- Wordmark -->
+    <text x="200" y="130" text-anchor="middle" font-family="serif" font-size="48" font-style="italic" fill="#1a2b22" opacity="0.9">Flowra</text>
+    <!-- Tagline -->
+    <text x="200" y="162" text-anchor="middle" font-family="sans-serif" font-size="11" letter-spacing="3" fill="#8a9a8e" opacity="0.8">CASH FLOW AGENT</text>
+    <!-- Heart -->
+    <path d="M200 195 C199 193, 195 190, 191 186 C187 182, 183 178, 183 173 C183 168, 186 165, 189 165 C192 165, 195 167, 197 170 C198 171, 199 172, 200 173 C201 172, 202 171, 204 169 C206 167, 209 165, 212 165 C215 165, 218 168, 217 173 C216 178, 212 182, 208 186 C205 189, 201 193, 200 195Z" fill="none" stroke="#c4735a" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>
+</template>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style id="tw">
+/* Tailwind-compatible utility subset */
+*,::before,::after{box-sizing:border-box}
+.absolute{position:absolute}.relative{position:relative}.fixed{position:fixed}.sticky{position:sticky}
+.inset-0{inset:0}.top-0{top:0}.left-0{left:0}.right-0{right:0}.bottom-0{bottom:0}
+.z-10{z-index:10}.z-20{z-index:20}.z-30{z-index:30}.z-9999{z-index:9999}
+.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.block{display:block}.inline{display:inline}.hidden{display:none}
+.flex-col{flex-direction:column}.flex-row{flex-direction:row}.flex-wrap{flex-wrap:wrap}
+.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.flex-shrink{flex-shrink:1}
+.items-center{align-items:center}.items-start{align-items:flex-start}.items-end{align-items:flex-end}
+.justify-between{justify-content:space-between}.justify-center{justify-content:center}.justify-end{justify-content:flex-end}
+.self-center{align-self:center}
+.gap-1{gap:4px}.gap-1\.5{gap:6px}.gap-2{gap:8px}.gap-2\.5{gap:10px}.gap-3{gap:12px}.gap-4{gap:16px}.gap-5{gap:20px}.gap-6{gap:24px}.gap-8{gap:32px}
+.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.col-span-2{grid-column:span 2/span 2}
+.overflow-hidden{overflow:hidden}.overflow-auto{overflow:auto}.overflow-y-auto{overflow-y:auto}.overflow-x-hidden{overflow-x:hidden}
+.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.whitespace-nowrap{white-space:nowrap}
+.w-full{width:100%}.w-px{width:1px}.w-1{width:4px}.w-1\.5{width:6px}.w-2{width:8px}.w-3{width:12px}.w-4{width:16px}.w-5{width:20px}.w-6{width:24px}.w-7{width:28px}.w-8{width:32px}.w-9{width:36px}.w-10{width:40px}.w-12{width:48px}.w-16{width:64px}.w-20{width:80px}.w-24{width:96px}.w-28{width:112px}.w-32{width:128px}.w-48{width:192px}.w-screen{width:100vw}
+.h-full{height:100%}.h-px{height:1px}.h-0\.5{height:2px}.h-1{height:4px}.h-1\.5{height:6px}.h-2{height:8px}.h-3{height:12px}.h-4{height:16px}.h-5{height:20px}.h-6{height:24px}.h-7{height:28px}.h-8{height:32px}.h-9{height:36px}.h-10{height:40px}.h-12{height:48px}.h-16{height:64px}.h-20{height:80px}.h-24{height:96px}.h-screen{height:100vh}
+.min-w-0{min-width:0}.min-h-0{min-height:0}.max-w-xs{max-width:320px}.max-w-sm{max-width:384px}.max-w-md{max-width:448px}.max-w-lg{max-width:512px}.max-w-xl{max-width:576px}.max-w-2xl{max-width:672px}.max-w-3xl{max-width:768px}
+.p-0{padding:0}.p-1{padding:4px}.p-2{padding:8px}.p-3{padding:12px}.p-4{padding:16px}.p-5{padding:20px}.p-6{padding:24px}.p-8{padding:32px}
+.px-2{padding-left:8px;padding-right:8px}.px-3{padding-left:12px;padding-right:12px}.px-3\.5{padding-left:14px;padding-right:14px}.px-4{padding-left:16px;padding-right:16px}.px-5{padding-left:20px;padding-right:20px}.px-6{padding-left:24px;padding-right:24px}.px-7{padding-left:28px;padding-right:28px}.px-8{padding-left:32px;padding-right:32px}
+.py-0\.5{padding-top:2px;padding-bottom:2px}.py-1{padding-top:4px;padding-bottom:4px}.py-1\.5{padding-top:6px;padding-bottom:6px}.py-2{padding-top:8px;padding-bottom:8px}.py-2\.5{padding-top:10px;padding-bottom:10px}.py-3{padding-top:12px;padding-bottom:12px}.py-3\.5{padding-top:14px;padding-bottom:14px}.py-4{padding-top:16px;padding-bottom:16px}.py-5{padding-top:20px;padding-bottom:20px}.py-6{padding-top:24px;padding-bottom:24px}.py-8{padding-top:32px;padding-bottom:32px}
+.pt-1{padding-top:4px}.pt-2{padding-top:8px}.pt-2\.5{padding-top:10px}.pt-4{padding-top:16px}.pt-5{padding-top:20px}.pt-6{padding-top:24px}
+.pb-2{padding-bottom:8px}.pb-3{padding-bottom:12px}.pb-4{padding-bottom:16px}
+.pl-2{padding-left:8px}.pr-2{padding-right:8px}
+.m-0{margin:0}.m-auto{margin:auto}.mx-auto{margin-left:auto;margin-right:auto}.ml-auto{margin-left:auto}.mr-auto{margin-right:auto}
+.mt-0\.5{margin-top:2px}.mt-1{margin-top:4px}.mt-2{margin-top:8px}.mt-3{margin-top:12px}.mt-4{margin-top:16px}.mt-6{margin-top:24px}.mt-8{margin-top:32px}.mt-10{margin-top:40px}.mt-12{margin-top:48px}.mt-14{margin-top:56px}
+.mb-0\.5{margin-bottom:2px}.mb-1{margin-bottom:4px}.mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}.mb-4{margin-bottom:16px}.mb-5{margin-bottom:20px}.mb-6{margin-bottom:24px}.mb-8{margin-bottom:32px}.mb-10{margin-bottom:40px}.mb-12{margin-bottom:48px}
+.ml-1{margin-left:4px}.ml-2{margin-left:8px}.ml-4{margin-left:16px}
+.mr-1{margin-right:4px}
+.space-y-1>*+*{margin-top:4px}.space-y-2>*+*{margin-top:8px}.space-y-3>*+*{margin-top:12px}.space-y-4>*+*{margin-top:16px}.space-y-5>*+*{margin-top:20px}.space-y-6>*+*{margin-top:24px}
+.space-x-2>*+*{margin-left:8px}
+.border{border-width:1px;border-style:solid}.border-t{border-top-width:1px;border-top-style:solid}.border-b{border-bottom-width:1px;border-bottom-style:solid}.border-r{border-right-width:1px;border-right-style:solid}.border-l{border-left-width:1px;border-left-style:solid}.border-0{border-width:0}.border-2{border-width:2px}
+.border-dashed{border-style:dashed}.border-dotted{border-style:dotted}
+.rounded{border-radius:4px}.rounded-sm{border-radius:2px}.rounded-md{border-radius:6px}.rounded-lg{border-radius:8px}.rounded-xl{border-radius:12px}.rounded-2xl{border-radius:16px}.rounded-3xl{border-radius:24px}.rounded-full{border-radius:9999px}
+.bg-transparent{background-color:transparent}.bg-white{background-color:#fff}.bg-black{background-color:#000}
+.text-white{color:#fff}.text-black{color:#000}
+.text-xs{font-size:12px;line-height:16px}.text-sm{font-size:14px;line-height:20px}.text-base{font-size:16px;line-height:24px}.text-lg{font-size:18px;line-height:28px}.text-xl{font-size:20px;line-height:28px}.text-2xl{font-size:24px;line-height:32px}.text-3xl{font-size:30px;line-height:36px}.text-4xl{font-size:36px;line-height:40px}
+.font-light{font-weight:300}.font-normal{font-weight:400}.font-medium{font-weight:500}.font-semibold{font-weight:600}.font-bold{font-weight:700}
+.italic{font-style:italic}
+.leading-none{line-height:1}.leading-tight{line-height:1.25}.leading-snug{line-height:1.375}.leading-normal{line-height:1.5}.leading-relaxed{line-height:1.625}.leading-loose{line-height:2}
+.tracking-tight{letter-spacing:-0.025em}.tracking-normal{letter-spacing:0}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}
+.uppercase{text-transform:uppercase}.lowercase{text-transform:lowercase}.capitalize{text-transform:capitalize}
+.text-center{text-align:center}.text-left{text-align:left}.text-right{text-align:right}
+.underline{text-decoration-line:underline}.line-through{text-decoration-line:line-through}.no-underline{text-decoration-line:none}
+.decoration-dotted{text-decoration-style:dotted}
+.underline-offset-4{text-underline-offset:4px}
+.opacity-0{opacity:0}.opacity-25{opacity:0.25}.opacity-30{opacity:0.3}.opacity-35{opacity:0.35}.opacity-5{opacity:0.05}.opacity-50{opacity:0.5}.opacity-60{opacity:0.6}.opacity-70{opacity:0.7}.opacity-75{opacity:0.75}.opacity-80{opacity:0.8}.opacity-90{opacity:0.9}.opacity-100{opacity:1}
+.pointer-events-none{pointer-events:none}
+.cursor-default{cursor:default}.cursor-pointer{cursor:pointer}
+.select-none{user-select:none}
+.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(0.4,0,0.2,1);transition-duration:150ms}
+.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4,0,0.2,1);transition-duration:150ms}
+.duration-200{transition-duration:200ms}.duration-300{transition-duration:300ms}
+.blur-3xl{filter:blur(64px)}
+.backdrop-blur-sm{backdrop-filter:blur(4px)}
+.-translate-x-1\/2{transform:translateX(-50%)}.-translate-y-1\/2{transform:translateY(-50%)}
+.translate-x-0{transform:translateX(0)}
+.scale-100{transform:scale(1)}
+.shadow-sm{box-shadow:0 1px 2px 0 rgba(0,0,0,0.05)}
+.outline-none{outline:none}
+.resize-none{resize:none}
+.list-none{list-style-type:none}
+.hover\:opacity-90:hover{opacity:0.9}
+.hover\:bg-white:hover{background-color:#fff}
+.hover\:shadow-sm:hover{box-shadow:0 1px 2px 0 rgba(0,0,0,0.05)}
+.hover\:bg-stone-50:hover{background-color:#fafaf9}
+.group:hover .group-hover\:opacity-100{opacity:1}
+.-top-40{top:-160px}.-right-40{right:-160px}.-bottom-60{bottom:-240px}.-left-40{left:-160px}
+.left-1\/2{left:50%}.top-1\/2{top:50%}
+.w-\[600px\]{width:600px}.w-\[700px\]{width:700px}.w-\[800px\]{width:800px}.h-\[600px\]{height:600px}.h-\[700px\]{height:700px}.h-\[800px\]{height:800px}
+.max-w-\[1200px\]{max-width:1200px}
+.opacity-\[0\.35\]{opacity:0.35}.opacity-\[0\.3\]{opacity:0.3}.opacity-\[0\.2\]{opacity:0.2}.opacity-\[0\.25\]{opacity:0.25}.opacity-\[0\.15\]{opacity:0.15}
+.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[12px\]{font-size:12px}.text-\[13px\]{font-size:13px}.text-\[14px\]{font-size:14px}.text-\[15px\]{font-size:15px}.text-\[18px\]{font-size:18px}.text-\[20px\]{font-size:20px}.text-\[22px\]{font-size:22px}.text-\[24px\]{font-size:24px}.text-\[26px\]{font-size:26px}.text-\[28px\]{font-size:28px}.text-\[32px\]{font-size:32px}.text-\[36px\]{font-size:36px}.text-\[52px\]{font-size:52px}.text-\[68px\]{font-size:68px}
+.leading-\[0\.95\]{line-height:0.95}.leading-\[1\.0\]{line-height:1.0}.leading-\[1\.05\]{line-height:1.05}
+.px-2\.5{padding-left:10px;padding-right:10px}
+.border-white\/10{border-color:rgba(255,255,255,0.1)}.border-white\/08{border-color:rgba(255,255,255,0.08)}
+.pt-0{padding-top:0}
+</style>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body, #root { height: 100%; overflow: hidden; }
+  .font-display { font-family: 'Fraunces', 'Times New Roman', serif; letter-spacing: -0.01em; }
+  .font-body { font-family: 'Manrope', -apple-system, sans-serif; }
+  .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-feature-settings: 'tnum'; }
+  body { font-family: 'Manrope', sans-serif; }
+  .grain { background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  .no-scrollbar::-webkit-scrollbar { width: 0; height: 0; }
+  .no-scrollbar { scrollbar-width: none; }
+  .subtle-scrollbar::-webkit-scrollbar { width: 6px; }
+  .subtle-scrollbar::-webkit-scrollbar-thumb { background: #E4E1D7; border-radius: 3px; }
+  .subtle-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pulseDot { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+  @keyframes scan { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
+  .fade-up { animation: fadeUp 0.5s ease-out forwards; }
+  .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+  .pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
+  .scan-line::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent 0%, rgba(79,158,120,0.12) 50%, transparent 100%); animation: scan 1.8s ease-in-out infinite; }
+  @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-80px) scale(0.9); } }
+  .float-label { animation: floatUp 1.6s ease-out forwards; pointer-events: none; }
+  @keyframes drawLine {
+    from { stroke-dashoffset: 2000; }
+    to   { stroke-dashoffset: 0; }
+  }
+  @keyframes dotPop {
+    0%   { opacity: 0; transform: scale(0); }
+    60%  { transform: scale(1.4); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  .chart-line-enter { animation: drawLine 1.4s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .chart-dot-enter  { animation: dotPop 0.5s ease-out 1.3s both; }
+  @keyframes fillFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .chart-fill-enter { animation: fillFadeIn 1.2s ease-out 0.4s both; }
+  @keyframes revealFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .reveal-in { animation: revealSlideUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .reveal-fade { animation: revealFadeIn 0.5s ease-out forwards; }
+  @keyframes glow { 0%,100% { box-shadow: 0 0 0 0 rgba(79,158,120,0); } 50% { box-shadow: 0 0 40px 8px rgba(79,158,120,0.18); } }
+  .roi-glow { animation: glow 2s ease-in-out infinite; }
+  @keyframes countUp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  .count-up { animation: countUp 0.4s ease-out forwards; }
+</style>
+<template id="__bundler_thumbnail" data-bg-color="#F6F4EE">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#F6F4EE"/>
+    <!-- Header bar -->
+    <rect x="0" y="0" width="1200" height="64" fill="#FBFAF5" rx="0"/>
+    <rect x="0" y="63" width="1200" height="1" fill="#E4E1D7"/>
+    <!-- Logo mark -->
+    <polygon points="600,22 607,42 628,50 607,58 600,78 593,58 572,50 593,42" fill="#14201A"/>
+    <!-- Left chat panel -->
+    <rect x="0" y="64" width="552" height="736" fill="#FBFAF5"/>
+    <rect x="552" y="64" width="1" height="736" fill="#E4E1D7"/>
+    <!-- Chat bubbles -->
+    <rect x="40" y="120" width="320" height="36" rx="12" fill="#EEEBE1"/>
+    <rect x="40" y="170" width="260" height="36" rx="12" fill="#EEEBE1"/>
+    <rect x="40" y="240" width="440" height="60" rx="16" fill="#F6F4EE" stroke="#E4E1D7" strokeWidth="1"/>
+    <rect x="40" y="316" width="440" height="60" rx="16" fill="#F6F4EE" stroke="#E4E1D7" strokeWidth="1"/>
+    <!-- Right panel -->
+    <rect x="553" y="64" width="647" height="736" fill="#F6F4EE"/>
+    <!-- Chart area -->
+    <rect x="600" y="200" width="560" height="220" rx="16" fill="#FBFAF5" stroke="#E4E1D7" strokeWidth="1"/>
+    <!-- Chart line -->
+    <polyline points="640,360 680,340 720,380 760,320 800,290 840,260 880,240 920,220 960,210 1000,200 1040,195 1080,192 1120,190" fill="none" stroke="#1F4A3A" strokeWidth="3"/>
+    <!-- Mist fill -->
+    <rect x="600" y="290" width="560" height="90" fill="#C9DDD1" fillOpacity="0.3"/>
+    <!-- Bottom cards -->
+    <rect x="600" y="460" width="270" height="120" rx="16" fill="#FBFAF5" stroke="#E4E1D7" strokeWidth="1"/>
+    <rect x="890" y="460" width="270" height="120" rx="16" fill="#FBFAF5" stroke="#E4E1D7" strokeWidth="1"/>
+  </svg>
+</template>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+/* ---- Custom SVG Charts ---- */
+function polyPoints(data, xKey, yKey, w, h, minY, maxY) {
+  return data.map((d, i) => {
+    const x = (i / (data.length - 1)) * w;
+    const y = h - ((d[yKey] - minY) / (maxY - minY)) * h;
+    return `${x},${y}`;
+  }).join(' ');
+}
+
+function areaPath(data, xKey, yKey, w, h, minY, maxY) {
+  const pts = data.map((d, i) => {
+    const x = (i / (data.length - 1)) * w;
+    const y = h - ((d[yKey] - minY) / (maxY - minY)) * h;
+    return `${x},${y}`;
+  });
+  return `M${pts[0]} ` + pts.slice(1).map(p => `L${p}`).join(' ') + ` L${w},${h} L0,${h} Z`;
+}
+
+function linePath(data, xKey, yKey, w, h, minY, maxY) {
+  return data.map((d, i) => {
+    const x = (i / (data.length - 1)) * w;
+    const y = h - ((d[yKey] - minY) / (maxY - minY)) * h;
+    return (i === 0 ? 'M' : 'L') + `${x},${y}`;
+  }).join(' ');
+}
+
+function ForecastChart({ data, approvedIds = [] }) {
+  const [tooltip, setTooltip] = useState(null);
+  const w = 700, h = 260, padL = 52, padB = 28, padT = 14, padR = 10;
+  const cw = w - padL - padR, ch = h - padT - padB;
+  const minY = -12000, maxY = 60000;
+  const toY = v => padT + ch - ((v - minY) / (maxY - minY)) * ch;
+  const toX = day => padL + (day / 90) * cw;
+
+  const zeroY = toY(0);
+  const safeLoY = toY(15000);
+  const safeHiY = toY(50000);
+
+  const yTicks = [-10000, 0, 15000, 30000, 45000, 60000];
+  const xTicks = [0, 15, 30, 45, 60, 75, 90];
+
+  // Baseline path
+  const basePts = data.map(d => ({ x: toX(d.day), y: toY(d.baseline), v: d.baseline }));
+  const baseLinePath = basePts.map((p, i) => (i === 0 ? `M${p.x},${p.y}` : `L${p.x},${p.y}`)).join(' ');
+
+  // Area below zero (red danger zone fill along baseline)
+  const redAreaPts = [...basePts];
+  let redArea = '';
+  let seg = [];
+  for (let i = 0; i < redAreaPts.length; i++) {
+    const p = redAreaPts[i];
+    if (p.v < 0) {
+      seg.push(p);
+    } else {
+      if (seg.length) {
+        // close segment
+        const first = seg[0], last = seg[seg.length - 1];
+        redArea += `M${first.x},${Math.min(first.y, zeroY)} ` + seg.map(s => `L${s.x},${s.y}`).join(' ') + ` L${last.x},${zeroY} Z `;
+        seg = [];
+      }
+    }
+  }
+  if (seg.length) {
+    const first = seg[0], last = seg[seg.length - 1];
+    redArea += `M${first.x},${Math.min(first.y, zeroY)} ` + seg.map(s => `L${s.x},${s.y}`).join(' ') + ` L${last.x},${zeroY} Z`;
+  }
+
+  // Planned lines — one per approved action (incremental)
+  const actionOrder = ['early-pay-capri', 'delay-ombrelloni', 'vat-rateation'];
+  const approvedInOrder = actionOrder.filter(id => approvedIds.includes(id));
+
+  const plannedLines = approvedInOrder.map((_, idx) => {
+    const ids = approvedInOrder.slice(0, idx + 1);
+    const pts = data.map(d => {
+      const lift = ids.reduce((sum, id) => {
+        const a = ACTION_LIFTS[id];
+        return a && d.day >= a.fromDay ? sum + a.amount : sum;
+      }, 0);
+      return { x: toX(d.day), y: toY(d.baseline + lift) };
+    });
+    return pts.map((p, i) => (i === 0 ? `M${p.x},${p.y}` : `L${p.x},${p.y}`)).join(' ');
+  });
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const mx = e.clientX - rect.left - padL;
+    const dayF = (mx / cw) * 90;
+    const idx = Math.max(0, Math.min(data.length - 1, Math.round(dayF)));
+    const d = data[idx];
+    if (d) {
+      const lift = approvedIds.reduce((sum, id) => {
+        const a = ACTION_LIFTS[id];
+        return a && d.day >= a.fromDay ? sum + a.amount : sum;
+      }, 0);
+      setTooltip({ x: toX(d.day), d, planned: d.baseline + lift });
+    }
+  };
+
+  const lineColors = [P.forest, '#2F8A64', '#4AAA80'];
+  const keyDays = [9, 14, 33];
+  const keyColors = [P.amber, P.terra, P.forest];
+
+  return (
+    <div style={{ position: 'relative', width: '100%' }}>
+      <svg viewBox={`0 0 ${w} ${h}`} width="100%" style={{ display: 'block' }}
+        onMouseMove={handleMouseMove} onMouseLeave={() => setTooltip(null)}>
+        <defs>
+          <linearGradient id="pFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={P.leaf} stopOpacity="0.2" />
+            <stop offset="100%" stopColor={P.leaf} stopOpacity="0" />
+          </linearGradient>
+          <clipPath id="chartClip">
+            <rect x={padL} y={padT} width={cw} height={ch} />
+          </clipPath>
+        </defs>
+
+        {/* Safe zone band */}
+        <rect x={padL} y={safeHiY} width={cw} height={safeLoY - safeHiY} fill={P.mist} fillOpacity="0.3" clipPath="url(#chartClip)" />
+
+        {/* Below-zero danger fill */}
+        <rect x={padL} y={zeroY} width={cw} height={padT + ch - zeroY} fill={P.terra} fillOpacity="0.08" clipPath="url(#chartClip)" />
+
+        {/* Zero line — prominent */}
+        <line x1={padL} x2={padL + cw} y1={zeroY} y2={zeroY} stroke={P.terra} strokeWidth="1" strokeOpacity="0.6" />
+        <text x={padL - 6} y={zeroY + 4} textAnchor="end" fill={P.terra} fontSize="10" fontFamily="JetBrains Mono" opacity="0.8">€0</text>
+
+        {/* Grid lines */}
+        {yTicks.filter(v => v !== 0).map(v => {
+          const y = toY(v);
+          return <line key={v} x1={padL} x2={padL + cw} y1={y} y2={y} stroke={P.lineSoft} strokeDasharray="2 4" />;
+        })}
+
+        {/* Event lines */}
+        {keyDays.map((day, i) => (
+          <line key={day} x1={toX(day)} x2={toX(day)} y1={padT} y2={padT + ch}
+            stroke={keyColors[i]} strokeDasharray="2 4" strokeOpacity="0.3" clipPath="url(#chartClip)" />
+        ))}
+
+        {/* Red fill area where baseline < 0 */}
+        {redArea && <path d={redArea} fill={P.terra} fillOpacity="0.18" clipPath="url(#chartClip)" />}
+
+        {/* Baseline — changes color below zero */}
+        <path d={baseLinePath} fill="none" stroke={P.muted} strokeWidth="1.5" strokeDasharray="4 3" clipPath="url(#chartClip)" />
+
+        {/* Planned lines — newest gets draw-on animation */}
+        {plannedLines.map((path, i) => {
+          const isNewest = i === plannedLines.length - 1;
+          // Build fill path for newest line
+          const fillPath = isNewest ? path + ` L${toX(90)},${toY(0)} L${toX(0)},${toY(0)} Z` : null;
+          const lineColor = lineColors[Math.min(i, lineColors.length - 1)];
+          return (
+            <g key={`line-${approvedIds.join('-')}-${i}`}>
+              {/* Fill area under newest line */}
+              {isNewest && (
+                <path
+                  d={fillPath}
+                  fill={lineColor}
+                  fillOpacity="0.08"
+                  className="chart-fill-enter"
+                  clipPath="url(#chartClip)"
+                />
+              )}
+              {/* Line itself */}
+              <path
+                d={path}
+                fill="none"
+                stroke={lineColor}
+                strokeWidth={isNewest ? 2.5 : 1.5}
+                strokeOpacity={isNewest ? 1 : 0.35}
+                strokeDasharray={isNewest ? 2000 : 'none'}
+                className={isNewest ? 'chart-line-enter' : ''}
+                clipPath="url(#chartClip)"
+              />
+              {/* Animated dot at end of newest line */}
+              {isNewest && (() => {
+                const lift = approvedIds.reduce((sum, id) => {
+                  const a = ACTION_LIFTS[id];
+                  return a && 90 >= a.fromDay ? sum + a.amount : sum;
+                }, 0);
+                const endPt = { x: toX(90), y: toY(BASE_FORECAST[BASE_FORECAST.length-1].baseline + lift) };
+                return (
+                  <circle
+                    cx={endPt.x} cy={endPt.y} r="5"
+                    fill={lineColor}
+                    className="chart-dot-enter"
+                    clipPath="url(#chartClip)"
+                  />
+                );
+              })()}
+            </g>
+          );
+        })}
+
+        {/* Tooltip line */}
+        {tooltip && <line x1={tooltip.x} x2={tooltip.x} y1={padT} y2={padT + ch} stroke={P.line} strokeWidth="1" />}
+
+        {/* Y axis labels */}
+        {yTicks.filter(v => v !== 0).map(v => {
+          const y = toY(v);
+          const label = v < 0 ? `-€${Math.abs(v)/1000}k` : `€${v/1000}k`;
+          return <text key={v} x={padL - 6} y={y + 4} textAnchor="end" fill={v < 0 ? P.terra : P.muted} fontSize="10" fontFamily="JetBrains Mono" opacity={v < 0 ? 0.8 : 1}>{label}</text>;
+        })}
+
+        {/* X axis labels */}
+        {xTicks.map(v => (
+          <text key={v} x={toX(v)} y={h - 4} textAnchor="middle" fill={P.muted} fontSize="10" fontFamily="JetBrains Mono">
+            {v === 0 ? 'today' : `${v}d`}
+          </text>
+        ))}
+        <line x1={padL} x2={padL + cw} y1={padT + ch} y2={padT + ch} stroke={P.line} />
+      </svg>
+
+      {/* Tooltip popup */}
+      {tooltip && (() => {
+        const d = tooltip.d;
+        const left = Math.min(tooltip.x + 10, w - 140);
+        return (
+          <div style={{ position: 'absolute', top: 20, left: `${(left / w) * 100}%`, background: P.ink, color: 'white', borderRadius: 8, padding: '8px 12px', fontSize: 11, pointerEvents: 'none', zIndex: 10, whiteSpace: 'nowrap' }}>
+            <div style={{ textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.5, marginBottom: 4 }}>Day {d.day}</div>
+            {approvedIds.length > 0 && <div style={{ fontFamily: 'JetBrains Mono', marginBottom: 2, color: P.leaf }}>With Flowra: €{(tooltip.planned/1000).toFixed(1)}k</div>}
+            <div style={{ fontFamily: 'JetBrains Mono', opacity: 0.6 }}>No action: €{(d.baseline/1000).toFixed(1)}k</div>
+          </div>
+        );
+      })()}
+    </div>
+  );
+}
+
+function CreditLineChart({ data }) {
+  const w = 400, h = 120, padL = 10, padB = 24, padT = 10, padR = 10;
+  const cw = w - padL - padR, ch = h - padT - padB;
+  const minY = 50, maxY = 100;
+  const pts = data.map((d, i) => ({
+    x: padL + (i / (data.length - 1)) * cw,
+    y: padT + ch - ((d.score - minY) / (maxY - minY)) * ch,
+    d,
+  }));
+  const linePth = pts.map((p, i) => (i === 0 ? `M${p.x},${p.y}` : `L${p.x},${p.y}`)).join(' ');
+
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} width="100%" style={{ display: 'block' }}>
+      <path d={linePth} fill="none" stroke={P.forest} strokeWidth="2.5" />
+      {pts.map((p, i) => (
+        <circle key={i} cx={p.x} cy={p.y} r="3.5" fill={P.forest} />
+      ))}
+      {data.map((d, i) => {
+        const x = padL + (i / (data.length - 1)) * cw;
+        return <text key={i} x={x} y={h - 4} textAnchor="middle" fill={P.muted} fontSize="10" fontFamily="Manrope">{d.month}</text>;
+      })}
+    </svg>
+  );
+}
+
+const { useState, useEffect, useRef } = React;
+
+/* ---- Inline SVG Icons ---- */
+function Icon({ d, size = 16, color, strokeWidth = 2, style = {}, className = '', fill = 'none', paths }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={fill}
+      stroke={color || 'currentColor'} strokeWidth={strokeWidth}
+      strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+      {paths ? paths.map((p, i) => <path key={i} d={p} />) : <path d={d} />}
+    </svg>
+  );
+}
+
+const Sparkles = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+    <path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/>
+  </svg>
+);
+const ArrowUp = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>
+  </svg>
+);
+const ArrowRight = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+  </svg>
+);
+const Check = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="M20 6 9 17l-5-5"/>
+  </svg>
+);
+const AtSign = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>
+  </svg>
+);
+const Paperclip = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+  </svg>
+);
+const ChevronDown = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="m6 9 6 6 6-6"/>
+  </svg>
+);
+const Shield = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+  </svg>
+);
+const TrendingUp = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+  </svg>
+);
+const AlertTriangle = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/>
+    <path d="M12 9v4"/><path d="M12 17h.01"/>
+  </svg>
+);
+const Clock = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+  </svg>
+);
+const CheckCircle2 = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+  </svg>
+);
+const Circle = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <circle cx="12" cy="12" r="10"/>
+  </svg>
+);
+const Zap = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+  </svg>
+);
+const Calendar = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>
+  </svg>
+);
+const FileText = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+    <path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>
+  </svg>
+);
+const Building2 = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/>
+    <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/>
+    <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/>
+    <path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+  </svg>
+);
+const Landmark = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/>
+    <line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/>
+    <line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/>
+  </svg>
+);
+const ArrowUpRight = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="M7 7h10v10"/><path d="M7 17 17 7"/>
+  </svg>
+);
+const ArrowDownLeft = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="M17 7 7 17"/><path d="M17 17H7V7"/>
+  </svg>
+);
+const X = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+  </svg>
+);
+const Info = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+  </svg>
+);
+const Lock = ({ size=16, color, strokeWidth=2, style={}, className='' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color||'currentColor'} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={style} className={className}>
+    <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+  </svg>
+);
+
+/* ---- Palette presets ---- */
+const PALETTES = {
+  riviera: {
+    cream: "#F6F4EE", paper: "#FBFAF5", ink: "#14201A", inkSoft: "#3A463F",
+    muted: "#7B8079", line: "#E4E1D7", lineSoft: "#EEEBE1", forest: "#1F4A3A",
+    leaf: "#4F9E78", terra: "#C0603A", terraSoft: "#F2E8E3", amber: "#B8860B",
+    amberSoft: "#F5EFD6", mist: "#C8DDD2", gold: "#C8A96E",
+  },
+  notte: {
+    cream: "#111A15", paper: "#18251B", ink: "#E8E2D0", inkSoft: "#B4C2B8",
+    muted: "#607068", line: "#253028", lineSoft: "#1D2820", forest: "#7DC49A",
+    leaf: "#5FAD7A", terra: "#E8856A", terraSoft: "#2A1A15", amber: "#D4A855",
+    amberSoft: "#2A2010", mist: "#2D4A38", gold: "#D4A855",
+  },
+  carta: {
+    cream: "#F5F5F3", paper: "#FFFFFF", ink: "#111111", inkSoft: "#454545",
+    muted: "#999999", line: "#E4E4E4", lineSoft: "#F0F0F0", forest: "#1A5C3A",
+    leaf: "#2E8B57", terra: "#C0392B", terraSoft: "#FDECEA", amber: "#A07820",
+    amberSoft: "#FEF6DC", mist: "#E0EFE8", gold: "#A07820",
+  },
+};
+
+let P = {
+  cream: "#F6F4EE", paper: "#FBFAF5", ink: "#14201A", inkSoft: "#3A463F",
+  muted: "#7B8079", line: "#E4E1D7", lineSoft: "#EEEBE1", forest: "#1F4A3A",
+  moss: "#2F6B52", leaf: "#4E9E78", mist: "#C9DDD1", amber: "#B0733A",
+  amberSoft: "#F3E3CE", terra: "#A64433", terraSoft: "#F2D9D2", gold: "#C69C5C",
+};
+
+const FlowraMark = ({ size = 14, color = P.forest }) => (
+  <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
+    <path d="M10 1 L12.5 7.5 L19 10 L12.5 12.5 L10 19 L7.5 12.5 L1 10 L7.5 7.5 Z" fill={color} />
+  </svg>
+);
+
+const StatusBadge = ({ tone, children }) => {
+  const tones = {
+    ok: { bg: "#E8F0EA", fg: P.forest, dot: P.leaf },
+    warn: { bg: P.amberSoft, fg: P.amber, dot: P.amber },
+    risk: { bg: P.terraSoft, fg: P.terra, dot: P.terra },
+    neutral: { bg: P.lineSoft, fg: P.inkSoft, dot: P.muted },
+  };
+  const t = tones[tone] || tones.neutral;
+  return (
+    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium"
+      style={{ background: t.bg, color: t.fg }}>
+      <span className="w-1.5 h-1.5 rounded-full" style={{ background: t.dot }} />
+      {children}
+    </span>
+  );
+};
+
+const TaskPill = ({ label }) => (
+  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs fade-up"
+    style={{ background: "#E8F0EA", color: P.forest, border: `1px solid #D5E5DA` }}>
+    <Check size={11} strokeWidth={2.5} color={P.forest} />
+    <span className="font-medium">{label}</span>
+  </div>
+);
+
+/* ---- Landing ---- */
+function Landing({ onConnect }) {
+  return (
+    <div className="h-full w-full flex flex-col items-center justify-center relative overflow-hidden" style={{ background: P.cream }}>
+      <div className="absolute inset-0 grain opacity-[0.35] pointer-events-none" />
+      <div className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full opacity-30 blur-3xl pointer-events-none" style={{ background: `radial-gradient(circle, ${P.mist} 0%, transparent 70%)` }} />
+      {/* Hand-drawn heart — top right corner */}
+      <svg viewBox="0 0 80 72" style={{ position: 'absolute', top: 28, right: 48, width: 64, height: 56, opacity: 0.75, pointerEvents: 'none' }}>
+        <path d="M40 60 C38 55, 28 47, 18 37 C8 27, 2 18, 2 10 C2 4, 8 1, 15 2 C22 3, 30 9, 35 16 C36 18, 38 20, 40 22 C42 20, 44 17, 47 14 C52 8, 60 2, 67 3 C74 4, 79 12, 77 20 C75 30, 67 38, 58 47 C50 55, 42 61, 40 60Z" fill="none" stroke={P.terra} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+      {/* Hand-drawn flower — upper-right area */}
+      <svg viewBox="0 0 100 180" style={{ position: 'absolute', top: 60, right: 120, width: 72, height: 130, opacity: 0.82, pointerEvents: 'none' }}>
+        <path d="M50 175 C49 148, 47 122, 49 98 C51 74, 53 58, 50 42" fill="none" stroke={P.terra} strokeWidth="2.5" strokeLinecap="round"/>
+        <path d="M50 115 C38 106, 24 101, 17 89 C26 87, 40 94, 49 106Z" fill="none" stroke={P.terra} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M50 96 C62 87, 76 83, 83 71 C74 69, 60 76, 51 88Z" fill="none" stroke={P.terra} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <ellipse cx="50" cy="26" rx="10" ry="15" fill="none" stroke={P.terra} strokeWidth="2.2" transform="rotate(-18 50 26)"/>
+        <ellipse cx="50" cy="26" rx="10" ry="15" fill="none" stroke={P.terra} strokeWidth="2.2" transform="rotate(18 50 26)"/>
+        <ellipse cx="50" cy="26" rx="10" ry="15" fill="none" stroke={P.terra} strokeWidth="2.2"/>
+        <circle cx="50" cy="24" r="5.5" fill="none" stroke={P.terra} strokeWidth="2"/>
+        <circle cx="50" cy="24" r="2.2" fill={P.terra} opacity="0.45"/>
+      </svg>
+      <div className="absolute -bottom-60 -left-40 w-[700px] h-[700px] rounded-full opacity-20 blur-3xl pointer-events-none" style={{ background: `radial-gradient(circle, ${P.gold} 0%, transparent 70%)` }} />
+      <div className="relative z-10 max-w-3xl px-8 text-center fade-in">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-10 border" style={{ background: P.paper, borderColor: P.line, color: P.inkSoft }}>
+          <FlowraMark size={12} />
+          <span className="text-xs tracking-wide uppercase">Flowra · <span style={{ color: P.muted }}>Cash flow agent</span></span>
+        </div>
+        <h1 className="font-display leading-[0.95] mb-8" style={{ fontSize: 84, color: P.ink, fontWeight: 400 }}>
+          Cash flow that<br /><span style={{ color: P.forest, fontStyle: "italic" }}>thinks for itself.</span>
+        </h1>
+        <p className="text-lg max-w-xl mx-auto mb-12 leading-relaxed" style={{ color: P.inkSoft }}>
+          Flowra watches your cash, forecasts gaps 90 days out, and proposes{" "}
+          <span style={{ color: P.ink, fontWeight: 500 }}>one thing to approve each day</span>.
+          No spreadsheets. No accountant-speak.
+        </p>
+        <button onClick={onConnect} className="inline-flex items-center gap-3 px-7 py-4 rounded-full text-white font-medium transition-all hover:opacity-90"
+          style={{ background: P.ink, fontSize: 15, boxShadow: "0 10px 30px -10px rgba(20,32,26,0.4)" }}>
+          <Sparkles size={16} strokeWidth={2} color="white" />
+          Connect your accounting
+          <ArrowRight size={16} strokeWidth={2} color="white" />
+        </button>
+        <div className="flex items-center justify-center gap-8 mt-14 text-xs uppercase tracking-widest" style={{ color: P.muted }}>
+          <div className="flex items-center gap-2"><Lock size={11} color={P.muted} /> Your data stays yours</div>
+          <div className="w-px h-3" style={{ background: P.line }} />
+          <span>Xero · Fatture in Cloud · TeamSystem</span>
+          <div className="w-px h-3" style={{ background: P.line }} />
+          <span>90-day horizon</span>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+/* ---- Connecting ---- */
+function Connecting({ onDone }) {
+  const steps = [
+    { label: "Reading invoices receivable", detail: "87 open invoices · €48,200 total" },
+    { label: "Reading invoices payable", detail: "34 open invoices · €29,450 total" },
+    { label: "Syncing payroll schedule", detail: "Next run: May 1 · €11,800" },
+    { label: "Syncing rent & insurance", detail: "3 recurring · €4,200/mo" },
+    { label: "Modeling VAT & withholdings", detail: "Next F24: May 16 · €6,200" },
+    { label: "Scoring payment reliability", detail: "47 counterparties ranked" },
+    { label: "Building 90-day forecast", detail: "1 cash gap detected · day 12–18" },
+  ];
+  const [done, setDone] = useState(0);
+  useEffect(() => {
+    if (done < steps.length) {
+      const t = setTimeout(() => setDone(done + 1), done === 0 ? 500 : 650);
+      return () => clearTimeout(t);
+    } else {
+      const t = setTimeout(onDone, 1000);
+      return () => clearTimeout(t);
+    }
+  }, [done]);
+
+  return (
+    <div className="h-full w-full flex items-center justify-center relative overflow-hidden" style={{ background: P.cream }}>
+      <div className="absolute inset-0 grain opacity-[0.3] pointer-events-none" />
+      <div className="relative z-10 w-full max-w-xl px-8">
+        <div className="flex items-center gap-2 mb-2 text-xs uppercase tracking-widest" style={{ color: P.muted }}>
+          <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: P.leaf }} />
+          Connecting · TeamSystem
+        </div>
+        <h2 className="font-display text-4xl mb-10" style={{ color: P.ink, fontWeight: 400 }}>
+          Reading your <span style={{ fontStyle: "italic", color: P.forest }}>numbers</span>.
+        </h2>
+        <div className="space-y-3">
+          {steps.map((s, i) => {
+            const isDone = i < done, isActive = i === done;
+            return (
+              <div key={i} className="flex items-center gap-4 py-3 px-4 rounded-xl relative overflow-hidden"
+                style={{ background: isActive ? P.paper : "transparent", border: `1px solid ${isActive ? P.line : "transparent"}`, opacity: isDone || isActive ? 1 : 0.35, transition: "opacity 0.3s, background 0.3s" }}>
+                {isActive && <div className="absolute inset-0 scan-line pointer-events-none" />}
+                <div className="flex-shrink-0">
+                  {isDone ? (
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: P.forest }}>
+                      <Check size={13} color="white" strokeWidth={3} />
+                    </div>
+                  ) : isActive ? (
+                    <div className="w-6 h-6 rounded-full border-2 flex items-center justify-center" style={{ borderColor: P.leaf }}>
+                      <div className="w-2 h-2 rounded-full pulse-dot" style={{ background: P.leaf }} />
+                    </div>
+                  ) : (
+                    <div className="w-6 h-6 rounded-full border-2" style={{ borderColor: P.line }} />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium" style={{ color: P.ink }}>{s.label}</div>
+                  {(isDone || isActive) && <div className="text-xs font-mono mt-0.5 fade-in" style={{ color: P.muted }}>{s.detail}</div>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---- Action Impact Map ---- */
+const ACTION_IMPACTS = {
+  "early-pay-capri": 4365,
+  "delay-ombrelloni": 2800,
+  "vat-rateation": 4650,
+};
+
+/* ---- Reveal Screen ---- */
+function Reveal({ onEnter }) {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setStep(1), 300),
+      setTimeout(() => setStep(2), 700),
+      setTimeout(() => setStep(3), 1100),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  const findings = [
+    { tone: "risk", label: "Cash gap", value: "€12,900", sub: "minimum on day 14 · below your €15k floor", bar: 0.26 },
+    { tone: "warn", label: "Liquidity trapped", value: "€7,200", sub: "20-day DSO/DPO mismatch · financing your suppliers", bar: 0.52 },
+    { tone: "ok", label: "Impact ready", value: "+€11,815", sub: "3 approved actions close the gap entirely", bar: 1.0 },
+  ];
+  const toneC = { risk: P.terra, warn: P.amber, ok: P.forest };
+  const toneBg = { risk: P.terraSoft, warn: P.amberSoft, ok: "#E8F0EA" };
+
+  return (
+    <div className="h-full w-full flex flex-col relative overflow-hidden" style={{ background: P.cream }}>
+      <div className="absolute inset-0 grain opacity-[0.35] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[700px] h-[700px] rounded-full opacity-25 pointer-events-none"
+        style={{ background: `radial-gradient(circle, ${P.mist} 0%, transparent 65%)`, filter: 'blur(80px)', transform: 'translate(30%, -30%)' }} />
+
+      {/* Header strip — same as main app */}
+      <div className="flex items-center justify-between px-8 h-16 border-b flex-shrink-0" style={{ borderColor: P.line, background: P.paper }}>
+        <div className="flex items-center gap-2 text-xs uppercase tracking-widest" style={{ color: P.muted }}>
+          <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: P.leaf }} />
+          Analysis complete
+        </div>
+        <div className="font-display italic text-[24px]" style={{ color: P.ink, fontWeight: 500 }}>Flowra</div>
+        <div className="text-xs uppercase tracking-widest" style={{ color: P.muted }}>Bagni Aurora · Apr 22</div>
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 flex items-center justify-center px-8">
+        <div className="w-full max-w-3xl">
+
+          {/* Agent intro */}
+          <div className="flex gap-4 mb-10" style={{ opacity: step >= 1 ? 1 : 0, transform: step >= 1 ? 'none' : 'translateY(8px)', transition: 'all 0.5s cubic-bezier(0.16,1,0.3,1)' }}>
+            <div className="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center mt-1" style={{ background: P.ink }}>
+              <Sparkles size={14} color={P.gold} strokeWidth={2} />
+            </div>
+            <div>
+              <p className="text-[15px] mb-1 leading-relaxed" style={{ color: P.muted }}>While you were away, I read 87 invoices, modeled your next 90 days, and found a problem.</p>
+              <h2 className="font-display leading-[1.0]" style={{ fontSize: 52, color: P.ink, fontWeight: 400 }}>
+                Your season starts in <span style={{ color: P.terra, fontStyle: 'italic' }}>the red.</span>
+              </h2>
+            </div>
+          </div>
+
+          {/* Finding cards */}
+          <div className="grid grid-cols-3 gap-4 mb-10">
+            {findings.map((f, i) => (
+              <div key={i} className="rounded-2xl border p-5 overflow-hidden relative"
+                style={{
+                  background: P.paper, borderColor: P.line,
+                  opacity: step >= i + 1 ? 1 : 0,
+                  transform: step >= i + 1 ? 'none' : 'translateY(10px)',
+                  transition: `all 0.5s cubic-bezier(0.16,1,0.3,1) ${i * 80}ms`,
+                }}>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-5 h-5 rounded-full" style={{ background: toneBg[f.tone] }} />
+                  <span className="text-[11px] uppercase tracking-widest font-medium" style={{ color: P.muted }}>{f.label}</span>
+                </div>
+                <div className="font-mono text-[28px] font-medium mb-1 leading-none" style={{ color: toneC[f.tone] }}>{f.value}</div>
+                <div className="text-[12px] leading-relaxed mb-4" style={{ color: P.inkSoft }}>{f.sub}</div>
+                {/* Progress bar */}
+                <div className="h-1 rounded-full overflow-hidden" style={{ background: P.lineSoft }}>
+                  <div className="h-full rounded-full" style={{ width: step >= i + 1 ? `${f.bar * 100}%` : '0%', background: toneC[f.tone], transition: 'width 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s' }} />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div style={{ opacity: step >= 3 ? 1 : 0, transform: step >= 3 ? 'none' : 'translateY(6px)', transition: 'all 0.5s ease-out 0.2s' }}>
+            <div className="flex items-center gap-5">
+              <button onClick={onEnter}
+                className="inline-flex items-center gap-3 px-7 py-3.5 rounded-full text-white font-medium hover:opacity-90 transition-all"
+                style={{ background: P.ink, fontSize: 15, boxShadow: "0 8px 24px -8px rgba(20,32,26,0.4)" }}>
+                Show me the three fixes
+                <ArrowRight size={15} color="white" strokeWidth={2} />
+              </button>
+              <div className="text-[13px]" style={{ color: P.muted }}>
+                Each takes <strong style={{ color: P.ink }}>one approval</strong>. Flowra handles the rest.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---- Data ---- */
+const BASE_FORECAST = (() => {
+  const out = [];
+  for (let d = 0; d <= 90; d++) {
+    let b;
+    // No intervention: payroll day 9, rent day 4, utilities day 7, ombrelloni day 12, VAT day 14
+    if (d < 4)       b = 18400 - d * 580;
+    else if (d < 5)  b = 16080 - 3400;           // concession rent
+    else if (d < 7)  b = 12680 - (d-5) * 520;
+    else if (d < 8)  b = 11640 - 1240;           // utilities
+    else if (d < 9)  b = 10400 - 520;
+    else if (d < 10) b = 9880 - 11800;           // payroll → negative
+    else if (d < 12) b = -1920 + (d-10) * 900;  // small daily receipts
+    else if (d < 13) b = -120 - 2800;            // ombrelloni payment
+    else if (d < 14) b = -2920 - 480;
+    else if (d < 15) b = -3400 - 6200;           // VAT → deep negative
+    else if (d < 22) b = -9600 + (d-15) * 180;  // very slow recovery
+    else if (d < 32) b = -8340 + (d-22) * 820;  // receivables start
+    else if (d < 50) b = 260 + (d-32) * 1100;
+    else if (d < 70) b = 20060 + (d-50) * 820;
+    else b = 36460 + (d-70) * 220;
+    out.push({ day: d, baseline: Math.round(b / 100) * 100 });
+  }
+  return out;
+})();
+
+// Per-action impact: from which day and by how much
+const ACTION_LIFTS = {
+  'early-pay-capri':  { fromDay: 8,  amount: 4365 },
+  'delay-ombrelloni': { fromDay: 12, amount: 2800 },
+  'vat-rateation':    { fromDay: 14, amount: 4650 },
+  'triver-factor':    { fromDay: 3,  amount: 17020 },
+};
+
+function computePlanned(baseData, approvedIds) {
+  return baseData.map(d => {
+    const lift = approvedIds.reduce((sum, id) => {
+      const a = ACTION_LIFTS[id];
+      return a && d.day >= a.fromDay ? sum + a.amount : sum;
+    }, 0);
+    return { ...d, planned: d.baseline + lift };
+  });
+}
+
+const CREDIT_TREND = [
+  { month: "Nov", score: 62 }, { month: "Dec", score: 64 }, { month: "Jan", score: 68 },
+  { month: "Feb", score: 71 }, { month: "Mar", score: 76 }, { month: "Apr", score: 81 },
+];
+
+const INCOMING = [
+  { name: "Hotel Mediterraneo", amount: 4200, due: "in 6d", reliability: "High", status: "ok" },
+  { name: "Ristorante Capri", amount: 4500, due: "in 38d", reliability: "High", status: "ok" },
+  { name: "Stabilimento Riviera", amount: 5100, due: "in 12d", reliability: "Medium", overdue: "8d overdue", status: "warn" },
+  { name: "Eventi Costa S.r.l.", amount: 3100, due: "in 21d", reliability: "Low", status: "risk" },
+];
+const OUTGOING = [
+  { name: "Payroll (seasonal staff)", amount: 11800, due: "in 9d", status: "ok", locked: true },
+  { name: "VAT payment (F24)", amount: 6200, due: "in 14d", status: "ok", locked: true },
+  { name: "Linea Ombrelloni", amount: 2800, due: "in 12d", status: "ok" },
+  { name: "Concession rent", amount: 3400, due: "in 4d", status: "ok", locked: true },
+  { name: "Water & utilities", amount: 1240, due: "in 7d", status: "ok" },
+];
+const COUNTERPARTIES_IN = [
+  { name: "Hotel Mediterraneo", days: 30, weight: 42 },
+  { name: "Ristorante Capri", days: 45, weight: 28 },
+  { name: "Stabilimento Riviera", days: 60, weight: 18 },
+  { name: "Eventi Costa S.r.l.", days: 68, weight: 12 },
+];
+const COUNTERPARTIES_OUT = [
+  { name: "Linea Ombrelloni", days: 30, weight: 24 },
+  { name: "Fornitura Bar Vittoria", days: 30, weight: 22 },
+  { name: "Lavanderia San Marco", days: 15, weight: 18 },
+  { name: "Acqua & utenze", days: 30, weight: 20 },
+  { name: "Manutenzioni estive", days: 30, weight: 16 },
+];
+const LOAN_OFFERS = [
+  { bank: "Banca Alpina", product: "Summer Bridge Line", amount: "€50,000", rate: 4.2, prevRate: 5.6, term: "12 months", preApproved: true },
+  { bank: "Credito Ligure", product: "Invoice Advance", amount: "€35,000", rate: 5.1, prevRate: 6.3, term: "6 months", preApproved: true },
+  { bank: "Finitalia Fintech", product: "Merchant Advance", amount: "€25,000", rate: 6.8, prevRate: 8.4, term: "9 months", preApproved: false },
+];
+
+/* ---- Header ---- */
+function Header({ roiUnlocked }) {
+  const [prevRoi, setPrevRoi] = useState(roiUnlocked);
+  const [flash, setFlash] = useState(false);
+  useEffect(() => {
+    if (roiUnlocked > prevRoi) {
+      setFlash(true);
+      const t = setTimeout(() => setFlash(false), 600);
+      setPrevRoi(roiUnlocked);
+      return () => clearTimeout(t);
+    }
+  }, [roiUnlocked]);
+
+  return (
+    <header className="flex items-center justify-between px-6 h-16 border-b relative z-20" style={{ background: P.paper, borderColor: P.line }}>
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: P.ink }}>
+          <Sparkles size={14} color={P.gold} strokeWidth={2} />
+        </div>
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[13px] font-medium truncate" style={{ color: P.ink }}>Bagni Aurora</span>
+            <ChevronDown size={13} color={P.muted} />
+          </div>
+          <div className="text-[11px] uppercase tracking-wider" style={{ color: P.muted }}>Alassio · Beach club</div>
+        </div>
+      </div>
+      <div className="font-display italic text-[26px] absolute left-1/2 -translate-x-1/2" style={{ color: P.ink, fontWeight: 500 }}>Flowra</div>
+      <div className="flex items-center gap-4">
+        {roiUnlocked > 0 ? (
+          <div key={roiUnlocked} className="flex items-center gap-2 px-3 py-1.5 rounded-full count-up"
+            style={{ background: "#E8F0EA", border: `1px solid ${flash ? P.leaf : "#D5E5DA"}`, transition: 'border-color 0.3s' }}>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: P.leaf }} />
+            <span className="text-xs font-medium" style={{ color: P.forest }}>
+              +€{roiUnlocked.toLocaleString()} unlocked today
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border" style={{ borderColor: P.line }}>
+            <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: P.leaf }} />
+            <span className="text-xs" style={{ color: P.inkSoft }}>Synced · 2 min ago</span>
+          </div>
+        )}
+        <button className="text-xs uppercase tracking-widest" style={{ color: P.muted }}>Demo</button>
+        <div className="w-8 h-8 rounded-full border flex items-center justify-center text-[11px] font-medium" style={{ borderColor: P.line, background: P.cream, color: P.inkSoft }}>CB</div>
+      </div>
+    </header>
+  );
+}
+
+/* ---- Chat Panel ---- */
+const SYSTEM_PROMPT = `You are Flowra, an AI cash flow agent for Bagni Aurora — a beach club in Alassio on the Italian Riviera. Today is late April 2026, 30 days before the summer season.
+
+Business context:
+- Current cash: €18,400. Safe zone: €15k–€50k.
+- Payroll due May 1: €11,800. VAT (F24) due May 16: €6,200.
+- Key receivables: Hotel Mediterraneo €4,200 (6d), Ristorante Capri €4,500 (38d), Stabilimento Riviera €5,100 (12d, 8d overdue), Eventi Costa €3,100 (21d).
+- Key payables: Linea Ombrelloni €2,800 (12d), Concession rent €3,400 (4d), Water & utilities €1,240 (7d).
+- Credit score: 81/100 (was 62 six months ago). Pre-approved loan offers available.
+- Structural DSO/DPO gap: clients pay in ~46 days, you pay suppliers in ~26 days — 20-day mismatch.
+
+Speak as Chiara's trusted financial advisor. Be concise, specific, always ground answers in the numbers above. Use € and Italian context naturally. Never be generic. Keep every answer to 1–2 sentences max — direct, no preamble.`;
+
+/* ---- Agent tool-step definitions ---- */
+const TOOL_STEPS_MAP = {
+  forecast: [{ label: "Running 90-day simulation", detail: "1,240 scenarios · Monte Carlo" }, { label: "Identifying risk windows", detail: "1 gap detected · days 12–18" }],
+  invoice:  [{ label: "Scanning invoice ledger", detail: "87 open invoices · €48,200 total" }, { label: "Scoring counterparty reliability", detail: "Capri: 94% on-time · Riviera: 61%" }],
+  email:    [{ label: "Loading supplier profile", detail: "Linea Ombrelloni · 10-yr partner" }, { label: "Generating negotiation draft", detail: "3 email variants ready" }],
+  credit:   [{ label: "Querying bank marketplace", detail: "3 pre-approved offers · updated today" }, { label: "Recalculating credit profile", detail: "Score: 81/100 · Band A" }],
+  tax:      [{ label: "Reading F24 calendar", detail: "Next: May 16 · €6,200" }, { label: "Checking installment eligibility", detail: "Art. 15-ter · 0% interest" }],
+  payroll:  [{ label: "Loading payroll schedule", detail: "May 1 · 14 seasonal staff" }, { label: "Checking cash coverage", detail: "€18,400 available · €11,800 needed" }],
+  default:  [{ label: "Reading your books", detail: "Last sync: 2 min ago" }, { label: "Running analysis", detail: "Checking all cash positions" }],
+};
+function getToolSteps(text) {
+  const t = text.toLowerCase();
+  if (t.match(/forecast|projection|scenar|gap/)) return TOOL_STEPS_MAP.forecast;
+  if (t.match(/capri|invoice|receivable|riviera|hotel|eventi/)) return TOOL_STEPS_MAP.invoice;
+  if (t.match(/email|draft|letter|ombrelloni|supplier|renegot/)) return TOOL_STEPS_MAP.email;
+  if (t.match(/loan|credit|bank|offer|rate|borrow|financ/)) return TOOL_STEPS_MAP.credit;
+  if (t.match(/vat|tax|f24|iva|agenzia/)) return TOOL_STEPS_MAP.tax;
+  if (t.match(/payroll|staff|salary|stipend/)) return TOOL_STEPS_MAP.payroll;
+  return TOOL_STEPS_MAP.default;
+}
+
+const EXECUTION_STEPS = {
+  'early-pay-capri': [
+    { label: "Composing early-pay offer email", detail: "3% discount · €135 cost" },
+    { label: "Sent to Ristorante Capri", detail: "info@ristorantecapri.it · 09:14" },
+    { label: "Forecast updated", detail: "+€4,365 booked on May 6 position" },
+  ],
+  'delay-ombrelloni': [
+    { label: "Drafting 60-day extension request", detail: "References 10-yr relationship" },
+    { label: "Sent to Linea Ombrelloni", detail: "forniture@lineaombrelloni.it · 09:14" },
+    { label: "Payment rescheduled", detail: "€2,800 freed until June 12" },
+  ],
+  'vat-rateation': [
+    { label: "Filing installment plan", detail: "Art. 15-ter · Agenzia delle Entrate" },
+    { label: "4 F24 reminders scheduled", detail: "May 16 · Jun 16 · Jul 16 · Aug 16" },
+    { label: "€4,650 released from reserve", detail: "Available for May operations" },
+  ],
+};
+
+const SUGGESTIONS = [
+  "What's my biggest cash risk right now?",
+  "Draft the email to Ristorante Capri",
+  "How does the VAT installment work?",
+  "When does the season fix my position?",
+  "What if Riviera pays 2 weeks late?",
+  "Can I afford to hire 2 more staff?",
+];
+
+/* ---- Streaming message ---- */
+function StreamingText({ text, onDone }) {
+  const [displayed, setDisplayed] = useState('');
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    const words = text.split(' ');
+    let i = 0;
+    const iv = setInterval(() => {
+      i++;
+      setDisplayed(words.slice(0, i).join(' '));
+      if (i >= words.length) { clearInterval(iv); setDone(true); if (onDone) onDone(); }
+    }, 28);
+    return () => clearInterval(iv);
+  }, [text]);
+  return (
+    <p className="text-[14px] leading-relaxed" style={{ color: P.ink }}>
+      {displayed}
+      {!done && <span style={{ display:'inline-block', width:2, height:14, marginLeft:2, verticalAlign:'middle', background:P.forest, animation:'pulseDot 0.6s infinite' }} />}
+    </p>
+  );
+}
+
+/* ---- Tool steps ---- */
+function ToolStepsCard({ steps }) {
+  const [visible, setVisible] = useState(0);
+  useEffect(() => {
+    if (visible < steps.length) {
+      const t = setTimeout(() => setVisible(v => v + 1), 420);
+      return () => clearTimeout(t);
+    }
+  }, [visible, steps.length]);
+  return (
+    <div className="space-y-1.5 py-1">
+      {steps.slice(0, visible).map((s, i) => (
+        <div key={i} className="flex items-center gap-2.5 fade-up">
+          <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "#E8F0EA" }}>
+            <Check size={9} color={P.forest} strokeWidth={3} />
+          </div>
+          <span className="text-[12px] font-medium" style={{ color: P.inkSoft }}>{s.label}</span>
+          <span className="text-[11px] font-mono ml-auto" style={{ color: P.muted }}>{s.detail}</span>
+        </div>
+      ))}
+      {visible < steps.length && (
+        <div className="flex items-center gap-2.5">
+          <div className="w-4 h-4 rounded-full border flex-shrink-0 flex items-center justify-center" style={{ borderColor: P.leaf }}>
+            <div className="w-2 h-2 rounded-full pulse-dot" style={{ background: P.leaf }} />
+          </div>
+          <span className="text-[12px]" style={{ color: P.muted }}>{steps[visible].label}</span>
+          <span className="flex gap-0.5 ml-auto">{[0,1,2].map(j => <span key={j} className="w-1 h-1 rounded-full pulse-dot" style={{ background: P.muted, animationDelay: j*180+'ms' }} />)}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---- Execution card ---- */
+function ExecutionCard({ steps, actionTitle }) {
+  const [visible, setVisible] = useState(0);
+  useEffect(() => {
+    if (visible < steps.length) {
+      const t = setTimeout(() => setVisible(v => v + 1), 500);
+      return () => clearTimeout(t);
+    }
+  }, [visible, steps.length]);
+  return (
+    <div className="rounded-2xl border overflow-hidden" style={{ background: P.paper, borderColor: P.line }}>
+      <div className="px-4 py-2.5 border-b flex items-center gap-2" style={{ borderColor: P.lineSoft, background: "#F0F5F2" }}>
+        <Zap size={12} color={P.forest} strokeWidth={2.5} />
+        <span className="text-[11px] font-medium uppercase tracking-widest" style={{ color: P.forest }}>Executing</span>
+        <span className="ml-2 text-[12px] truncate" style={{ color: P.inkSoft }}>{actionTitle}</span>
+      </div>
+      <div className="px-4 py-3 space-y-2">
+        {steps.slice(0, visible).map((s, i) => (
+          <div key={i} className="flex items-center gap-2.5 fade-up">
+            <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: P.forest }}>
+              <Check size={10} color="white" strokeWidth={3} />
+            </div>
+            <span className="text-[13px] font-medium" style={{ color: P.ink }}>{s.label}</span>
+            <span className="text-[11px] font-mono ml-auto flex-shrink-0" style={{ color: P.muted }}>{s.detail}</span>
+          </div>
+        ))}
+        {visible < steps.length && (
+          <div className="flex items-center gap-2.5">
+            <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0" style={{ borderColor: P.leaf }}>
+              <div className="w-2 h-2 rounded-full pulse-dot" style={{ background: P.leaf }} />
+            </div>
+            <span className="text-[13px]" style={{ color: P.ink }}>{steps[visible].label}</span>
+            <span className="flex gap-0.5 ml-auto">{[0,1,2].map(j => <span key={j} className="w-1 h-1 rounded-full pulse-dot" style={{ background: P.muted, animationDelay: j*180+'ms' }} />)}</span>
+          </div>
+        )}
+        {visible >= steps.length && (
+          <div className="pt-1 flex items-center gap-1.5 text-[12px]" style={{ color: P.forest }}>
+            <CheckCircle2 size={13} color={P.forest} strokeWidth={2.5} /> Done · changes reflected in forecast
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---- Execution Reasoning Block ---- */
+function ExecutionReasoningBlock({ title, steps }) {
+  const [visible, setVisible] = useState(0);
+  const [done, setDone] = useState(false);
+  const impacts = { 'early-pay-capri': '+€4,365', 'delay-ombrelloni': '+€2,800', 'vat-rateation': '+€4,650' };
+
+  useEffect(() => {
+    const timers = steps.map((_, i) => setTimeout(() => setVisible(i + 1), i * 420 + 200));
+    const doneT = setTimeout(() => setDone(true), steps.length * 420 + 400);
+    return () => { timers.forEach(clearTimeout); clearTimeout(doneT); };
+  }, []);
+
+  return (
+    <div className="fade-up">
+      <div className="text-[12px] mb-1.5" style={{ color: P.inkSoft }}>
+        <span style={{ fontStyle: 'italic' }}>Executing</span> · {title}
+      </div>
+      <div className="pl-2.5 space-y-0.5" style={{ borderLeft: `1.5px solid ${P.lineSoft}` }}>
+        {steps.slice(0, visible).map((s, i) => (
+          <div key={i} className="text-[11px]" style={{ color: P.muted, fontStyle: 'italic' }}>{s.label}</div>
+        ))}
+        {!done && visible < steps.length && (
+          <span className="inline-flex gap-0.5 pl-0.5">{[0,1,2].map(j=><span key={j} className="w-1 h-1 rounded-full pulse-dot" style={{ background: P.muted, animationDelay: j*200+'ms', display:'inline-block' }} />)}</span>
+        )}
+        {done && (
+          <div className="flex items-center gap-1 text-[11px] pt-0.5" style={{ color: P.forest }}>
+            <CheckCircle2 size={10} color={P.forest} strokeWidth={2.5} />
+            Done · forecast updated
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---- Reasoning Block ---- */
+function ReasoningBlock({ steps }) {
+  const [visible, setVisible] = useState(0);
+  const [done, setDone] = useState(false);
+  const [gone, setGone] = useState(false);
+  const now = new Date();
+  const baseTime = now.getHours() * 60 + now.getMinutes();
+
+  useEffect(() => {
+    const timers = steps.map((_, i) => setTimeout(() => setVisible(i + 1), i * 480 + 120));
+    const doneT = setTimeout(() => setDone(true), steps.length * 480 + 400);
+    const goneT = setTimeout(() => setGone(true), steps.length * 480 + 4500);
+    return () => { timers.forEach(clearTimeout); clearTimeout(doneT); clearTimeout(goneT); };
+  }, []);
+
+  if (gone) return null;
+
+  const stepTime = (i) => {
+    const m = baseTime + i;
+    return `${String(Math.floor(m/60) % 24).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+  };
+
+  return (
+    <div style={{
+      borderRadius: 10, padding: '10px 14px',
+      background: P.lineSoft, border: `1px solid ${P.line}`,
+      opacity: done ? 0 : 1,
+      maxHeight: done ? 0 : 200,
+      overflow: 'hidden',
+      transition: 'opacity 0.6s ease 0.6s, max-height 0.5s ease 0.8s',
+      marginBottom: 2,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+        {!done && <span style={{ display: 'inline-flex', gap: 3 }}>{[0,1,2].map(j=><span key={j} className="w-1 h-1 rounded-full pulse-dot" style={{ background: P.muted, animationDelay: j*200+'ms', display:'inline-block' }} />)}</span>}
+        <span style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: P.muted }}>
+          {done ? 'Done' : 'Thinking…'}
+        </span>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        {steps.slice(0, visible).map((s, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+            <span style={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', color: P.muted, flexShrink: 0, opacity: 0.7 }}>{stepTime(i)}</span>
+            <span style={{ fontSize: 11, color: P.inkSoft, lineHeight: 1.5 }}>{s}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---- Chat Panel ---- */
+function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombrelloniStatus, setOmbrelloniStatus, vatApplied, factoringState, setFactoringState, triverDone, setTriverDone, onSwitchTab }) {
+  const scrollRef = useRef(null);
+  const [messages, setMessages] = useState([]);
+  const [inputVal, setInputVal] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const addMsg = React.useCallback((msg) => {
+    setMessages(prev => [...prev, { ...msg, _id: Math.random() }]);
+  }, []);
+
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [messages.length]);
+
+  // Phase: opening
+  useEffect(() => {
+    const t = [];
+    t.push(setTimeout(() => addMsg({ type: 'time', text: 'Today · 09:14' }), 500));
+    t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: [
+      'Syncing Fatture in Cloud · last 90 days',
+      'Cash balance: €18,400',
+      'Payroll due May 1 · €11,800',
+      'VAT (F24) due May 16 · €6,200',
+      'Projected minimum: day 17 · −€9,600',
+      'Floor breach confirmed · preparing interventions',
+    ]}), 900));
+    t.push(setTimeout(() => addMsg({ type: 'text', text: 'Cash is €18,400 today but hits −€9,600 by day 17. Payroll and VAT go out before the season\'s revenue comes in.' }), 4200));
+    t.push(setTimeout(() => addMsg({ type: 'text', text: 'I\'ve prepared three actions. Review them in the Forecast tab.' }), 5000));
+    t.push(setTimeout(() => setDemoPhase('proposed'), 5600));
+    return () => t.forEach(clearTimeout);
+  }, []);
+
+  // When VAT is applied by user
+  const vatMsgSent = React.useRef(false);
+  useEffect(() => {
+    if (!vatApplied || vatMsgSent.current) return;
+    vatMsgSent.current = true;
+    addMsg({ type: 'text', text: 'VAT installment plan filed with Agenzia delle Entrate. +€4,650 reflected in the forecast immediately.' });
+  }, [vatApplied]);
+
+  // Phase: replies
+  useEffect(() => {
+    if (demoPhase !== 'replies') return;
+    const t = [];
+    t.push(setTimeout(() => addMsg({ type: 'time', text: '48h later · Thu May 2 · 09:14' }), 300));
+    t.push(setTimeout(() => {
+      setCapriStatus('accepted');
+      setOmbrelloniStatus('declined');
+    }, 700));
+    t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: [
+      'Ristorante Capri replied · accepted the 3% discount',
+      'Payment rescheduled: May 38d → May 15d',
+      'Lift applied: +€4,365 from day 8',
+      'Linea Ombrelloni replied · declined the extension',
+      'Payment terms unchanged · €2,800 remains on day 12',
+      'New projected minimum: −€5,235 on day 17',
+      'Still below zero · further intervention needed',
+    ]}), 1000));
+    t.push(setTimeout(() => addMsg({ type: 'text', text: 'Capri accepted — +€4,365 added to the forecast. Ombrelloni declined. Balance improved to −€5,235 but still negative.' }), 5200));
+    t.push(setTimeout(() => setDemoPhase('reasoning'), 5800));
+    return () => t.forEach(clearTimeout);
+  }, [demoPhase]);
+
+  // Phase: invoice scanning
+  useEffect(() => {
+    if (demoPhase !== 'reasoning') return;
+    const t = [];
+    t.push(setTimeout(() => addMsg({ type: 'text', text: 'Still short. Let me scan the invoice book for factoring opportunities.' }), 400));
+    t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: [
+      'Loading invoice ledger · 87 open invoices · €48,200 total',
+      'Filtering: maturity > 30d · no disputes · counterparty rated B+ or above',
+      'Hotel Mediterraneo · €4,200 · 30d · AA · eligible',
+      'Ristorante Capri · €4,500 · early-pay deal active · skip',
+      'Stabilimento Riviera · €5,100 · B+ · 8d overdue · excluded',
+      'Club Nautico Alassio · €18,500 · 45d · AA · ✓ highest eligible',
+      'Credit score 81/100 · Band A · high Triver approval probability',
+      'Advance estimate: 92% · €17,020 · fee ~1.4%',
+    ]}), 1000));
+    t.push(setTimeout(() => addMsg({ type: 'text', text: 'Best candidate: Club Nautico Alassio · €18,500 invoice · AA-rated · 45 days remaining. Factoring via Triver would advance €17,020 (fee: ~€259).' }), 7000));
+    t.push(setTimeout(() => addMsg({ type: 'text', text: 'This would clear the gap entirely. Your approval is needed before I proceed. See the Forecast tab.' }), 7900));
+    t.push(setTimeout(() => setDemoPhase('factoring-proposed'), 8500));
+    return () => t.forEach(clearTimeout);
+  }, [demoPhase]);
+
+  // When factoring is approved by user
+  const factoringMsgSent = React.useRef(false);
+  useEffect(() => {
+    if (factoringState !== 'approved' || factoringMsgSent.current) return;
+    factoringMsgSent.current = true;
+    const t = [];
+    t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: [
+      'Connecting to Triver API · auth OK',
+      'Submitting invoice · Club Nautico Alassio · €18,500',
+      'Invoice ref: TRV-2024-0441 · accepted',
+      'Offer: €17,020 advance · 1.4% fee · €259',
+      'Terms accepted · funds in transit',
+      'Cash position updated',
+    ]}), 300));
+    t.push(setTimeout(() => { setTriverDone(true); setFactoringState('done'); }, 4500));
+    t.push(setTimeout(() => addMsg({ type: 'text', text: 'Done. Triver advanced €17,020 (fee: €259). Cash floor is now +€11,785 — inside the safe zone. The season is covered.' }), 5200));
+    t.push(setTimeout(() => setDemoPhase('done'), 5800));
+    return () => t.forEach(clearTimeout);
+  }, [factoringState]);
+
+  const handleSend = async (text) => {
+    const msg = (text || inputVal).trim();
+    if (!msg || isLoading) return;
+    setInputVal('');
+    addMsg({ type: 'user', text: msg });
+    setIsLoading(true);
+    try {
+      const reply = await window.claude.complete({
+        messages: [{ role: 'user', content: msg }],
+        system: SYSTEM_PROMPT,
+      });
+      addMsg({ type: 'agent-reply', text: reply });
+    } catch {
+      addMsg({ type: 'agent-reply', text: "Couldn't connect — try again." });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const renderMsg = (m) => {
+    switch (m.type) {
+      case 'time':
+        return <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, paddingBottom: 2 }}>{m.text}</div>;
+      case 'reasoning':
+        return <ReasoningBlock steps={m.steps} />;
+      case 'text':
+        return <p style={{ fontSize: 15, lineHeight: 1.65, color: P.ink }}>{m.text}</p>;
+      case 'user':
+        return (
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ maxWidth: '80%', padding: '10px 14px', borderRadius: 14, background: P.lineSoft, fontSize: 14, color: P.ink, lineHeight: 1.5 }}>{m.text}</div>
+          </div>
+        );
+      case 'agent-reply':
+        return <p style={{ fontSize: 14, lineHeight: 1.6, color: P.ink }}>{m.text}</p>;
+      default: return null;
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-full" style={{ background: P.paper }}>
+      <div ref={scrollRef} className="flex-1 overflow-y-auto subtle-scrollbar" style={{ padding: '28px 32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {messages.map((m) => (
+            <div key={m._id} className="fade-up">{renderMsg(m)}</div>
+          ))}
+          {isLoading && (
+            <div style={{ display: 'flex', gap: 3, padding: '4px 0' }}>
+              {[0,1,2].map(j => <span key={j} className="w-1 h-1 rounded-full pulse-dot" style={{ background: P.muted, animationDelay: j*220+'ms', display: 'inline-block' }} />)}
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="border-t px-6 py-4 flex-shrink-0" style={{ borderColor: P.line, background: P.cream }}>
+        <div className="flex items-center gap-3 px-4 py-3 rounded-2xl border" style={{ background: P.paper, borderColor: P.line }}>
+          <input value={inputVal}
+            onChange={e => setInputVal(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleSend()}
+            placeholder="Ask Flowra anything…"
+            className="flex-1 bg-transparent outline-none text-[14px]"
+            style={{ color: P.ink, fontFamily: 'Manrope, sans-serif' }} />
+          <button onClick={() => handleSend()}
+            className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-70 flex-shrink-0 transition-all"
+            style={{ background: 'transparent', border: `1px solid ${P.line}` }}>
+            <ArrowUp size={14} color={P.muted} strokeWidth={2.5} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---- Forecast Tab ---- */const Metric = ({ label, value, tone, sub }) => {
+  const c = { ok: P.forest, warn: P.amber, risk: P.terra, neutral: P.ink }[tone];
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-widest mb-0.5" style={{ color: P.muted }}>{label}</div>
+      <div className="font-mono text-[22px]" style={{ color: c }}>{value}</div>
+      {sub && <div className="text-[11px] mt-0.5" style={{ color: P.muted }}>{sub}</div>}
+    </div>
+  );
+};
+
+function CashList({ title, items, direction }) {
+  return (
+    <div className="rounded-2xl border p-4" style={{ background: P.paper, borderColor: P.line }}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="text-[11px] uppercase tracking-widest font-medium" style={{ color: P.muted }}>{title}</div>
+        <span className="text-[11px] font-mono" style={{ color: P.muted }}>{items.length}</span>
+      </div>
+      <div className="space-y-2">
+        {items.map((it, i) => (
+          <div key={i} className="flex items-center gap-3 py-2 px-2 rounded-lg">
+            <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: direction === "in" ? (it.status === "risk" ? P.terraSoft : it.status === "warn" ? P.amberSoft : "#E8F0EA") : P.lineSoft }}>
+              {direction === "in"
+                ? <ArrowDownLeft size={12} color={it.status === "risk" ? P.terra : it.status === "warn" ? P.amber : P.forest} strokeWidth={2.2} />
+                : <ArrowUpRight size={12} color={P.inkSoft} strokeWidth={2.2} />}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-[13px] font-medium truncate" style={{ color: P.ink }}>{it.name}</div>
+              <div className="text-[11px]" style={{ color: P.muted }}>
+                {it.due}
+                {it.overdue && <span style={{ color: P.amber }}> · {it.overdue}</span>}
+                {it.reliability && <span> · Reliability: {it.reliability}</span>}
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-[13px] font-mono" style={{ color: direction === "in" ? P.forest : P.ink }}>
+                {direction === "in" ? "+" : "−"}€{(it.amount / 1000).toFixed(1)}k
+              </div>
+              {it.locked && <Lock size={9} color={P.muted} style={{ marginLeft: 'auto', marginTop: 2 }} />}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionStates = {}, onAction, demoPhase, factoringState, onFactoringApprove }) {
+  const anyApproved = approvedIds.length > 0;
+  const [expandedId, setExpandedId] = useState(null);
+  const keyPoints = [
+    { date: "May 1", day: 9, label: "Seasonal payroll", amount: "−€11,800", tone: "warn" },
+    { date: "May 6", day: 14, label: "VAT payment (F24)", amount: "−€6,200", tone: "risk" },
+    { date: "May 25", day: 33, label: "Season opens", amount: "+€8,400/week", tone: "ok" },
+  ];
+  return (
+    <div className="p-8" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <div>
+        <div className="text-[11px] uppercase tracking-widest mb-1 flex items-center gap-2" style={{ color: P.muted }}>
+          <Calendar size={11} color={P.muted} /> Forecast · Apr 22 → Jul 21
+        </div>
+        <div className="flex items-end gap-6 flex-wrap">
+          <h2 className="font-display text-[36px] leading-[1.05]" style={{ color: P.ink, fontWeight: 400 }}>
+            Three months<br /><span style={{ fontStyle: "italic", color: P.forest }}>to the season.</span>
+          </h2>
+          <div className="flex gap-8 ml-auto">
+            <Metric label="Cash today" value="€18,400" tone="neutral" />
+            <Metric label="Forecast low" value="€12,900" tone={anyApproved ? "ok" : "risk"} sub={anyApproved ? "within floor" : "on day 14"} />
+            <Metric label="Forecast high" value="€44,600" tone="ok" sub="on day 85" />
+          </div>
+        </div>
+      </div>
+
+      {/* Chart + Actions side by side */}
+      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+        {/* Chart — left column */}
+        <div style={{ flex: '1 1 0', minWidth: 0 }}>
+          <div className="rounded-2xl border p-5" style={{ background: P.paper, borderColor: P.line }}>
+            <div className="flex items-center gap-4 mb-4 text-[12px]">
+              {approvedIds.length > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <span className="w-3 h-0.5 inline-block" style={{ background: P.forest }} />
+                  <span style={{ color: P.inkSoft }}>With Flowra</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 inline-block border-t border-dashed" style={{ borderColor: P.muted, borderWidth: "1.5px" }} />
+                <span style={{ color: P.muted }}>No action</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-3 h-2 inline-block rounded-sm" style={{ background: P.terra, opacity: 0.25 }} />
+                <span style={{ color: P.terra }}>Below zero</span>
+              </div>
+              <div className="flex items-center gap-1.5 ml-2">
+                <span className="w-3 h-2 inline-block rounded-sm" style={{ background: P.mist, opacity: 0.5 }} />
+                <span style={{ color: P.muted }}>Safe zone</span>
+              </div>
+            </div>
+            <ForecastChart data={BASE_FORECAST} approvedIds={approvedIds} />
+          </div>
+        </div>
+
+        {/* Suggested actions — right column */}
+        <div style={{ width: 340, flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 16 }}>
+          <div>
+            <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, marginBottom: 4 }}>Suggested actions</div>
+            <div style={{ fontFamily: "'Fraunces', serif", fontSize: 28, fontWeight: 400, color: P.ink, lineHeight: 1.05 }}>
+              Close the gap <span style={{ fontStyle: 'italic', color: P.forest }}>today.</span>
+            </div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, marginBottom: 2 }}>Combined impact</div>
+            <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 22, fontWeight: 500, color: P.forest }}>+€11,815</div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {[
+            { id: "early-pay-capri",  num: "01", category: "receivable", iconName: "ArrowDownLeft",
+              title: "Offer 3% early-pay discount",
+              subtitle: "Ristorante Capri · €4,500 invoice",
+              detail: "Offer a 3% discount for payment within 15 days instead of 38. Net benefit: +€4,365. Cost to you: €135. Email draft ready to send.",
+              impact: "+€4,365", timing: "Awaiting counterparty",
+              cpStatus: capriStatus },
+            { id: "delay-ombrelloni", num: "02", category: "payable", iconName: "ArrowUpRight",
+              title: "Extend supplier payment to 60 days",
+              subtitle: "Linea Ombrelloni · 10-year partner",
+              detail: "Request 60-day payment terms (currently 30 days). Strong relationship, good grounds. Frees €2,800 for 30 days at no cost.",
+              impact: "+€2,800", timing: "Awaiting counterparty",
+              cpStatus: ombrelloniStatus },
+            { id: "vat-rateation",    num: "03", category: "tax", iconName: "FileText",
+              title: "Split May VAT into 4 installments",
+              subtitle: "F24 · art. 15-ter · interest-free",
+              detail: "Italian tax code allows interest-free installments up to €5,000 each. Smooths the May 16 spike across 4 months. No counterparty needed — takes effect immediately.",
+              impact: "+€4,650", timing: "Immediate",
+              cpStatus: null },
+          ].sort((a, b) => {
+            const aActioned = actionStates[a.id] ? 1 : 0;
+            const bActioned = actionStates[b.id] ? 1 : 0;
+            return aActioned - bActioned;
+          }).map((m, idx) => {
+            const catBg = { receivable: "#E8F0EA", payable: P.amberSoft, tax: P.lineSoft };
+            const catFg = { receivable: P.forest, payable: P.amber, tax: P.inkSoft };
+            const iconMap2 = { ArrowDownLeft, ArrowUpRight, FileText };
+            const ActionIcon = iconMap2[m.iconName] || ArrowRight;
+            const state = actionStates[m.id];
+            const isExpanded = expandedId === m.id;
+
+            let statusLabel = null, statusColor = P.muted;
+            if (state === 'approved') {
+              if (m.cpStatus === 'awaiting')   { statusLabel = 'Email sent · awaiting reply';  statusColor = P.amber; }
+              else if (m.cpStatus === 'accepted') { statusLabel = '✓ Accepted · forecast updated'; statusColor = P.forest; }
+              else if (m.cpStatus === 'declined') { statusLabel = 'Declined by counterparty'; statusColor = P.terra; }
+              else if (m.id === 'vat-rateation') { statusLabel = '✓ Filed · +€4,650 in forecast'; statusColor = P.forest; }
+              else { statusLabel = 'Approved · sending'; statusColor = P.forest; }
+            } else if (state === 'rejected') { statusLabel = 'Skipped'; statusColor = P.muted; }
+
+            return (
+              <div key={m.id} style={{
+                borderRadius: 14, border: `1px solid ${state === 'approved' && m.cpStatus === 'accepted' ? P.forest : state ? P.lineSoft : P.line}`,
+                overflow: 'hidden', opacity: state === 'rejected' ? 0.4 : 1,
+                boxShadow: !state && !isExpanded ? '0 1px 4px rgba(20,32,26,0.04)' : 'none',
+              }}>
+                {/* Header row */}
+                <div style={{ padding: '16px 18px', background: P.paper, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}
+                  onClick={() => setExpandedId(isExpanded ? null : m.id)}>
+                  {/* Number */}
+                  <div style={{ fontSize: 11, fontFamily: 'JetBrains Mono, monospace', color: P.muted, flexShrink: 0, width: 20 }}>{m.num}</div>
+                  {/* Icon */}
+                  <div style={{ width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: catBg[m.category], flexShrink: 0 }}>
+                    <ActionIcon size={13} color={catFg[m.category]} strokeWidth={2} />
+                  </div>
+                  {/* Title block */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: P.ink, lineHeight: 1.25 }}>{m.title}</p>
+                    <p style={{ fontSize: 12, color: statusLabel ? statusColor : P.muted, marginTop: 3, fontStyle: statusLabel ? 'italic' : 'normal' }}>
+                      {statusLabel || m.subtitle}
+                    </p>
+                  </div>
+                  {/* Impact */}
+                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                    <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 18, fontWeight: 600, color: state === 'rejected' ? P.muted : P.forest, lineHeight: 1 }}>{m.impact}</div>
+                    <div style={{ fontSize: 10, color: P.muted, marginTop: 3 }}>{m.timing}</div>
+                  </div>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={P.muted} strokeWidth="2.5"
+                    style={{ flexShrink: 0, transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </div>
+                {/* Expanded */}
+                {isExpanded && (
+                  <div style={{ padding: '14px 18px 18px', background: P.cream, borderTop: `1px solid ${P.lineSoft}` }}>
+                    <p style={{ fontSize: 13, color: P.inkSoft, lineHeight: 1.65, marginBottom: 16 }}>{m.detail}</p>
+                    {!state ? (
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <button onClick={() => { onAction(m.id, 'approved'); setExpandedId(null); }}
+                          style={{ flex: 1, padding: '10px 0', borderRadius: 999, background: P.ink, color: 'white', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', letterSpacing: '0.01em' }}>
+                          Approve
+                        </button>
+                        <button onClick={() => { onAction(m.id, 'rejected'); setExpandedId(null); }}
+                          style={{ padding: '10px 20px', borderRadius: 999, border: `1px solid ${P.line}`, color: P.inkSoft, fontSize: 13, background: 'transparent', cursor: 'pointer' }}>
+                          Skip
+                        </button>
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: 12, color: statusColor, fontStyle: 'italic' }}>{statusLabel}</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Triver factoring card */}
+          {['factoring-proposed','done'].includes(demoPhase) && (() => {
+            const fState = factoringState;
+            const isExpanded = expandedId === 'triver-factor';
+            return (
+              <div style={{
+                borderRadius: 14, overflow: 'hidden',
+                border: `1.5px solid ${fState === 'done' ? P.forest : fState ? P.amber : P.forest}`,
+                boxShadow: !fState ? `0 0 0 3px ${P.mist}` : 'none',
+              }}>
+                <div style={{ padding: '16px 18px', background: fState === 'done' ? '#F0F6F2' : P.paper, cursor: fState ? 'default' : 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}
+                  onClick={() => !fState && setExpandedId(isExpanded ? null : 'triver-factor')}>
+                  <div style={{ fontSize: 11, fontFamily: 'JetBrains Mono, monospace', color: P.muted, flexShrink: 0, width: 20 }}>04</div>
+                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: P.mist, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={P.forest} strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: P.ink, lineHeight: 1.25 }}>Invoice factoring via Triver</p>
+                    <p style={{ fontSize: 12, color: fState === 'done' ? P.forest : fState ? P.amber : P.forest, marginTop: 3, fontStyle: fState ? 'italic' : 'normal', fontWeight: fState ? 400 : 500 }}>
+                      {fState === 'done' ? '✓ Funded · €17,020 received' : fState ? 'Processing with Triver…' : '⚡ Recommended · your approval needed'}
+                    </p>
+                  </div>
+                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                    <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 18, fontWeight: 600, color: P.forest, lineHeight: 1 }}>+€17,020</div>
+                    <div style={{ fontSize: 10, color: P.muted, marginTop: 3 }}>24h · 1.4% fee</div>
+                  </div>
+                  {!fState && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={P.muted} strokeWidth="2.5"
+                    style={{ flexShrink: 0, transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><polyline points="6 9 12 15 18 9"/></svg>}
+                </div>
+                {isExpanded && !fState && (
+                  <div style={{ padding: '14px 18px 18px', background: P.cream, borderTop: `1px solid ${P.lineSoft}` }}>
+                    <p style={{ fontSize: 13, color: P.inkSoft, lineHeight: 1.65, marginBottom: 16 }}>
+                      Club Nautico Alassio · €18,500 invoice · 45 days remaining · AA credit rating.<br/>
+                      Advance: €17,020 (92%) · Fee: 1.4% · €259 · Funds available within 24 hours.<br/>
+                      Your credit score of 81/100 gives a very high approval probability with Triver.
+                    </p>
+                    <button onClick={() => { onFactoringApprove(); setExpandedId(null); }}
+                      style={{ width: '100%', padding: '10px 0', borderRadius: 999, background: P.forest, color: 'white', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer' }}>
+                      Approve invoice factoring
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+        </div>
+      </div>
+      {/* end right column */}
+      </div>
+      {/* end chart+actions row */}
+    </div>
+  );
+}
+
+/* ---- Actions Tab ---- */
+function ActionsTab({ approvedIds, skippedIds }) {
+  const allActions = [
+    { id: "early-pay-capri", category: "Receivable", title: "3% early-pay discount to Ristorante Capri", detail: "€4,500 invoice due in 38 days. Proposed discount: €135. Paid in 15 days.", impact: 4365, date: "May 6" },
+    { id: "delay-ombrelloni", category: "Payable", title: "Renegotiate terms with Linea Ombrelloni", detail: "Request 60-day terms (from 30). Long-standing supplier, has granted extensions before.", impact: 2800, date: "May 11" },
+    { id: "vat-rateation", category: "Tax", title: "Installment plan for May VAT (F24)", detail: "4 monthly installments · €1,550 each · 0% interest (Italian tax code, art. 15-ter).", impact: 4650, date: "May 16" },
+  ];
+  const completed = [
+    { category: "Receivable", title: "Payment reminder sent to Stabilimento Riviera", detail: "Automated email sent · reply within 24h", date: "Apr 21" },
+    { category: "Payable", title: "2% discount requested from Fornitura Bar Vittoria", detail: "Paid 15 days early · €78 saved", date: "Apr 19" },
+    { category: "Cash", title: "Bank transaction auto-reconciliation", detail: "14 transactions classified · 2 to review", date: "Apr 22" },
+    { category: "Tax", title: "VAT reminder · due May 16", detail: "Amount calculated · €6,200", date: "Apr 18" },
+  ];
+  return (
+    <div className="p-8 space-y-6">
+      <div className="flex items-end justify-between">
+        <div>
+          <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>Action queue · Apr 22</div>
+          <h2 className="font-display text-[32px] leading-tight" style={{ color: P.ink, fontWeight: 400 }}>
+            To approve <span style={{ fontStyle: "italic", color: P.forest }}>today.</span>
+          </h2>
+        </div>
+        <div className="text-right">
+          <div className="text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>Combined impact</div>
+          <div className="font-mono text-[24px]" style={{ color: P.forest }}>+€11,815</div>
+        </div>
+      </div>
+      <div className="space-y-3">
+        {allActions.map(a => {
+          const isApproved = approvedIds.includes(a.id), isSkipped = skippedIds.includes(a.id), resolved = isApproved || isSkipped;
+          return (
+            <div key={a.id} className="rounded-2xl border p-5 flex items-center gap-5"
+              style={{ background: P.paper, borderColor: resolved ? P.lineSoft : P.line, opacity: resolved ? 0.7 : 1 }}>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{ background: isApproved ? P.forest : resolved ? P.lineSoft : P.cream, border: `1px solid ${isApproved ? P.forest : P.line}` }}>
+                {isApproved ? <Check size={14} color="white" strokeWidth={2.5} /> : isSkipped ? <X size={14} color={P.muted} strokeWidth={2.5} /> : <Circle size={14} color={P.muted} />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full" style={{ background: P.lineSoft, color: P.inkSoft }}>{a.category}</span>
+                  <span className="text-[11px] font-mono" style={{ color: P.muted }}>Effective: {a.date}</span>
+                </div>
+                <div className="text-[15px] font-medium mb-0.5" style={{ color: P.ink }}>{a.title}</div>
+                <div className="text-[13px]" style={{ color: P.inkSoft }}>{a.detail}</div>
+              </div>
+              <div className="text-right flex-shrink-0">
+                <div className="text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>Impact</div>
+                <div className="font-mono text-[18px]" style={{ color: P.forest }}>+€{a.impact.toLocaleString()}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="pt-4">
+        <div className="text-[11px] uppercase tracking-widest mb-3" style={{ color: P.muted }}>Done this week — 11 actions</div>
+        <div className="space-y-1">
+          {completed.map((c, i) => (
+            <div key={i} className="flex items-center gap-3 py-2 px-3 rounded-lg">
+              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "#E8F0EA" }}>
+                <Check size={11} color={P.forest} strokeWidth={2.5} />
+              </div>
+              <div className="flex-1 min-w-0 flex items-center gap-2">
+                <span className="text-[10px] uppercase tracking-widest flex-shrink-0" style={{ color: P.muted }}>{c.category}</span>
+                <span className="text-[13px]" style={{ color: P.ink }}>{c.title}</span>
+              </div>
+              <div className="text-[11px]" style={{ color: P.muted }}>{c.date}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EditableEmailBody({ initialBody }) {
+  const [body, setBody] = useState(initialBody);
+  return (
+    <textarea
+      value={body}
+      onChange={e => setBody(e.target.value)}
+      style={{
+        width: '100%', border: 'none', outline: 'none', resize: 'none',
+        fontFamily: 'Manrope, sans-serif', fontSize: 13, color: P.ink,
+        lineHeight: 1.7, background: 'transparent', minHeight: 280,
+      }}
+    />
+  );
+}
+
+/* ---- Terms Tab ---- */
+const EMAIL_DRAFTS = {
+  "Linea Ombrelloni": {
+    to: "forniture@lineaombrelloni.it",
+    subject: "Payment terms renegotiation — Bagni Aurora",
+    body: `Hi Team,
+
+As we head into the 2026 summer season, we'd like to discuss updating the payment terms on our orders.
+
+We currently work on 30-day terms. Given our 10-year partnership and the shared seasonality of our businesses — our main cash inflows start from May onwards — we'd like to propose extending terms to 60 days.
+
+This would let us align payments with our seasonal cash flows, with no impact on payment reliability. Our on-time payment record speaks for itself.
+
+Happy to jump on a quick call this week if helpful.
+
+Best,
+Chiara Bertolini
+Bagni Aurora, Alassio`
+  },
+  "Fornitura Bar Vittoria": {
+    to: "ordini@fornituraBV.it",
+    subject: "Extended payment terms request — Bagni Aurora",
+    body: `Hi,
+
+We've really appreciated our ongoing partnership and the quality of your products.
+
+As we prepare for the 2026 season, we'd like to request an extension of our payment terms from 30 to 45 days.
+
+Our payment history is spotless — zero late payments in three years. This adjustment would simply help us manage pre-season cash flow more smoothly.
+
+Thank you for considering this.
+
+Best,
+Chiara Bertolini
+Bagni Aurora`
+  },
+  "Summer maintenance": {
+    to: "info@manutenzione-riviera.it",
+    subject: "Payment terms for seasonal maintenance works",
+    body: `Hi,
+
+For the 2026 seasonal maintenance works, we'd like to propose 60-day payment terms from the invoice date.
+
+The logic is straightforward: the works complete before opening, but our revenues begin with the season. A 60-day term naturally aligns cash flows for both parties.
+
+In return, we're happy to commit to a 3-year partnership agreement.
+
+Looking forward to another great season together.
+
+Best,
+Chiara Bertolini
+Bagni Aurora`
+  }
+};
+
+function TermsTab() {
+  const avgIn = COUNTERPARTIES_IN.reduce((s,c) => s + c.days * c.weight, 0) / 100;
+  const avgOut = COUNTERPARTIES_OUT.reduce((s,c) => s + c.days * c.weight, 0) / 100;
+  const gap = avgIn - avgOut;
+  const [reviewDraft, setReviewDraft] = useState(null); // supplier name
+  const [sentIds, setSentIds] = useState([]);
+  const renegotiations = [
+    { supplier: "Linea Ombrelloni", current: "30 days", target: "60 days", reason: "10-year supplier · shared seasonality", savings: "€2,800 liquidity" },
+    { supplier: "Fornitura Bar Vittoria", current: "30 days", target: "45 days", reason: "Zero late history · strong leverage", savings: "€1,950 liquidity" },
+    { supplier: "Summer maintenance", current: "30 days", target: "60 days", reason: "Service paid after season ends — natural fit", savings: "€1,600 liquidity" },
+  ];
+  return (
+    <div className="p-8 space-y-6">
+      <div>
+        <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>Term alignment</div>
+        <h2 className="font-display text-[32px] leading-tight mb-3" style={{ color: P.ink, fontWeight: 400 }}>
+          Your <span style={{ fontStyle: "italic", color: P.forest }}>structural gap.</span>
+        </h2>
+        <p className="text-[14px] max-w-2xl leading-relaxed" style={{ color: P.inkSoft }}>
+          Your clients pay you in <strong>{avgIn.toFixed(0)} days</strong> on average. You pay suppliers in{" "}
+          <strong>{avgOut.toFixed(0)} days</strong>. This <span style={{ color: P.terra, fontWeight: 600 }}>{gap.toFixed(0)}-day mismatch</span> costs liquidity every month, and it's usually free to fix.
+        </p>
+      </div>
+      <div className="rounded-2xl border p-6" style={{ background: P.paper, borderColor: P.line }}>
+        <div className="grid grid-cols-2 gap-8 items-center">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <ArrowDownLeft size={14} color={P.forest} />
+              <span className="text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>They pay you (DSO)</span>
+            </div>
+            <div className="font-mono text-[42px] mb-4" style={{ color: P.ink }}>{avgIn.toFixed(0)} <span className="text-[16px]" style={{ color: P.muted }}>days</span></div>
+            <div className="space-y-2">
+              {COUNTERPARTIES_IN.map((c, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="flex-1 text-[13px]" style={{ color: P.ink }}>{c.name}</div>
+                  <div className="w-32 h-1.5 rounded-full" style={{ background: P.lineSoft }}>
+                    <div className="h-full rounded-full" style={{ width: `${(c.days/90)*100}%`, background: P.forest }} />
+                  </div>
+                  <div className="font-mono text-[12px] w-10 text-right" style={{ color: P.inkSoft }}>{c.days}d</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <ArrowUpRight size={14} color={P.amber} />
+              <span className="text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>You pay them (DPO)</span>
+            </div>
+            <div className="font-mono text-[42px] mb-4" style={{ color: P.ink }}>{avgOut.toFixed(0)} <span className="text-[16px]" style={{ color: P.muted }}>days</span></div>
+            <div className="space-y-2">
+              {COUNTERPARTIES_OUT.map((c, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="flex-1 text-[13px]" style={{ color: P.ink }}>{c.name}</div>
+                  <div className="w-32 h-1.5 rounded-full" style={{ background: P.lineSoft }}>
+                    <div className="h-full rounded-full" style={{ width: `${(c.days/90)*100}%`, background: P.amber }} />
+                  </div>
+                  <div className="font-mono text-[12px] w-10 text-right" style={{ color: P.inkSoft }}>{c.days}g</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="mt-8 pt-6 border-t flex items-center gap-4" style={{ borderColor: P.lineSoft }}>
+          <AlertTriangle size={16} color={P.terra} />
+          <div className="flex-1">
+            <div className="text-[13px] font-medium" style={{ color: P.ink }}>Average gap: {gap.toFixed(0)} days</div>
+            <div className="text-[12px]" style={{ color: P.inkSoft }}>You're financing suppliers with money you haven't collected yet — for almost 3 weeks.</div>
+          </div>
+          <div className="font-mono text-[18px]" style={{ color: P.terra }}>~€7,200 trapped</div>
+        </div>
+      </div>
+      <div>
+        <div className="text-[11px] uppercase tracking-widest font-medium mb-3" style={{ color: P.muted }}>Suggested renegotiations</div>
+        <div className="space-y-2">
+          {renegotiations.map((r, i) => {
+            const isSent = sentIds.includes(r.supplier);
+            return (
+              <div key={i} className="rounded-xl border p-4" style={{ background: P.paper, borderColor: P.line, opacity: isSent ? 0.6 : 1 }}>
+                <div className="flex items-center gap-4">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: P.amberSoft }}>
+                    <Clock size={13} color={P.amber} strokeWidth={2.2} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-[14px] font-medium" style={{ color: P.ink }}>{r.supplier}</div>
+                    <div className="text-[12px]" style={{ color: P.inkSoft }}>{r.reason}</div>
+                  </div>
+                  <div className="flex items-center gap-2 font-mono text-[12px]" style={{ color: P.inkSoft }}>
+                    <span>{r.current}</span>
+                    <ArrowRight size={11} color={P.muted} />
+                    <span style={{ color: P.forest }}>{r.target}</span>
+                  </div>
+                  <div className="font-mono text-[12px]" style={{ color: P.forest }}>+{r.savings}</div>
+                  {isSent ? (
+                    <div className="flex items-center gap-1.5 text-[12px]" style={{ color: P.forest }}>
+                      <CheckCircle2 size={11} color={P.forest} strokeWidth={2.5} /> Sent
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <button onClick={() => setReviewDraft(r.supplier)}
+                        className="text-[12px] px-3 py-1.5 rounded-full border hover:bg-white transition-all"
+                        style={{ borderColor: P.line, color: P.inkSoft }}>
+                        Review draft
+                      </button>
+                      <button onClick={() => setSentIds(s => [...s, r.supplier])}
+                        className="text-[12px] px-3 py-1.5 rounded-full text-white hover:opacity-90 transition-all"
+                        style={{ background: P.ink }}>
+                        Send
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Email preview modal */}
+      {reviewDraft && (() => {
+        const draft = EMAIL_DRAFTS[reviewDraft];
+        return (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(20,32,26,0.4)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 32 }}
+            onClick={() => setReviewDraft(null)}>
+            <div style={{ background: P.paper, borderRadius: 18, width: '100%', maxWidth: 560, maxHeight: '80vh', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 64px -16px rgba(20,32,26,0.5)', border: `1px solid ${P.line}` }}
+              onClick={e => e.stopPropagation()}>
+              {/* Modal header */}
+              <div style={{ padding: '16px 20px', borderBottom: `1px solid ${P.line}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                  <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, marginBottom: 2 }}>Email draft</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: P.ink }}>{reviewDraft}</div>
+                </div>
+                <button onClick={() => setReviewDraft(null)} style={{ width: 28, height: 28, borderRadius: '50%', border: `1px solid ${P.line}`, background: P.cream, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                  <X size={12} color={P.muted} strokeWidth={2} />
+                </button>
+              </div>
+              {/* Email meta */}
+              <div style={{ padding: '12px 20px', borderBottom: `1px solid ${P.lineSoft}`, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div style={{ fontSize: 12, color: P.inkSoft }}><span style={{ color: P.muted }}>To: </span>{draft.to}</div>
+                <div style={{ fontSize: 12, color: P.inkSoft }}><span style={{ color: P.muted }}>Subject: </span>{draft.subject}</div>
+              </div>
+              {/* Editable email body */}
+              <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px' }}>
+                <EditableEmailBody initialBody={draft.body} />
+              </div>
+              {/* Actions */}
+              <div style={{ padding: '12px 20px', borderTop: `1px solid ${P.line}`, display: 'flex', gap: 8 }}>
+                <button onClick={() => { setSentIds(s => [...s, reviewDraft]); setReviewDraft(null); }}
+                  style={{ flex: 1, padding: '9px 0', borderRadius: 999, background: P.ink, color: 'white', fontSize: 13, fontWeight: 500, border: 'none', cursor: 'pointer' }}>
+                  Send email
+                </button>
+                <button onClick={() => setReviewDraft(null)}
+                  style={{ padding: '9px 20px', borderRadius: 999, border: `1px solid ${P.line}`, color: P.inkSoft, fontSize: 13, background: 'transparent', cursor: 'pointer' }}>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+    </div>
+  );
+}
+
+/* ---- Credit Tab ---- */
+function CreditTab() {
+  const score = 81, prevScore = 62, delta = score - prevScore;
+  const factors = [
+    { label: "On-time payments", value: 94, target: 90, unit: "%" },
+    { label: "Average balance", value: 24.8, target: 15, unit: "k€" },
+    { label: "DSO (collection days)", value: 48, target: 60, unit: "d", inverted: true },
+    { label: "Cash volatility", value: 18, target: 30, unit: "%", inverted: true },
+  ];
+  return (
+    <div className="p-8 space-y-6">
+      <div>
+        <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>Bank credit standing · updated today</div>
+        <h2 className="font-display text-[32px] leading-tight" style={{ color: P.ink, fontWeight: 400 }}>
+          Cheaper <span style={{ fontStyle: "italic", color: P.forest }}>capital.</span>
+        </h2>
+        <p className="text-[14px] max-w-2xl mt-2 leading-relaxed" style={{ color: P.inkSoft }}>
+          Every action Flowra handles well improves your credit profile. Banks see it, and offer you better rates.
+        </p>
+      </div>
+      <div className="rounded-2xl border p-6" style={{ background: P.paper, borderColor: P.line }}>
+        <div className="grid gap-6 items-center" style={{ gridTemplateColumns: "2fr 3fr" }}>
+          <div>
+            <div className="text-[11px] uppercase tracking-widest mb-2" style={{ color: P.muted }}>Flowra score</div>
+            <div className="flex items-baseline gap-3">
+              <div className="font-display leading-none" style={{ fontSize: 72, color: P.forest, fontWeight: 500 }}>{score}</div>
+              <div className="text-[14px]" style={{ color: P.muted }}>/ 100</div>
+            </div>
+            <div className="flex items-center gap-1.5 mt-2 text-[12px]" style={{ color: P.forest }}>
+              <TrendingUp size={13} color={P.forest} />
+              <span>+{delta} over last 6 months</span>
+            </div>
+            <div className="mt-2"><StatusBadge tone="ok">Tier: Prime · Band A</StatusBadge></div>
+          </div>
+          <div style={{ height: 140 }}>
+            <CreditLineChart data={CREDIT_TREND} />
+          </div>
+        </div>
+        <div className="grid grid-cols-4 gap-4 mt-6 pt-6 border-t" style={{ borderColor: P.lineSoft }}>
+          {factors.map((f, i) => {
+            const hit = f.inverted ? f.value < f.target : f.value >= f.target;
+            return (
+              <div key={i}>
+                <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>{f.label}</div>
+                <div className="flex items-baseline gap-1">
+                  <div className="font-mono text-[20px]" style={{ color: hit ? P.forest : P.amber }}>{f.value}</div>
+                  <div className="text-[11px]" style={{ color: P.muted }}>{f.unit}</div>
+                </div>
+                <div className="text-[10px] mt-0.5" style={{ color: P.muted }}>Target: {f.inverted ? "<" : "≥"} {f.target}{f.unit}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div>
+        <div className="flex items-end justify-between mb-3">
+          <div>
+            <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>Marketplace · 3 active offers</div>
+            <h3 className="font-display text-[22px] leading-tight" style={{ color: P.ink, fontWeight: 400 }}>
+              Pre-approved offers <span style={{ fontStyle: "italic" }}>for you.</span>
+            </h3>
+          </div>
+          <div className="text-[11px] uppercase tracking-widest flex items-center gap-1.5" style={{ color: P.muted }}>
+            <Info size={11} color={P.muted} /> Flowra earns only if you accept
+          </div>
+        </div>
+        <div className="space-y-3">
+          {LOAN_OFFERS.map((o, i) => (
+            <div key={i} className="rounded-2xl border p-5 flex items-center gap-5 hover:shadow-sm" style={{ background: P.paper, borderColor: P.line }}>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: o.preApproved ? "#E8F0EA" : P.lineSoft }}>
+                <Building2 size={18} color={o.preApproved ? P.forest : P.muted} strokeWidth={1.8} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <div className="text-[15px] font-medium" style={{ color: P.ink }}>{o.bank}</div>
+                  {o.preApproved && <StatusBadge tone="ok">Pre-approved</StatusBadge>}
+                </div>
+                <div className="text-[13px]" style={{ color: P.inkSoft }}>{o.product} · up to {o.amount} · {o.term}</div>
+              </div>
+              <div className="text-right">
+                <div className="text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>APR</div>
+                <div className="flex items-baseline gap-2">
+                  <span className="font-mono text-[20px]" style={{ color: P.forest }}>{o.rate}%</span>
+                  <span className="font-mono text-[11px] line-through" style={{ color: P.muted }}>{o.prevRate}%</span>
+                </div>
+                <div className="text-[10px]" style={{ color: P.forest }}>−{((o.prevRate - o.rate) * 100).toFixed(0)} bps from your profile</div>
+              </div>
+              <button className="px-4 py-2 rounded-full text-[13px] font-medium text-white flex items-center gap-1.5 hover:opacity-90" style={{ background: P.ink }}>
+                Apply <ArrowRight size={12} color="white" />
+              </button>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 p-4 rounded-xl flex items-start gap-3 border" style={{ background: P.cream, borderColor: P.lineSoft }}>
+          <Sparkles size={14} color={P.forest} style={{ flexShrink: 0, marginTop: 2 }} />
+          <div className="text-[12px] leading-relaxed" style={{ color: P.inkSoft }}>
+            <strong style={{ color: P.ink }}>How it works.</strong> Flowra only shares data you authorize with banking partners. If you pick an offer, we earn a fee from the capital provider — not from you. Your data stays yours, always.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---- Summary Tab ---- */
+function SummaryTab({ onSwitchTab }) {
+  const [vis, setVis] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setVis(true), 80); return () => clearTimeout(t); }, []);
+  const fade = (delay = 0) => ({
+    opacity: vis ? 1 : 0,
+    transform: vis ? 'none' : 'translateY(10px)',
+    transition: `all 0.5s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
+  });
+
+  return (
+    <div className="p-7">
+
+      {/* Welcome header */}
+      <div className="mb-7" style={fade(0)}>
+        <p className="text-[12px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>Bagni Aurora · Apr 24</p>
+        <h2 className="font-display" style={{ fontSize: 34, fontWeight: 400, color: P.ink, lineHeight: 1.1 }}>
+          Buongiorno,<br /><span style={{ fontStyle: 'italic' }}>30 days to season.</span>
+        </h2>
+      </div>
+
+      {/* Hero alert card */}
+      <div className="rounded-2xl p-5 mb-4 flex items-start justify-between gap-4" style={{ background: P.paper, border: `1px solid ${P.line}`, ...fade(80) }}>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-2 h-2 rounded-full pulse-dot" style={{ background: P.terra }} />
+            <span className="text-[11px] uppercase tracking-widest font-medium" style={{ color: P.terra }}>Cash gap detected</span>
+          </div>
+          <p className="text-[14px] leading-relaxed mb-4" style={{ color: P.inkSoft }}>
+            Your balance hits <strong style={{ color: P.terra }}>€12,900</strong> on day 14 — below your €15k floor. Three fixes close the gap entirely.
+          </p>
+          <button onClick={() => onSwitchTab("actions")}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-medium hover:opacity-90 transition-all text-[13px]"
+            style={{ background: P.ink, boxShadow: "0 6px 20px -8px rgba(20,32,26,0.5)" }}>
+            Review the 3 fixes
+            <ArrowRight size={13} color="white" strokeWidth={2} />
+          </button>
+        </div>
+        <div className="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center" style={{ background: P.terraSoft }}>
+          <Sparkles size={16} color={P.terra} strokeWidth={2} />
+        </div>
+      </div>
+
+      {/* 2-col stats grid */}
+      <div className="grid grid-cols-2 gap-3 mb-4" style={fade(160)}>
+        <div className="rounded-2xl p-5 border" style={{ background: P.paper, borderColor: P.line }}>
+          <p className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>Liquidity trapped</p>
+          <p className="text-[11px] mb-3 leading-snug" style={{ color: P.inkSoft }}>DSO/DPO mismatch</p>
+          <div className="font-mono font-medium mb-3" style={{ fontSize: 28, color: P.amber, lineHeight: 1 }}>€7,200</div>
+          <button onClick={() => onSwitchTab("terms")} className="text-[12px] font-medium flex items-center gap-1 hover:opacity-70 transition-all" style={{ color: P.ink }}>
+            Review terms <ArrowRight size={11} strokeWidth={2} />
+          </button>
+        </div>
+        <div className="rounded-2xl p-5 border" style={{ background: P.paper, borderColor: P.line }}>
+          <p className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>Impact ready</p>
+          <p className="text-[11px] mb-3 leading-snug" style={{ color: P.inkSoft }}>3 actions · 1 approval each</p>
+          <div className="font-mono font-medium mb-3" style={{ fontSize: 28, color: P.forest, lineHeight: 1 }}>+€11,815</div>
+          <button onClick={() => onSwitchTab("forecast")} className="text-[12px] font-medium flex items-center gap-1 hover:opacity-70 transition-all" style={{ color: P.ink }}>
+            View forecast <ArrowRight size={11} strokeWidth={2} />
+          </button>
+        </div>
+      </div>
+
+      {/* Horizon status */}
+      <div className="rounded-2xl p-5 border" style={{ background: P.paper, borderColor: P.line, ...fade(240) }}>
+        <p className="text-[11px] uppercase tracking-widest mb-3" style={{ color: P.muted }}>90-day horizon · read today</p>
+        <div className="flex items-center gap-6">
+          {[
+            { label: "Invoices read", val: "87" },
+            { label: "Counterparties", val: "47" },
+            { label: "Recurring items", val: "3" },
+          ].map(({ label, val }) => (
+            <div key={label}>
+              <div className="font-mono font-medium text-[20px]" style={{ color: P.ink }}>{val}</div>
+              <div className="text-[11px]" style={{ color: P.muted }}>{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+/* ---- Workspace Panel ---- */
+function WorkspacePanel({ tab, setTab, chartApprovedIds = [], capriStatus, ombrelloniStatus, actionStates = {}, onAction, demoPhase, factoringState, onFactoringApprove }) {
+  const tabs = [
+    { id: "forecast", label: "Forecast", Icon: TrendingUp },
+    { id: "terms", label: "Terms", Icon: Clock },
+    { id: "credit", label: "Credit", Icon: Landmark, highlight: true },
+  ];
+  return (
+    <div className="flex flex-col h-full" style={{ background: P.cream }}>
+      <div className="flex items-center px-6 pt-5 pb-3 border-b" style={{ borderColor: P.line }}>
+        <div className="flex gap-1">
+          {tabs.map(({ id, label, Icon, badge, highlight }) => {
+            const active = tab === id;
+            return (
+              <button key={id} onClick={() => setTab(id)}
+                className="relative px-3.5 py-2 rounded-full text-[13px] font-medium flex items-center gap-1.5"
+                style={{ background: active ? P.paper : "transparent", color: active ? P.ink : P.muted, border: `1px solid ${active ? P.line : "transparent"}` }}>
+                <Icon size={13} color={active ? P.ink : P.muted} />
+                {label}
+                {badge > 0 && (
+                  <span className="ml-1 text-[10px] font-mono px-1.5 py-0.5 rounded-full"
+                    style={{ background: active ? P.ink : P.lineSoft, color: active ? "white" : P.inkSoft }}>{badge}</span>
+                )}
+                {highlight && !active && (
+                  <span className="absolute w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: P.leaf, top: -2, right: -2 }} />
+                )}
+              </button>
+            );
+          })}
+        </div>
+        <div className="ml-auto flex items-center gap-2 text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>
+          <Shield size={11} color={P.muted} /> Review mode
+        </div>
+      </div>
+      <div className="flex-1 overflow-y-auto subtle-scrollbar">
+        {tab === "forecast" && <ForecastTab approvedIds={chartApprovedIds} capriStatus={capriStatus} ombrelloniStatus={ombrelloniStatus} actionStates={actionStates} onAction={onAction} demoPhase={demoPhase} factoringState={factoringState} onFactoringApprove={onFactoringApprove} />}
+        {tab === "terms" && <TermsTab />}
+        {tab === "credit" && <CreditTab />}
+      </div>
+    </div>
+  );
+}
+
+/* ---- App Root ---- */
+function App({ splitW: initialSplitW = "25%" }) {
+  const [stage, setStage] = useState("landing");
+  const [tab, setTab] = useState("forecast");
+  const [chatWidth, setChatWidth] = useState(initialSplitW);
+  const dragging = React.useRef(false);
+  const containerRef = React.useRef(null);
+
+  const startDrag = (e) => {
+    dragging.current = true;
+    e.preventDefault();
+    const onMove = (ev) => {
+      if (!dragging.current || !containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const pct = Math.min(50, Math.max(15, ((ev.clientX - rect.left) / rect.width) * 100));
+      setChatWidth(pct + '%');
+    };
+    const onUp = () => { dragging.current = false; window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp); };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  };
+
+  // Demo narrative state
+  const [demoPhase, setDemoPhase] = useState("opening");
+  const [capriStatus, setCapriStatus] = useState(null);
+  const [ombrelloniStatus, setOmbrelloniStatus] = useState(null);
+  const [vatApplied, setVatApplied] = useState(false);
+  const [factoringState, setFactoringState] = useState(null);
+  const [triverDone, setTriverDone] = useState(false);
+  const [actionStates, setActionStates] = useState({});
+
+  const handleAction = (id, decision) => {
+    setActionStates(prev => ({ ...prev, [id]: decision }));
+    if (decision === 'approved') {
+      if (id === 'early-pay-capri')  setCapriStatus('awaiting');
+      if (id === 'delay-ombrelloni') setOmbrelloniStatus('awaiting');
+      if (id === 'vat-rateation')    setVatApplied(true);
+    }
+  };
+
+  const allActioned = ['early-pay-capri', 'delay-ombrelloni', 'vat-rateation'].every(id => actionStates[id]);
+  const showSkip = allActioned && (capriStatus === 'awaiting' || ombrelloniStatus === 'awaiting')
+    && !['replies','reasoning','factoring-proposed','done'].includes(demoPhase);
+
+  const chartApprovedIds = [
+    ...(vatApplied ? ['vat-rateation'] : []),
+    ...(capriStatus === 'accepted' ? ['early-pay-capri'] : []),
+    ...(triverDone ? ['triver-factor'] : []),
+  ];
+
+  const roiUnlocked = chartApprovedIds.reduce((sum, id) => {
+    const l = ACTION_LIFTS[id]; return sum + (l ? l.amount : 0);
+  }, 0);
+
+  return (
+    <div className="w-full h-screen flex flex-col" style={{ background: P.cream, color: P.ink, fontFamily: "Manrope, sans-serif", position: 'relative' }}>
+      {stage === "landing" && <Landing onConnect={() => setStage("connecting")} />}
+      {stage === "connecting" && <Connecting onDone={() => setStage("dashboard")} />}
+      {stage === "dashboard" && (
+        <>
+          <Header roiUnlocked={roiUnlocked} />
+          <div ref={containerRef} className="flex flex-1 overflow-hidden" style={{ position: 'relative' }}>
+            <div className="border-r flex flex-col" style={{ width: chatWidth, minWidth: '15%', maxWidth: '50%', flexShrink: 0, borderColor: P.line }}>
+              <ChatPanel
+                demoPhase={demoPhase} setDemoPhase={setDemoPhase}
+                capriStatus={capriStatus} setCapriStatus={setCapriStatus}
+                ombrelloniStatus={ombrelloniStatus} setOmbrelloniStatus={setOmbrelloniStatus}
+                vatApplied={vatApplied}
+                factoringState={factoringState} setFactoringState={setFactoringState}
+                triverDone={triverDone} setTriverDone={setTriverDone}
+                onSwitchTab={setTab}
+              />
+            </div>
+            <div onMouseDown={startDrag} style={{ width: 4, cursor: 'col-resize', flexShrink: 0, background: 'transparent', position: 'relative', zIndex: 10 }}
+              onMouseEnter={e => e.currentTarget.style.background = P.line}
+              onMouseLeave={e => e.currentTarget.style.background = 'transparent'} />
+            <div className="flex-1 flex flex-col overflow-hidden">
+              <WorkspacePanel tab={tab} setTab={setTab} chartApprovedIds={chartApprovedIds}
+                capriStatus={capriStatus} ombrelloniStatus={ombrelloniStatus}
+                actionStates={actionStates} onAction={handleAction}
+                demoPhase={demoPhase} factoringState={factoringState}
+                onFactoringApprove={() => setFactoringState('approved')} />
+            </div>
+            {showSkip && (
+              <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', zIndex: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, pointerEvents: 'none' }}>
+                <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: P.muted, background: P.cream, padding: '2px 10px', borderRadius: 999, border: `1px solid ${P.line}`, pointerEvents: 'auto' }}>Demo · fast-forward</div>
+                <button onClick={() => setDemoPhase('replies')} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 24px', borderRadius: 999, background: P.ink, color: 'white', fontSize: 13, fontWeight: 500, border: 'none', cursor: 'pointer', boxShadow: '0 6px 24px -6px rgba(20,32,26,0.5)', pointerEvents: 'auto' }}>
+                  Skip 48h · see replies
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M5 4l10 8-10 8V4z"/><line x1="19" y1="4" x2="19" y2="20"/></svg>
+                </button>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ---- Tweaks wrapper ---- */
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "skin": "riviera",
+  "split": "balanced"
+}/*EDITMODE-END*/;
+
+function TweakedApp() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [renderKey, setRenderKey] = React.useState(0);
+  const prevSkin = React.useRef(null);
+
+  React.useEffect(() => {
+    const skin = tweaks.skin || 'riviera';
+    if (skin !== prevSkin.current) {
+      Object.assign(P, PALETTES[skin] || PALETTES.riviera);
+      prevSkin.current = skin;
+      setRenderKey(k => k + 1);
+    }
+  }, [tweaks.skin]);
+
+  React.useEffect(() => {
+    Object.assign(P, PALETTES[tweaks.skin || 'riviera'] || PALETTES.riviera);
+    prevSkin.current = tweaks.skin || 'riviera';
+    setRenderKey(k => k + 1);
+  }, []);
+
+  const splitW = "25%"; // controlled by drag handle
+
+  return (
+    <>
+      <App key={renderKey} splitW="25%" />
+      <TweaksPanel>
+        <TweakSection title="Skin">
+          <div style={{ display: 'flex', gap: 8 }}>
+            {Object.keys(PALETTES).map(s => (
+              <button key={s} onClick={() => setTweak('skin', s)}
+                style={{
+                  flex: 1, padding: '10px 0', borderRadius: 10, fontSize: 12, fontWeight: 500, cursor: 'pointer',
+                  border: `1.5px solid ${tweaks.skin === s ? PALETTES[s].forest : PALETTES[s].line}`,
+                  background: PALETTES[s].cream, color: PALETTES[s].ink,
+                  outline: tweaks.skin === s ? `2px solid ${PALETTES[s].forest}` : 'none',
+                  outlineOffset: 2,
+                }}>
+                {s.charAt(0).toUpperCase() + s.slice(1)}
+              </button>
+            ))}
+          </div>
+        </TweakSection>
+        <TweakSection title="Layout">
+          <TweakRadio id="split" value={tweaks.split} onChange={v => setTweak('split', v)}
+            options={[
+              { value: 'chat', label: 'Chat-first' },
+              { value: 'balanced', label: 'Balanced' },
+              { value: 'dashboard', label: 'Dashboard-first' },
+            ]} />
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<TweakedApp />);
+</script>
+</body>
+</html>
