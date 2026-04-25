@@ -110,6 +110,7 @@
   .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-feature-settings: 'tnum'; }
   body { font-family: 'Manrope', sans-serif; }
   .grain { background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  input:focus { outline: none; box-shadow: none; }
   .no-scrollbar::-webkit-scrollbar { width: 0; height: 0; }
   .no-scrollbar { scrollbar-width: none; }
   .subtle-scrollbar::-webkit-scrollbar { width: 6px; }
@@ -126,18 +127,22 @@
   @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-80px) scale(0.9); } }
   .float-label { animation: floatUp 1.6s ease-out forwards; pointer-events: none; }
   @keyframes drawLine {
-    from { stroke-dashoffset: 2000; }
-    to   { stroke-dashoffset: 0; }
+    from { stroke-dashoffset: 3000; opacity: 0.3; }
+    15%  { opacity: 1; }
+    to   { stroke-dashoffset: 0; opacity: 1; }
   }
   @keyframes dotPop {
     0%   { opacity: 0; transform: scale(0); }
-    60%  { transform: scale(1.4); }
+    55%  { transform: scale(1.6); }
+    75%  { transform: scale(0.85); }
     100% { opacity: 1; transform: scale(1); }
   }
-  .chart-line-enter { animation: drawLine 1.4s cubic-bezier(0.16,1,0.3,1) forwards; }
-  .chart-dot-enter  { animation: dotPop 0.5s ease-out 1.3s both; }
+  .chart-line-enter { animation: drawLine 2s cubic-bezier(0.4,0,0.2,1) forwards; }
+  .chart-dot-enter  { animation: dotPop 0.6s cubic-bezier(0.34,1.56,0.64,1) 1.85s both; }
+  @keyframes dotRing { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(4); opacity: 0; } }
+  .chart-dot-ring   { animation: dotRing 1s ease-out 2.45s both; }
   @keyframes fillFadeIn { from { opacity: 0; } to { opacity: 1; } }
-  .chart-fill-enter { animation: fillFadeIn 1.2s ease-out 0.4s both; }
+  .chart-fill-enter { animation: fillFadeIn 1s ease-out 1.7s both; }
   @keyframes revealFadeIn { from { opacity: 0; } to { opacity: 1; } }
   .reveal-in { animation: revealSlideUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards; }
   .reveal-fade { animation: revealFadeIn 0.5s ease-out forwards; }
@@ -145,6 +150,58 @@
   .roi-glow { animation: glow 2s ease-in-out infinite; }
   @keyframes countUp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
   .count-up { animation: countUp 0.4s ease-out forwards; }
+
+  @keyframes cardApprove {
+    0%   { box-shadow: 0 0 0 0 rgba(79,158,120,0); transform: scale(1); }
+    18%  { transform: scale(1.018); box-shadow: 0 0 0 5px rgba(79,158,120,0.4), 0 8px 40px rgba(79,158,120,0.25); }
+    50%  { transform: scale(1.008); box-shadow: 0 0 0 3px rgba(79,158,120,0.25), 0 4px 20px rgba(79,158,120,0.15); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(79,158,120,0); }
+  }
+  @keyframes cardApproveFlood {
+    0%   { opacity: 0; }
+    15%  { opacity: 1; }
+    70%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  @keyframes cardApproveBadge {
+    0%   { opacity: 0; transform: scale(0.2) rotate(-20deg); }
+    30%  { opacity: 1; transform: scale(1.15) rotate(4deg); }
+    55%  { transform: scale(0.95) rotate(-1deg); }
+    70%  { opacity: 1; transform: scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: scale(0.85); }
+  }
+  @keyframes cardReject {
+    0%   { opacity: 1; transform: translateX(0) scale(1); }
+    18%  { opacity: 0.65; transform: translateX(-10px) scale(0.975); }
+    45%  { opacity: 0.38; transform: translateX(4px) scale(0.988); }
+    100% { opacity: 0.3; transform: translateX(0) scale(1); }
+  }
+  @keyframes cardRejectBadge {
+    0%   { opacity: 0; transform: scale(0.3); }
+    28%  { opacity: 1; transform: scale(1.1); }
+    65%  { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.8); }
+  }
+  @keyframes cardFadeOut {
+    0%   { opacity: 1; transform: translateY(0) scale(1); }
+    50%  { opacity: 0; transform: translateY(-10px) scale(0.96); }
+    100% { opacity: 0; transform: translateY(-10px) scale(0.96); }
+  }
+  @keyframes cardSettleDown {
+    0%   { transform: translateY(-16px) scale(0.97); opacity: 0.4; }
+    60%  { transform: translateY(2px) scale(1.005); opacity: 1; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+  }
+  @keyframes awaitingPulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(200,150,50,0); }
+    50%      { box-shadow: 0 0 0 4px rgba(200,150,50,0.2); }
+  }
+  @keyframes awaitingScan {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(300%); }
+  }
+  .card-settle { animation: cardSettleDown 0.65s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .card-awaiting { animation: awaitingPulse 2.4s ease-in-out infinite; }
 </style>
 <template id="__bundler_thumbnail" data-bg-color="#F6F4EE">
   <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
@@ -207,7 +264,7 @@ function linePath(data, xKey, yKey, w, h, minY, maxY) {
 
 function ForecastChart({ data, approvedIds = [] }) {
   const [tooltip, setTooltip] = useState(null);
-  const w = 700, h = 260, padL = 52, padB = 28, padT = 14, padR = 10;
+  const w = 700, h = 200, padL = 52, padB = 24, padT = 10, padR = 10;
   const cw = w - padL - padR, ch = h - padT - padB;
   const minY = -12000, maxY = 60000;
   const toY = v => padT + ch - ((v - minY) / (maxY - minY)) * ch;
@@ -347,8 +404,9 @@ function ForecastChart({ data, approvedIds = [] }) {
                 fill="none"
                 stroke={lineColor}
                 strokeWidth={isNewest ? 2.5 : 1.5}
-                strokeOpacity={isNewest ? 1 : 0.35}
-                strokeDasharray={isNewest ? 2000 : 'none'}
+                strokeOpacity={isNewest ? 1 : 0.28}
+                style={{ transition: 'stroke-opacity 0.6s ease' }}
+                strokeDasharray={isNewest ? 3000 : 'none'}
                 className={isNewest ? 'chart-line-enter' : ''}
                 clipPath="url(#chartClip)"
               />
@@ -360,12 +418,22 @@ function ForecastChart({ data, approvedIds = [] }) {
                 }, 0);
                 const endPt = { x: toX(90), y: toY(BASE_FORECAST[BASE_FORECAST.length-1].baseline + lift) };
                 return (
+                  <>
                   <circle
                     cx={endPt.x} cy={endPt.y} r="5"
                     fill={lineColor}
                     className="chart-dot-enter"
+                    style={{ transformOrigin: `${endPt.x}px ${endPt.y}px` }}
                     clipPath="url(#chartClip)"
                   />
+                  <circle
+                    cx={endPt.x} cy={endPt.y} r="5"
+                    fill="none" stroke={lineColor} strokeWidth="2"
+                    className="chart-dot-ring"
+                    style={{ transformOrigin: `${endPt.x}px ${endPt.y}px` }}
+                    clipPath="url(#chartClip)"
+                  />
+                  </>
                 );
               })()}
             </g>
@@ -419,7 +487,7 @@ function CreditLineChart({ data }) {
   const linePth = pts.map((p, i) => (i === 0 ? `M${p.x},${p.y}` : `L${p.x},${p.y}`)).join(' ');
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} width="100%" style={{ display: 'block' }}>
+    <svg viewBox={`0 0 ${w} ${h}`} width="100%" height={h} style={{ display: 'block' }}>
       <path d={linePth} fill="none" stroke={P.forest} strokeWidth="2.5" />
       {pts.map((p, i) => (
         <circle key={i} cx={p.x} cy={p.y} r="3.5" fill={P.forest} />
@@ -978,7 +1046,6 @@ function Header({ roiUnlocked }) {
             <span className="text-xs" style={{ color: P.inkSoft }}>Synced · 2 min ago</span>
           </div>
         )}
-        <button className="text-xs uppercase tracking-widest" style={{ color: P.muted }}>Demo</button>
         <div className="w-8 h-8 rounded-full border flex items-center justify-center text-[11px] font-medium" style={{ borderColor: P.line, background: P.cream, color: P.inkSoft }}>CB</div>
       </div>
     </header>
@@ -1021,9 +1088,10 @@ function getToolSteps(text) {
 
 const EXECUTION_STEPS = {
   'early-pay-capri': [
-    { label: "Composing early-pay offer email", detail: "3% discount · €135 cost" },
+    { label: "Composing early-pay offer emails", detail: "3% discount · 2 clients · €9,065 potential" },
     { label: "Sent to Ristorante Capri", detail: "info@ristorantecapri.it · 09:14" },
-    { label: "Forecast updated", detail: "+€4,365 booked on May 6 position" },
+    { label: "Sent to Stabilimento Riviera", detail: "contatti@riviera-alassio.it · 09:14" },
+    { label: "Forecast updated", detail: "Awaiting replies from both" },
   ],
   'delay-ombrelloni': [
     { label: "Drafting 60-day extension request", detail: "References 10-yr relationship" },
@@ -1190,9 +1258,9 @@ function ReasoningBlock({ steps }) {
   const baseTime = now.getHours() * 60 + now.getMinutes();
 
   useEffect(() => {
-    const timers = steps.map((_, i) => setTimeout(() => setVisible(i + 1), i * 480 + 120));
-    const doneT = setTimeout(() => setDone(true), steps.length * 480 + 400);
-    const goneT = setTimeout(() => setGone(true), steps.length * 480 + 4500);
+    const timers = steps.map((_, i) => setTimeout(() => setVisible(i + 1), i * 500 + 200));
+    const doneT = setTimeout(() => setDone(true), steps.length * 500 + 400);
+    const goneT = setTimeout(() => setGone(true), steps.length * 500 + 3500);
     return () => { timers.forEach(clearTimeout); clearTimeout(doneT); clearTimeout(goneT); };
   }, []);
 
@@ -1205,10 +1273,10 @@ function ReasoningBlock({ steps }) {
 
   return (
     <div style={{
-      borderRadius: 10, padding: '10px 14px',
+      borderRadius: 8, padding: '8px 12px',
       background: P.lineSoft, border: `1px solid ${P.line}`,
       opacity: done ? 0 : 1,
-      maxHeight: done ? 0 : 200,
+      maxHeight: done ? 0 : 120,
       overflow: 'hidden',
       transition: 'opacity 0.6s ease 0.6s, max-height 0.5s ease 0.8s',
       marginBottom: 2,
@@ -1249,18 +1317,15 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
   // Phase: opening
   useEffect(() => {
     const t = [];
-    t.push(setTimeout(() => addMsg({ type: 'time', text: 'Today · 09:14' }), 500));
+    t.push(setTimeout(() => addMsg({ type: 'time', text: 'Today · 09:14' }), 300));
     t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: [
-      'Syncing Fatture in Cloud · last 90 days',
-      'Cash balance: €18,400',
-      'Payroll due May 1 · €11,800',
-      'VAT (F24) due May 16 · €6,200',
-      'Projected minimum: day 17 · −€9,600',
-      'Floor breach confirmed · preparing interventions',
-    ]}), 900));
-    t.push(setTimeout(() => addMsg({ type: 'text', text: 'Cash is €18,400 today but hits −€9,600 by day 17. Payroll and VAT go out before the season\'s revenue comes in.' }), 4200));
-    t.push(setTimeout(() => addMsg({ type: 'text', text: 'I\'ve prepared three actions. Review them in the Forecast tab.' }), 5000));
-    t.push(setTimeout(() => setDemoPhase('proposed'), 5600));
+      'Syncing accounts · cash balance €18,400',
+      'Gap detected · day 17 · −€9,600',
+      '3 interventions ready',
+    ]}), 600));
+    t.push(setTimeout(() => addMsg({ type: 'status', variant: 'danger', label: 'Cash gap in 17 days', number: '−€9,600', text: 'Payroll + VAT hit before season revenue arrives.', sub: 'Without action: Bagni Aurora goes negative on day 17.' }), 2800));
+    t.push(setTimeout(() => addMsg({ type: 'text', text: 'I found 3 fixes — no bank needed. Open Forecast tab.' }), 3600));
+    t.push(setTimeout(() => setDemoPhase('proposed'), 4200));
     return () => t.forEach(clearTimeout);
   }, []);
 
@@ -1269,7 +1334,7 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
   useEffect(() => {
     if (!vatApplied || vatMsgSent.current) return;
     vatMsgSent.current = true;
-    addMsg({ type: 'text', text: 'VAT installment plan filed with Agenzia delle Entrate. +€4,650 reflected in the forecast immediately.' });
+    addMsg({ type: 'text', text: 'VAT split into 4 installments. +€4,650 freed up — reflected in the forecast now.' });
   }, [vatApplied]);
 
   // Phase: replies
@@ -1282,16 +1347,12 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
       setOmbrelloniStatus('declined');
     }, 700));
     t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: [
-      'Ristorante Capri replied · accepted the 3% discount',
-      'Payment rescheduled: May 38d → May 15d',
-      'Lift applied: +€4,365 from day 8',
-      'Linea Ombrelloni replied · declined the extension',
-      'Payment terms unchanged · €2,800 remains on day 12',
-      'New projected minimum: −€5,235 on day 17',
-      'Still below zero · further intervention needed',
-    ]}), 1000));
-    t.push(setTimeout(() => addMsg({ type: 'text', text: 'Capri accepted — +€4,365 added to the forecast. Ombrelloni declined. Balance improved to −€5,235 but still negative.' }), 5200));
-    t.push(setTimeout(() => setDemoPhase('reasoning'), 5800));
+      'Capri accepted · +€4,365 · payment moved to May 15',
+      'Ombrelloni declined · payment stays on day 12',
+      'New minimum: −€5,235 · still negative',
+    ]}), 600));
+    t.push(setTimeout(() => addMsg({ type: 'status', variant: 'warn', label: 'Partially accepted', number: '−€5,235', text: 'Capri said yes (+€4,365). Ombrelloni declined.', sub: 'Still negative — one more move needed.' }), 2800));
+    t.push(setTimeout(() => setDemoPhase('reasoning'), 3400));
     return () => t.forEach(clearTimeout);
   }, [demoPhase]);
 
@@ -1299,20 +1360,13 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
   useEffect(() => {
     if (demoPhase !== 'reasoning') return;
     const t = [];
-    t.push(setTimeout(() => addMsg({ type: 'text', text: 'Still short. Let me scan the invoice book for factoring opportunities.' }), 400));
     t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: [
-      'Loading invoice ledger · 87 open invoices · €48,200 total',
-      'Filtering: maturity > 30d · no disputes · counterparty rated B+ or above',
-      'Hotel Mediterraneo · €4,200 · 30d · AA · eligible',
-      'Ristorante Capri · €4,500 · early-pay deal active · skip',
-      'Stabilimento Riviera · €5,100 · B+ · 8d overdue · excluded',
-      'Club Nautico Alassio · €18,500 · 45d · AA · ✓ highest eligible',
-      'Credit score 81/100 · Band A · high Triver approval probability',
-      'Advance estimate: 92% · €17,020 · fee ~1.4%',
-    ]}), 1000));
-    t.push(setTimeout(() => addMsg({ type: 'text', text: 'Best candidate: Club Nautico Alassio · €18,500 invoice · AA-rated · 45 days remaining. Factoring via Triver would advance €17,020 (fee: ~€259).' }), 7000));
-    t.push(setTimeout(() => addMsg({ type: 'text', text: 'This would clear the gap entirely. Your approval is needed before I proceed. See the Forecast tab.' }), 7900));
-    t.push(setTimeout(() => setDemoPhase('factoring-proposed'), 8500));
+      'Scanning invoices · best candidate: Club Nautico Alassio · €18,500 · 45d',
+      'Triver pre-approval: 92% · advance €17,020 · fee €259',
+    ]}), 300));
+    t.push(setTimeout(() => addMsg({ type: 'status', variant: 'warn', label: 'Proposal ready', number: '+€17,020', text: 'Advance the Club Nautico invoice — 45 days early.', sub: 'Fee: €259 (1.4%). Clears the gap with one tap. Your approval needed.' }), 2800));
+    t.push(setTimeout(() => addMsg({ type: 'text', text: 'Approve in the Forecast tab.' }), 3500));
+    t.push(setTimeout(() => setDemoPhase('factoring-proposed'), 4000));
     return () => t.forEach(clearTimeout);
   }, [demoPhase]);
 
@@ -1323,16 +1377,12 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
     factoringMsgSent.current = true;
     const t = [];
     t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: [
-      'Connecting to Triver API · auth OK',
-      'Submitting invoice · Club Nautico Alassio · €18,500',
-      'Invoice ref: TRV-2024-0441 · accepted',
-      'Offer: €17,020 advance · 1.4% fee · €259',
-      'Terms accepted · funds in transit',
-      'Cash position updated',
+      'Triver API · invoice submitted · accepted',
+      '€17,020 in transit · cash position updated',
     ]}), 300));
-    t.push(setTimeout(() => { setTriverDone(true); setFactoringState('done'); }, 4500));
-    t.push(setTimeout(() => addMsg({ type: 'text', text: 'Done. Triver advanced €17,020 (fee: €259). Cash floor is now +€11,785 — inside the safe zone. The season is covered.' }), 5200));
-    t.push(setTimeout(() => setDemoPhase('done'), 5800));
+    t.push(setTimeout(() => { setTriverDone(true); setFactoringState('done'); }, 2500));
+    t.push(setTimeout(() => addMsg({ type: 'status', variant: 'success', label: 'Gap closed', number: '+€11,785', text: 'Triver sent €17,020. Balance is safely above zero.', sub: 'No bank. No loan. Season covered. 🌊' }), 3000));
+    t.push(setTimeout(() => setDemoPhase('done'), 3600));
     return () => t.forEach(clearTimeout);
   }, [factoringState]);
 
@@ -1358,11 +1408,42 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
   const renderMsg = (m) => {
     switch (m.type) {
       case 'time':
-        return <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, paddingBottom: 2 }}>{m.text}</div>;
+        return <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: P.muted, paddingBottom: 4, paddingTop: 4 }}>{m.text}</div>;
       case 'reasoning':
         return <ReasoningBlock steps={m.steps} />;
-      case 'text':
-        return <p style={{ fontSize: 15, lineHeight: 1.65, color: P.ink }}>{m.text}</p>;
+      case 'text': {
+        const highlighted = m.text.split(/((?:[−\-]|\+)?€[\d,]+(?:\.\d+)?)/g).map((part, i) => {
+          if (/[€]/.test(part)) {
+            const isNeg = part.startsWith('−') || part.startsWith('-');
+            const isPos = part.startsWith('+');
+            return <strong key={i} style={{ color: isNeg ? P.terra : isPos ? P.forest : P.ink, fontWeight: 700 }}>{part}</strong>;
+          }
+          return part;
+        });
+        return (
+          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+            <div style={{ width: 22, height: 22, borderRadius: '50%', background: P.mist, border: `1px solid ${P.line}`, flexShrink: 0, marginTop: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke={P.forest} strokeWidth="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <p style={{ fontSize: 13, lineHeight: 1.7, color: P.ink, paddingTop: 2 }}>{highlighted}</p>
+          </div>
+        );
+      }
+      case 'status': {
+        const iconColor = m.variant === 'danger' ? P.terra : m.variant === 'warn' ? P.amber : P.forest;
+        const bgColor   = m.variant === 'danger' ? '#FEF3EF' : m.variant === 'warn' ? '#FDFAED' : '#EEF6F1';
+        const borderCol = m.variant === 'danger' ? 'rgba(180,80,50,0.2)' : m.variant === 'warn' ? 'rgba(180,140,30,0.2)' : 'rgba(50,130,90,0.22)';
+        return (
+          <div style={{ borderRadius: 12, border: `1px solid ${borderCol}`, background: bgColor, padding: '12px 14px' }}>
+            {m.label && <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: iconColor, marginBottom: 8 }}>{m.label}</div>}
+            {m.number && (
+              <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 28, fontWeight: 700, color: iconColor, lineHeight: 1, marginBottom: 6, letterSpacing: '-0.02em' }}>{m.number}</div>
+            )}
+            <p style={{ fontSize: 13, lineHeight: 1.6, color: P.ink, fontWeight: 500 }}>{m.text}</p>
+            {m.sub && <p style={{ fontSize: 12, lineHeight: 1.5, color: P.inkSoft, marginTop: 6, paddingTop: 6, borderTop: `1px solid ${borderCol}` }}>{m.sub}</p>}
+          </div>
+        );
+      }
       case 'user':
         return (
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -1377,8 +1458,8 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
 
   return (
     <div className="flex flex-col h-full" style={{ background: P.paper }}>
-      <div ref={scrollRef} className="flex-1 overflow-y-auto subtle-scrollbar" style={{ padding: '28px 32px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div ref={scrollRef} className="flex-1 overflow-y-auto subtle-scrollbar" style={{ padding: '18px 22px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {messages.map((m) => (
             <div key={m._id} className="fade-up">{renderMsg(m)}</div>
           ))}
@@ -1396,7 +1477,7 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
             onKeyDown={e => e.key === 'Enter' && handleSend()}
             placeholder="Ask Flowra anything…"
             className="flex-1 bg-transparent outline-none text-[14px]"
-            style={{ color: P.ink, fontFamily: 'Manrope, sans-serif' }} />
+            style={{ color: P.ink, fontFamily: 'Manrope, sans-serif', caretColor: P.forest, outline: 'none', WebkitTextFillColor: P.ink, WebkitBoxShadow: '0 0 0px 1000px transparent inset', backgroundClip: 'text' }} />
           <button onClick={() => handleSend()}
             className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-70 flex-shrink-0 transition-all"
             style={{ background: 'transparent', border: `1px solid ${P.line}` }}>
@@ -1458,19 +1539,42 @@ function CashList({ title, items, direction }) {
 function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionStates = {}, onAction, demoPhase, factoringState, onFactoringApprove }) {
   const anyApproved = approvedIds.length > 0;
   const [expandedId, setExpandedId] = useState(null);
+  const [animating, setAnimating] = useState({});
+  const [fadingPhase, setFadingPhase] = useState(false);
+  const prevPhaseRef = React.useRef(demoPhase);
+
+  // When demoPhase enters replies/later, fade cards out first
+  useEffect(() => {
+    const laterPhase = ['replies','reasoning','factoring-proposed','done'].includes(demoPhase);
+    const wasEarlier = !['replies','reasoning','factoring-proposed','done'].includes(prevPhaseRef.current);
+    if (laterPhase && wasEarlier) {
+      setFadingPhase(true);
+      setTimeout(() => setFadingPhase(false), 700);
+    }
+    prevPhaseRef.current = demoPhase;
+  }, [demoPhase]); // { [id]: 'approved' | 'rejected' }
+
+  const handleAction = (id, decision) => {
+    setAnimating(prev => ({ ...prev, [id]: decision }));
+    setExpandedId(null);
+    setTimeout(() => {
+      onAction(id, decision);
+      setAnimating(prev => { const n = { ...prev }; delete n[id]; return n; });
+    }, 1100);
+  };
   const keyPoints = [
     { date: "May 1", day: 9, label: "Seasonal payroll", amount: "−€11,800", tone: "warn" },
     { date: "May 6", day: 14, label: "VAT payment (F24)", amount: "−€6,200", tone: "risk" },
     { date: "May 25", day: 33, label: "Season opens", amount: "+€8,400/week", tone: "ok" },
   ];
   return (
-    <div className="p-8" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <div className="p-5" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div>
         <div className="text-[11px] uppercase tracking-widest mb-1 flex items-center gap-2" style={{ color: P.muted }}>
           <Calendar size={11} color={P.muted} /> Forecast · Apr 22 → Jul 21
         </div>
         <div className="flex items-end gap-6 flex-wrap">
-          <h2 className="font-display text-[36px] leading-[1.05]" style={{ color: P.ink, fontWeight: 400 }}>
+          <h2 className="font-display text-[28px] leading-[1.05]" style={{ color: P.ink, fontWeight: 400 }}>
             Three months<br /><span style={{ fontStyle: "italic", color: P.forest }}>to the season.</span>
           </h2>
           <div className="flex gap-8 ml-auto">
@@ -1481,41 +1585,37 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
         </div>
       </div>
 
-      {/* Chart + Actions side by side */}
-      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
-        {/* Chart — left column */}
-        <div style={{ flex: '1 1 0', minWidth: 0 }}>
-          <div className="rounded-2xl border p-5" style={{ background: P.paper, borderColor: P.line }}>
-            <div className="flex items-center gap-4 mb-4 text-[12px]">
-              {approvedIds.length > 0 && (
-                <div className="flex items-center gap-1.5">
-                  <span className="w-3 h-0.5 inline-block" style={{ background: P.forest }} />
-                  <span style={{ color: P.inkSoft }}>With Flowra</span>
-                </div>
-              )}
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 inline-block border-t border-dashed" style={{ borderColor: P.muted, borderWidth: "1.5px" }} />
-                <span style={{ color: P.muted }}>No action</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="w-3 h-2 inline-block rounded-sm" style={{ background: P.terra, opacity: 0.25 }} />
-                <span style={{ color: P.terra }}>Below zero</span>
-              </div>
-              <div className="flex items-center gap-1.5 ml-2">
-                <span className="w-3 h-2 inline-block rounded-sm" style={{ background: P.mist, opacity: 0.5 }} />
-                <span style={{ color: P.muted }}>Safe zone</span>
-              </div>
+      {/* Chart */}
+      <div className="rounded-2xl border p-3" style={{ background: P.paper, borderColor: P.line }}>
+        <div className="flex items-center gap-3 mb-2 text-[11px]">
+          {approvedIds.length > 0 && (
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-0.5 inline-block" style={{ background: P.forest }} />
+              <span style={{ color: P.inkSoft }}>With Flowra</span>
             </div>
-            <ForecastChart data={BASE_FORECAST} approvedIds={approvedIds} />
+          )}
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 inline-block border-t border-dashed" style={{ borderColor: P.muted, borderWidth: "1.5px" }} />
+            <span style={{ color: P.muted }}>No action</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-2 inline-block rounded-sm" style={{ background: P.terra, opacity: 0.25 }} />
+            <span style={{ color: P.terra }}>Below zero</span>
+          </div>
+          <div className="flex items-center gap-1.5 ml-2">
+            <span className="w-3 h-2 inline-block rounded-sm" style={{ background: P.mist, opacity: 0.5 }} />
+            <span style={{ color: P.muted }}>Safe zone</span>
           </div>
         </div>
+        <ForecastChart data={BASE_FORECAST} approvedIds={approvedIds} />
+      </div>
 
-        {/* Suggested actions — right column */}
-        <div style={{ width: 340, flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 16 }}>
+      {/* Suggested actions — below chart */}
+      <div>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 10 }}>
           <div>
-            <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, marginBottom: 4 }}>Suggested actions</div>
-            <div style={{ fontFamily: "'Fraunces', serif", fontSize: 28, fontWeight: 400, color: P.ink, lineHeight: 1.05 }}>
+            <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, marginBottom: 2 }}>Suggested actions</div>
+            <div style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 400, color: P.ink, lineHeight: 1.05 }}>
               Close the gap <span style={{ fontStyle: 'italic', color: P.forest }}>today.</span>
             </div>
           </div>
@@ -1528,14 +1628,14 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
           {[
             { id: "early-pay-capri",  num: "01", category: "receivable", iconName: "ArrowDownLeft",
               title: "Offer 3% early-pay discount",
-              subtitle: "Ristorante Capri · €4,500 invoice",
-              detail: "Offer a 3% discount for payment within 15 days instead of 38. Net benefit: +€4,365. Cost to you: €135. Email draft ready to send.",
+              subtitle: "Ristorante Capri",
+              detail: "Send a 3% early-payment offer to Ristorante Capri (€4,500 invoice, due in 38 days). If they accept, payment arrives 23 days earlier. Email drafted and ready to send.",
               impact: "+€4,365", timing: "Awaiting counterparty",
               cpStatus: capriStatus },
             { id: "delay-ombrelloni", num: "02", category: "payable", iconName: "ArrowUpRight",
-              title: "Extend supplier payment to 60 days",
-              subtitle: "Linea Ombrelloni · 10-year partner",
-              detail: "Request 60-day payment terms (currently 30 days). Strong relationship, good grounds. Frees €2,800 for 30 days at no cost.",
+              title: "Request 60-day payment delay",
+              subtitle: "Linea Ombrelloni",
+              detail: "Ask Linea Ombrelloni to push the €2,800 payment from day 12 to day 72. 10-year partner — high acceptance likelihood. Frees up €2,800 through the cash gap window.",
               impact: "+€2,800", timing: "Awaiting counterparty",
               cpStatus: ombrelloniStatus },
             { id: "vat-rateation",    num: "03", category: "tax", iconName: "FileText",
@@ -1548,6 +1648,10 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
             const aActioned = actionStates[a.id] ? 1 : 0;
             const bActioned = actionStates[b.id] ? 1 : 0;
             return aActioned - bActioned;
+          }).filter(m => {
+            const isLaterPhase = ['replies','reasoning','factoring-proposed','done'].includes(demoPhase);
+            if (isLaterPhase && !fadingPhase && actionStates[m.id]) return false;
+            return true;
           }).map((m, idx) => {
             const catBg = { receivable: "#E8F0EA", payable: P.amberSoft, tax: P.lineSoft };
             const catFg = { receivable: P.forest, payable: P.amber, tax: P.inkSoft };
@@ -1558,21 +1662,88 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
 
             let statusLabel = null, statusColor = P.muted;
             if (state === 'approved') {
-              if (m.cpStatus === 'awaiting')   { statusLabel = 'Email sent · awaiting reply';  statusColor = P.amber; }
-              else if (m.cpStatus === 'accepted') { statusLabel = '✓ Accepted · forecast updated'; statusColor = P.forest; }
-              else if (m.cpStatus === 'declined') { statusLabel = 'Declined by counterparty'; statusColor = P.terra; }
+              if (m.cpStatus === 'awaiting')    { statusLabel = 'Email sent · awaiting reply';  statusColor = P.amber; }
+              else if (m.cpStatus === 'accepted' && m.id === 'early-pay-capri') { statusLabel = '✓ Capri accepted · +€4,365'; statusColor = P.forest; }
+              else if (m.cpStatus === 'accepted' && m.id === 'delay-ombrelloni') { statusLabel = '✓ Ombrelloni agreed · +€2,800'; statusColor = P.forest; }
+              else if (m.cpStatus === 'declined') { statusLabel = 'Declined'; statusColor = P.terra; }
               else if (m.id === 'vat-rateation') { statusLabel = '✓ Filed · +€4,650 in forecast'; statusColor = P.forest; }
               else { statusLabel = 'Approved · sending'; statusColor = P.forest; }
             } else if (state === 'rejected') { statusLabel = 'Skipped'; statusColor = P.muted; }
 
+            const isFadingOut = fadingPhase && actionStates[m.id];
+            const anim = animating[m.id];
+            const isAwaiting = state === 'approved' && m.cpStatus === 'awaiting';
+            const isDoneApproved = state === 'approved' && !anim;
+            const isDoneRejected = state === 'rejected' && !anim;
+            const animStyle = isFadingOut
+              ? { animation: 'cardFadeOut 0.6s ease forwards', pointerEvents: 'none' }
+              : anim === 'approved'
+              ? { animation: 'cardApprove 1.1s cubic-bezier(0.16,1,0.3,1) forwards' }
+              : anim === 'rejected'
+              ? { animation: 'cardReject 0.9s cubic-bezier(0.16,1,0.3,1) forwards' }
+              : state ? { animation: 'cardSettleDown 0.65s cubic-bezier(0.16,1,0.3,1) forwards' } : {};
+
             return (
               <div key={m.id} style={{
-                borderRadius: 14, border: `1px solid ${state === 'approved' && m.cpStatus === 'accepted' ? P.forest : state ? P.lineSoft : P.line}`,
-                overflow: 'hidden', opacity: state === 'rejected' ? 0.4 : 1,
-                boxShadow: !state && !isExpanded ? '0 1px 4px rgba(20,32,26,0.04)' : 'none',
+                borderRadius: 14,
+                border: `1px solid ${
+                  anim === 'approved' ? P.forest :
+                  isDoneApproved && m.cpStatus === 'accepted' ? P.forest :
+                  isDoneApproved ? 'rgba(79,158,120,0.4)' :
+                  isAwaiting ? P.amber :
+                  isDoneRejected ? P.lineSoft :
+                  P.line}`,
+                overflow: 'hidden',
+                opacity: isDoneRejected ? 0.3 : 1,
+                position: 'relative',
+                background: isDoneApproved ? 'rgba(79,158,120,0.04)' : P.paper,
+                transition: 'opacity 0.6s ease, border-color 0.5s ease, background 0.5s ease',
+                ...(isAwaiting ? { animation: 'awaitingPulse 2.4s ease-in-out infinite' } : animStyle),
               }}>
+                {/* Green left accent on approved-settled cards */}
+                {isDoneApproved && !anim && (
+                  <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 4, background: P.forest, borderRadius: '14px 0 0 14px', opacity: 0.7 }} />
+                )}
+                {/* Approve flood overlay */}
+                {anim === 'approved' && (
+                  <div style={{
+                    position: 'absolute', inset: 0, zIndex: 2, borderRadius: 14,
+                    background: 'rgba(79,158,120,0.18)',
+                    animation: 'cardApproveFlood 1.1s ease forwards',
+                    pointerEvents: 'none',
+                  }} />
+                )}
+                {/* Awaiting scan line */}
+                {isAwaiting && (
+                  <div style={{
+                    position: 'absolute', inset: 0, zIndex: 1, overflow: 'hidden', borderRadius: 14, pointerEvents: 'none',
+                  }}>
+                    <div style={{
+                      position: 'absolute', top: 0, bottom: 0, width: '35%',
+                      background: 'linear-gradient(90deg, transparent 0%, rgba(200,150,50,0.1) 50%, transparent 100%)',
+                      animation: 'awaitingScan 2.2s ease-in-out infinite',
+                    }} />
+                  </div>
+                )}
+                {/* Action badge */}
+                {anim && (
+                  <div style={{
+                    position: 'absolute', right: 20, top: '50%', transform: 'translateY(-50%)',
+                    zIndex: 10, pointerEvents: 'none',
+                    width: 52, height: 52, borderRadius: '50%',
+                    background: anim === 'approved' ? P.forest : '#999',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: anim === 'approved' ? '0 4px 20px rgba(79,158,120,0.45)' : '0 2px 10px rgba(0,0,0,0.15)',
+                    animation: anim === 'approved' ? 'cardApproveBadge 1.1s cubic-bezier(0.16,1,0.3,1) forwards' : 'cardRejectBadge 0.9s cubic-bezier(0.16,1,0.3,1) forwards',
+                  }}>
+                    {anim === 'approved'
+                      ? <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    }
+                  </div>
+                )}
                 {/* Header row */}
-                <div style={{ padding: '16px 18px', background: P.paper, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}
+                <div style={{ padding: '12px 16px', paddingLeft: isDoneApproved ? 20 : 16, background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12 }}
                   onClick={() => setExpandedId(isExpanded ? null : m.id)}>
                   {/* Number */}
                   <div style={{ fontSize: 11, fontFamily: 'JetBrains Mono, monospace', color: P.muted, flexShrink: 0, width: 20 }}>{m.num}</div>
@@ -1582,14 +1753,17 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
                   </div>
                   {/* Title block */}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: P.ink, lineHeight: 1.25 }}>{m.title}</p>
-                    <p style={{ fontSize: 12, color: statusLabel ? statusColor : P.muted, marginTop: 3, fontStyle: statusLabel ? 'italic' : 'normal' }}>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: P.ink, lineHeight: 1.25, textDecoration: isDoneRejected ? 'line-through' : 'none', opacity: isDoneRejected ? 0.5 : 1 }}>{m.title}</p>
+                    <p style={{ fontSize: 11, color: statusLabel ? statusColor : P.muted, marginTop: 2, fontStyle: statusLabel ? 'italic' : 'normal' }}>
                       {statusLabel || m.subtitle}
                     </p>
                   </div>
                   {/* Impact */}
                   <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                    <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 18, fontWeight: 600, color: state === 'rejected' ? P.muted : P.forest, lineHeight: 1 }}>{m.impact}</div>
+                    <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 15, fontWeight: 600, color: state === 'rejected' ? P.muted : P.forest, lineHeight: 1, display: 'flex', alignItems: 'center', gap: 4, justifyContent: 'flex-end' }}>
+                      {isDoneApproved && !anim && <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={P.forest} strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                      {m.impact}
+                    </div>
                     <div style={{ fontSize: 10, color: P.muted, marginTop: 3 }}>{m.timing}</div>
                   </div>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={P.muted} strokeWidth="2.5"
@@ -1599,16 +1773,16 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
                 </div>
                 {/* Expanded */}
                 {isExpanded && (
-                  <div style={{ padding: '14px 18px 18px', background: P.cream, borderTop: `1px solid ${P.lineSoft}` }}>
-                    <p style={{ fontSize: 13, color: P.inkSoft, lineHeight: 1.65, marginBottom: 16 }}>{m.detail}</p>
+                  <div style={{ padding: '11px 15px 13px', background: P.cream, borderTop: `1px solid ${P.lineSoft}` }}>
+                    <p style={{ fontSize: 13, color: P.inkSoft, lineHeight: 1.6, marginBottom: 12 }}>{m.detail}</p>
                     {!state ? (
                       <div style={{ display: 'flex', gap: 8 }}>
-                        <button onClick={() => { onAction(m.id, 'approved'); setExpandedId(null); }}
-                          style={{ flex: 1, padding: '10px 0', borderRadius: 999, background: P.ink, color: 'white', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', letterSpacing: '0.01em' }}>
+                        <button onClick={() => handleAction(m.id, 'approved')}
+                          style={{ padding: '9px 28px', borderRadius: 999, background: P.ink, color: 'white', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', letterSpacing: '0.01em' }}>
                           Approve
                         </button>
-                        <button onClick={() => { onAction(m.id, 'rejected'); setExpandedId(null); }}
-                          style={{ padding: '10px 20px', borderRadius: 999, border: `1px solid ${P.line}`, color: P.inkSoft, fontSize: 13, background: 'transparent', cursor: 'pointer' }}>
+                        <button onClick={() => handleAction(m.id, 'rejected')}
+                          style={{ padding: '9px 20px', borderRadius: 999, border: `1px solid ${P.line}`, color: P.inkSoft, fontSize: 13, background: 'transparent', cursor: 'pointer' }}>
                           Skip
                         </button>
                       </div>
@@ -1668,9 +1842,6 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
           })()}
         </div>
       </div>
-      {/* end right column */}
-      </div>
-      {/* end chart+actions row */}
     </div>
   );
 }
@@ -1678,8 +1849,8 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
 /* ---- Actions Tab ---- */
 function ActionsTab({ approvedIds, skippedIds }) {
   const allActions = [
-    { id: "early-pay-capri", category: "Receivable", title: "3% early-pay discount to Ristorante Capri", detail: "€4,500 invoice due in 38 days. Proposed discount: €135. Paid in 15 days.", impact: 4365, date: "May 6" },
-    { id: "delay-ombrelloni", category: "Payable", title: "Renegotiate terms with Linea Ombrelloni", detail: "Request 60-day terms (from 30). Long-standing supplier, has granted extensions before.", impact: 2800, date: "May 11" },
+    { id: "early-pay-capri", category: "Receivable", title: "3% early-pay discount · Ristorante Capri", detail: "€4,500 invoice due in 38 days. Offer: pay in 15 days, get 3% off. If accepted: +€4,365.", impact: 4365, date: "May 6" },
+    { id: "delay-ombrelloni", category: "Payable", title: "60-day payment delay · Linea Ombrelloni", detail: "€2,800 due in 12 days. Request extension to day 72 — 10-year partner, high acceptance likelihood.", impact: 2800, date: "May 12" },
     { id: "vat-rateation", category: "Tax", title: "Installment plan for May VAT (F24)", detail: "4 monthly installments · €1,550 each · 0% interest (Italian tax code, art. 15-ter).", impact: 4650, date: "May 16" },
   ];
   const completed = [
@@ -1993,7 +2164,7 @@ function CreditTab() {
   ];
   return (
     <div className="p-8 space-y-6">
-      <div>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>Bank credit standing · updated today</div>
         <h2 className="font-display text-[32px] leading-tight" style={{ color: P.ink, fontWeight: 400 }}>
           Cheaper <span style={{ fontStyle: "italic", color: P.forest }}>capital.</span>
@@ -2001,6 +2172,22 @@ function CreditTab() {
         <p className="text-[14px] max-w-2xl mt-2 leading-relaxed" style={{ color: P.inkSoft }}>
           Every action Flowra handles well improves your credit profile. Banks see it, and offer you better rates.
         </p>
+        {/* Decorative palm — top right */}
+        <svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg"
+          style={{ position: 'absolute', right: -8, top: -18, width: 110, height: 140, opacity: 0.13, pointerEvents: 'none' }}>
+          {/* trunk */}
+          <path d="M60 158 C58 130 54 105 56 80 C57 60 60 42 62 20" stroke="#2D5C3E" strokeWidth="5" strokeLinecap="round"/>
+          {/* fronds */}
+          <path d="M62 20 C50 10 28 8 18 18 C30 14 48 22 60 32" stroke="#2D5C3E" strokeWidth="3.5" strokeLinecap="round" fill="none"/>
+          <path d="M62 20 C72 4 96 -2 106 10 C92 4 74 16 62 30" stroke="#2D5C3E" strokeWidth="3.5" strokeLinecap="round" fill="none"/>
+          <path d="M62 20 C42 18 24 28 20 44 C34 32 52 30 62 38" stroke="#2D5C3E" strokeWidth="3.5" strokeLinecap="round" fill="none"/>
+          <path d="M62 20 C80 16 98 28 100 44 C88 32 70 30 62 38" stroke="#2D5C3E" strokeWidth="3.5" strokeLinecap="round" fill="none"/>
+          <path d="M62 20 C60 2 68 -14 80 -12 C72 -4 64 10 64 26" stroke="#2D5C3E" strokeWidth="3" strokeLinecap="round" fill="none"/>
+          <path d="M62 20 C64 2 54 -12 42 -10 C52 -2 62 10 62 26" stroke="#2D5C3E" strokeWidth="3" strokeLinecap="round" fill="none"/>
+          {/* coconuts */}
+          <circle cx="60" cy="28" r="4" fill="#2D5C3E"/>
+          <circle cx="55" cy="26" r="3" fill="#2D5C3E"/>
+        </svg>
       </div>
       <div className="rounded-2xl border p-6" style={{ background: P.paper, borderColor: P.line }}>
         <div className="grid gap-6 items-center" style={{ gridTemplateColumns: "2fr 3fr" }}>
@@ -2016,7 +2203,7 @@ function CreditTab() {
             </div>
             <div className="mt-2"><StatusBadge tone="ok">Tier: Prime · Band A</StatusBadge></div>
           </div>
-          <div style={{ height: 140 }}>
+          <div style={{ height: 140, overflow: 'hidden' }}>
             <CreditLineChart data={CREDIT_TREND} />
           </div>
         </div>
@@ -2205,7 +2392,7 @@ function WorkspacePanel({ tab, setTab, chartApprovedIds = [], capriStatus, ombre
         </div>
       </div>
       <div className="flex-1 overflow-y-auto subtle-scrollbar">
-        {tab === "forecast" && <ForecastTab approvedIds={chartApprovedIds} capriStatus={capriStatus} ombrelloniStatus={ombrelloniStatus} actionStates={actionStates} onAction={onAction} demoPhase={demoPhase} factoringState={factoringState} onFactoringApprove={onFactoringApprove} />}
+        {tab === "forecast" && <ForecastTab approvedIds={chartApprovedIds} capriStatus={capriStatus} ombrelloniStatus={ombrelloniStatus} actionStates={actionStates} onAction={onAction} demoPhase={demoPhase} factoringState={factoringState} onFactoringApprove={onFactoringApprove} />}}
         {tab === "terms" && <TermsTab />}
         {tab === "credit" && <CreditTab />}
       </div>
@@ -2260,6 +2447,7 @@ function App({ splitW: initialSplitW = "25%" }) {
   const chartApprovedIds = [
     ...(vatApplied ? ['vat-rateation'] : []),
     ...(capriStatus === 'accepted' ? ['early-pay-capri'] : []),
+    ...(ombrelloniStatus === 'accepted' ? ['delay-ombrelloni'] : []),
     ...(triverDone ? ['triver-factor'] : []),
   ];
 
@@ -2286,9 +2474,7 @@ function App({ splitW: initialSplitW = "25%" }) {
                 onSwitchTab={setTab}
               />
             </div>
-            <div onMouseDown={startDrag} style={{ width: 4, cursor: 'col-resize', flexShrink: 0, background: 'transparent', position: 'relative', zIndex: 10 }}
-              onMouseEnter={e => e.currentTarget.style.background = P.line}
-              onMouseLeave={e => e.currentTarget.style.background = 'transparent'} />
+            <div style={{ width: 1, flexShrink: 0, background: P.line }} />
             <div className="flex-1 flex flex-col overflow-hidden">
               <WorkspacePanel tab={tab} setTab={setTab} chartApprovedIds={chartApprovedIds}
                 capriStatus={capriStatus} ombrelloniStatus={ombrelloniStatus}
