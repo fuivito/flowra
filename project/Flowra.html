@@ -236,6 +236,482 @@
 <body>
 <div id="root"></div>
 <script type="text/babel">
+/* ---- Translations ---- */
+const TRANSLATIONS = {
+  en: {
+    landing: {
+      badge: "Cash flow agent",
+      headline1: "Cash flow that",
+      headline2: "thinks for itself.",
+      tagline: "Flowra watches your cash, forecasts gaps 90 days out, and proposes",
+      taglineEmphasis: "one thing to approve each day",
+      taglineEnd: "No spreadsheets. No accountant-speak.",
+      cta: "Connect your accounting",
+      footerData: "Your data stays yours",
+      footerPlatforms: "Xero · Fatture in Cloud · TeamSystem",
+      footerHorizon: "90-day horizon",
+    },
+    connecting: {
+      badge: "Connecting · TeamSystem",
+      headline: "Reading your",
+      headlineItalic: "numbers.",
+      steps: [
+        { label: "Reading invoices receivable", detail: "87 open invoices · €48,200 total" },
+        { label: "Reading invoices payable", detail: "34 open invoices · €29,450 total" },
+        { label: "Syncing payroll schedule", detail: "Next run: May 1 · €11,800" },
+        { label: "Syncing rent & insurance", detail: "3 recurring · €4,200/mo" },
+        { label: "Modeling VAT & withholdings", detail: "Next F24: May 16 · €6,200" },
+        { label: "Scoring payment reliability", detail: "47 counterparties ranked" },
+        { label: "Building 90-day forecast", detail: "1 cash gap detected · day 12–18" },
+      ],
+    },
+    reveal: {
+      badge: "Analysis complete",
+      date: "Bagni Aurora · Apr 22",
+      intro: "While you were away, I read 87 invoices, modeled your next 90 days, and found a problem.",
+      headline: "Your season starts in",
+      headlineItalic: "the red.",
+      findings: [
+        { tone: "risk", label: "Cash gap",         value: "€12,900",  sub: "minimum on day 14 · below your €15k floor",              bar: 0.26 },
+        { tone: "warn", label: "Liquidity trapped", value: "€7,200",   sub: "20-day DSO/DPO mismatch · financing your suppliers",     bar: 0.52 },
+        { tone: "ok",   label: "Impact ready",      value: "+€11,815", sub: "3 approved actions close the gap entirely",              bar: 1.0  },
+      ],
+      cta: "Show me the three fixes",
+      ctaSub: "Each takes",
+      ctaEmphasis: "one approval",
+      ctaEnd: ". Flowra handles the rest.",
+    },
+    header: {
+      sub: "Alassio · Beach club",
+      unlocked: (n) => `+€${n.toLocaleString()} unlocked today`,
+      synced: "Synced · 2 min ago",
+    },
+    chat: {
+      opening: {
+        time: "Today · 09:14",
+        reasoning: ["Syncing accounts · cash balance €18,400", "Gap detected · day 17 · −€9,600", "3 interventions ready"],
+        status: { label: "Cash gap in 17 days", number: "−€9,600", text: "Payroll + VAT hit before season revenue arrives.", sub: "Without action: Bagni Aurora goes negative on day 17." },
+        advice: "I found 3 fixes — no bank needed. Open Forecast tab.",
+      },
+      vatApplied: "VAT split into 4 installments. +€4,650 freed up — reflected in the forecast now.",
+      replies: {
+        time: "48h later · Thu May 2 · 09:14",
+        reasoning: ["Capri accepted · +€4,365 · payment moved to May 15", "Ombrelloni declined · payment stays on day 12", "New minimum: −€5,235 · still negative"],
+        status: { label: "Partially accepted", number: "−€5,235", text: "Capri said yes (+€4,365). Ombrelloni declined.", sub: "Still negative — one more move needed." },
+      },
+      reasoning: {
+        steps: ["Scanning invoices · best candidate: Club Nautico Alassio · €18,500 · 45d", "Triver pre-approval: 92% · advance €17,020 · fee €259"],
+        status: { label: "Proposal ready", number: "+€17,020", text: "Advance the Club Nautico invoice — 45 days early.", sub: "Fee: €259 (1.4%). Clears the gap with one tap. Your approval needed." },
+        advice: "Approve in the Forecast tab.",
+      },
+      factoring: {
+        reasoning: ["Triver API · invoice submitted · accepted", "€17,020 in transit · cash position updated"],
+        status: { label: "Gap closed", number: "+€11,785", text: "Triver sent €17,020. Balance is safely above zero.", sub: "No bank. No loan. Season covered. 🌊" },
+      },
+      error: "Couldn't connect — try again.",
+      placeholder: "Ask Flowra anything…",
+    },
+    thinking: { done: "Done", active: "Thinking…" },
+    execution: { label: "Executing", done: "Done · changes reflected in forecast", reasoningDone: "Done · forecast updated" },
+    toolSteps: {
+      forecast: [{ label: "Running 90-day simulation",  detail: "1,240 scenarios · Monte Carlo" },    { label: "Identifying risk windows",          detail: "1 gap detected · days 12–18" }],
+      invoice:  [{ label: "Scanning invoice ledger",    detail: "87 open invoices · €48,200 total" }, { label: "Scoring counterparty reliability",   detail: "Capri: 94% on-time · Riviera: 61%" }],
+      email:    [{ label: "Loading supplier profile",   detail: "Linea Ombrelloni · 10-yr partner" }, { label: "Generating negotiation draft",       detail: "3 email variants ready" }],
+      credit:   [{ label: "Querying bank marketplace",  detail: "3 pre-approved offers · updated today" }, { label: "Recalculating credit profile",   detail: "Score: 81/100 · Band A" }],
+      tax:      [{ label: "Reading F24 calendar",       detail: "Next: May 16 · €6,200" },            { label: "Checking installment eligibility",  detail: "Art. 15-ter · 0% interest" }],
+      payroll:  [{ label: "Loading payroll schedule",   detail: "May 1 · 14 seasonal staff" },         { label: "Checking cash coverage",            detail: "€18,400 available · €11,800 needed" }],
+      default:  [{ label: "Reading your books",         detail: "Last sync: 2 min ago" },              { label: "Running analysis",                  detail: "Checking all cash positions" }],
+    },
+    executionSteps: {
+      'early-pay-capri':  [
+        { label: "Composing early-pay offer emails", detail: "3% discount · 2 clients · €9,065 potential" },
+        { label: "Sent to Ristorante Capri",         detail: "info@ristorantecapri.it · 09:14" },
+        { label: "Sent to Stabilimento Riviera",     detail: "contatti@riviera-alassio.it · 09:14" },
+        { label: "Forecast updated",                 detail: "Awaiting replies from both" },
+      ],
+      'delay-ombrelloni': [
+        { label: "Drafting 60-day extension request", detail: "References 10-yr relationship" },
+        { label: "Sent to Linea Ombrelloni",          detail: "forniture@lineaombrelloni.it · 09:14" },
+        { label: "Payment rescheduled",               detail: "€2,800 freed until June 12" },
+      ],
+      'vat-rateation':    [
+        { label: "Filing installment plan",       detail: "Art. 15-ter · Agenzia delle Entrate" },
+        { label: "4 F24 reminders scheduled",     detail: "May 16 · Jun 16 · Jul 16 · Aug 16" },
+        { label: "€4,650 released from reserve",  detail: "Available for May operations" },
+      ],
+    },
+    forecast: {
+      title: "Forecast · Apr 22 → Jul 21",
+      headline: "Three months",
+      headlineItalic: "to the season.",
+      cashToday: "Cash today", forecastLow: "Forecast low", forecastHigh: "Forecast high",
+      withinFloor: "within floor", onDay14: "on day 14", onDay85: "on day 85",
+      withFlowra: "With Flowra", noAction: "No action", belowZero: "Below zero", safeZone: "Safe zone",
+      suggestedActions: "Suggested actions", closeGap: "Close the gap", today: "today.",
+      combinedImpact: "Combined impact", awaitingCounterparty: "Awaiting counterparty", immediate: "Immediate",
+      approve: "Approve", skip: "Skip",
+      keypoints: [
+        { date: "May 1",  day: 9,  label: "Seasonal payroll",  amount: "−€11,800", tone: "warn" },
+        { date: "May 6",  day: 14, label: "VAT payment (F24)", amount: "−€6,200",  tone: "risk" },
+        { date: "May 25", day: 33, label: "Season opens",      amount: "+€8,400/week", tone: "ok" },
+      ],
+      actions: [
+        { id: "early-pay-capri",  num: "01", category: "receivable", iconName: "ArrowDownLeft",
+          title: "Offer 3% early-pay discount",       subtitle: "Ristorante Capri",
+          detail: "Send a 3% early-payment offer to Ristorante Capri (€4,500 invoice, due in 38 days). If they accept, payment arrives 23 days earlier. Email drafted and ready to send.",
+          impact: "+€4,365", timing: "Awaiting counterparty" },
+        { id: "delay-ombrelloni", num: "02", category: "payable", iconName: "ArrowUpRight",
+          title: "Request 60-day payment delay",      subtitle: "Linea Ombrelloni",
+          detail: "Ask Linea Ombrelloni to push the €2,800 payment from day 12 to day 72. 10-year partner — high acceptance likelihood. Frees up €2,800 through the cash gap window.",
+          impact: "+€2,800", timing: "Awaiting counterparty" },
+        { id: "vat-rateation",    num: "03", category: "tax", iconName: "FileText",
+          title: "Split May VAT into 4 installments", subtitle: "F24 · art. 15-ter · interest-free",
+          detail: "Italian tax code allows interest-free installments up to €5,000 each. Smooths the May 16 spike across 4 months. No counterparty needed — takes effect immediately.",
+          impact: "+€4,650", timing: "Immediate" },
+      ],
+      statusLabels: {
+        emailSent:        "Email sent · awaiting reply",
+        capriAccepted:    "✓ Capri accepted · +€4,365",
+        ombrelloniAgreed: "✓ Ombrelloni agreed · +€2,800",
+        declined:         "Declined",
+        vatFiled:         "✓ Filed · +€4,650 in forecast",
+        approvedSending:  "Approved · sending",
+        skipped:          "Skipped",
+      },
+      factoring: {
+        title:       "Invoice factoring via Triver",
+        funded:      "✓ Funded · €17,020 received",
+        processing:  "Processing with Triver…",
+        recommended: "⚡ Recommended · your approval needed",
+        feeInfo:     "24h · 1.4% fee",
+        detail:      "Club Nautico Alassio · €18,500 invoice · 45 days remaining · AA credit rating.\nAdvance: €17,020 (92%) · Fee: 1.4% · €259 · Funds available within 24 hours.\nYour credit score of 81/100 gives a very high approval probability with Triver.",
+        approveCta:  "Approve invoice factoring",
+      },
+    },
+    terms: {
+      badge: "Term alignment",
+      headline: "Your", headlineItalic: "structural gap.",
+      bodyPart1: "Your clients pay you in", bodyDays: "days on average. You pay suppliers in",
+      bodyMismatch: (gap) => `This ${gap}-day mismatch`,
+      bodyEnd: "costs liquidity every month, and it's usually free to fix.",
+      dso: "They pay you (DSO)", dpo: "You pay them (DPO)", days: "days",
+      avgGap: (gap) => `Average gap: ${gap} days`,
+      gapExplain: "You're financing suppliers with money you haven't collected yet — for almost 3 weeks.",
+      trapped: "~€7,200 trapped",
+      renegotBadge: "Suggested renegotiations",
+      reviewDraft: "Review draft", send: "Send", sent: "Sent",
+      emailDraftBadge: "Email draft", sendEmail: "Send email", close: "Close",
+      toLabel: "To: ", subjectLabel: "Subject: ",
+      renegotiations: [
+        { supplier: "Linea Ombrelloni",    current: "30 days", target: "60 days", reason: "10-year supplier · shared seasonality",           savings: "€2,800 liquidity" },
+        { supplier: "Fornitura Bar Vittoria", current: "30 days", target: "45 days", reason: "Zero late history · strong leverage",           savings: "€1,950 liquidity" },
+        { supplier: "Summer maintenance",  current: "30 days", target: "60 days", reason: "Service paid after season ends — natural fit",  savings: "€1,600 liquidity" },
+      ],
+    },
+    credit: {
+      badge: "Bank credit standing · updated today",
+      headline: "Cheaper", headlineItalic: "capital.",
+      subtext: "Every action Flowra handles well improves your credit profile. Banks see it, and offer you better rates.",
+      scoreBadge: "Flowra score",
+      scoreDelta: (d) => `+${d} over last 6 months`,
+      tier: "Tier: Prime · Band A",
+      factors: [
+        { label: "On-time payments",     value: 94,   target: 90, unit: "%"  },
+        { label: "Average balance",      value: 24.8, target: 15, unit: "k€" },
+        { label: "DSO (collection days)",value: 48,   target: 60, unit: "d", inverted: true },
+        { label: "Cash volatility",      value: 18,   target: 30, unit: "%", inverted: true },
+      ],
+      targetLabel: "Target:",
+      marketplaceBadge: "Marketplace · 3 active offers",
+      offersHeadline: "Pre-approved offers", offersItalic: "for you.",
+      disclaimer: "Flowra earns only if you accept",
+      preApproved: "Pre-approved", aprLabel: "APR",
+      bpsLabel: (bps) => `−${bps} bps from your profile`,
+      apply: "Apply",
+      howItWorks: "Flowra only shares data you authorize with banking partners. If you pick an offer, we earn a fee from the capital provider — not from you. Your data stays yours, always.",
+      loanOffers: [
+        { bank: "Banca Alpina",     product: "Summer Bridge Line",  amount: "€50,000", rate: 4.2, prevRate: 5.6, term: "12 months", preApproved: true },
+        { bank: "Credito Ligure",   product: "Invoice Advance",     amount: "€35,000", rate: 5.1, prevRate: 6.3, term: "6 months",  preApproved: true },
+        { bank: "Finitalia Fintech",product: "Merchant Advance",    amount: "€25,000", rate: 6.8, prevRate: 8.4, term: "9 months",  preApproved: false },
+      ],
+    },
+    workspace: {
+      tabs: { forecast: "Forecast", terms: "Terms", credit: "Credit" },
+      reviewMode: "Review mode",
+    },
+    app: { demoLabel: "Demo · fast-forward", skip48h: "Skip 48h · see replies" },
+    emailDrafts: {
+      "Linea Ombrelloni": {
+        to: "forniture@lineaombrelloni.it",
+        subject: "Payment terms renegotiation — Bagni Aurora",
+        body: `Hi Team,\n\nAs we head into the 2026 summer season, we'd like to discuss updating the payment terms on our orders.\n\nWe currently work on 30-day terms. Given our 10-year partnership and the shared seasonality of our businesses — our main cash inflows start from May onwards — we'd like to propose extending terms to 60 days.\n\nThis would let us align payments with our seasonal cash flows, with no impact on payment reliability. Our on-time payment record speaks for itself.\n\nHappy to jump on a quick call this week if helpful.\n\nBest,\nChiara Bertolini\nBagni Aurora, Alassio`,
+      },
+      "Fornitura Bar Vittoria": {
+        to: "ordini@fornituraBV.it",
+        subject: "Extended payment terms request — Bagni Aurora",
+        body: `Hi,\n\nWe've really appreciated our ongoing partnership and the quality of your products.\n\nAs we prepare for the 2026 season, we'd like to request an extension of our payment terms from 30 to 45 days.\n\nOur payment history is spotless — zero late payments in three years. This adjustment would simply help us manage pre-season cash flow more smoothly.\n\nThank you for considering this.\n\nBest,\nChiara Bertolini\nBagni Aurora`,
+      },
+      "Summer maintenance": {
+        to: "info@manutenzione-riviera.it",
+        subject: "Payment terms for seasonal maintenance works",
+        body: `Hi,\n\nFor the 2026 seasonal maintenance works, we'd like to propose 60-day payment terms from the invoice date.\n\nThe logic is straightforward: the works complete before opening, but our revenues begin with the season. A 60-day term naturally aligns cash flows for both parties.\n\nIn return, we're happy to commit to a 3-year partnership agreement.\n\nLooking forward to another great season together.\n\nBest,\nChiara Bertolini\nBagni Aurora`,
+      },
+    },
+  },
+  it: {
+    landing: {
+      badge: "Agente di cassa",
+      headline1: "Il flusso di cassa che",
+      headline2: "pensa da solo.",
+      tagline: "Flowra monitora la tua liquidità, prevede i gap a 90 giorni e propone",
+      taglineEmphasis: "un'azione da approvare al giorno",
+      taglineEnd: "Niente fogli di calcolo. Niente gergo contabile.",
+      cta: "Collega il gestionale",
+      footerData: "I tuoi dati restano tuoi",
+      footerPlatforms: "Xero · Fatture in Cloud · TeamSystem",
+      footerHorizon: "Orizzonte a 90 giorni",
+    },
+    connecting: {
+      badge: "Connessione · TeamSystem",
+      headline: "Sto leggendo i tuoi",
+      headlineItalic: "numeri.",
+      steps: [
+        { label: "Lettura fatture attive",                   detail: "87 fatture aperte · €48.200 totale" },
+        { label: "Lettura fatture passive",                  detail: "34 fatture aperte · €29.450 totale" },
+        { label: "Sincronizzazione buste paga",              detail: "Prossima: 1 mag · €11.800" },
+        { label: "Sincronizzazione affitto e assicurazioni", detail: "3 ricorrenti · €4.200/mese" },
+        { label: "Modellazione IVA e ritenute",              detail: "Prossimo F24: 16 mag · €6.200" },
+        { label: "Valutazione affidabilità pagamenti",       detail: "47 controparti classificate" },
+        { label: "Costruzione previsione 90 giorni",         detail: "1 gap di liquidità rilevato · giorni 12–18" },
+      ],
+    },
+    reveal: {
+      badge: "Analisi completata",
+      date: "Bagni Aurora · 22 apr",
+      intro: "Mentre eri assente, ho letto 87 fatture, modellato i prossimi 90 giorni e trovato un problema.",
+      headline: "La tua stagione inizia",
+      headlineItalic: "in rosso.",
+      findings: [
+        { tone: "risk", label: "Gap di liquidità",   value: "€12.900",  sub: "minimo al giorno 14 · sotto la soglia €15k",                    bar: 0.26 },
+        { tone: "warn", label: "Liquidità bloccata", value: "€7.200",   sub: "Disallineamento 20g DSO/DPO · stai finanziando i fornitori",    bar: 0.52 },
+        { tone: "ok",   label: "Impatto disponibile",value: "+€11.815", sub: "3 azioni approvate chiudono il gap completamente",              bar: 1.0  },
+      ],
+      cta: "Mostrami le tre soluzioni",
+      ctaSub: "Ognuna richiede",
+      ctaEmphasis: "una sola approvazione",
+      ctaEnd: ". Flowra fa il resto.",
+    },
+    header: {
+      sub: "Alassio · Stabilimento balneare",
+      unlocked: (n) => `+€${n.toLocaleString('it-IT')} sbloccati oggi`,
+      synced: "Sincronizzato · 2 min fa",
+    },
+    chat: {
+      opening: {
+        time: "Oggi · 09:14",
+        reasoning: ["Sincronizzazione conti · saldo €18.400", "Gap rilevato · giorno 17 · −€9.600", "3 interventi pronti"],
+        status: { label: "Gap di cassa in 17 giorni", number: "−€9.600", text: "Stipendi + IVA in scadenza prima degli incassi stagionali.", sub: "Senza interventi: Bagni Aurora va in negativo al giorno 17." },
+        advice: "Ho trovato 3 soluzioni — senza banca. Apri il tab Previsione.",
+      },
+      vatApplied: "IVA suddivisa in 4 rate. +€4.650 liberati — ora visibili nella previsione.",
+      replies: {
+        time: "48h dopo · Gio 2 mag · 09:14",
+        reasoning: ["Capri ha accettato · +€4.365 · pagamento spostato al 15 mag", "Ombrelloni ha rifiutato · pagamento confermato al giorno 12", "Nuovo minimo: −€5.235 · ancora negativo"],
+        status: { label: "Parzialmente accettato", number: "−€5.235", text: "Capri ha detto sì (+€4.365). Ombrelloni ha rifiutato.", sub: "Ancora negativo — serve un'altra mossa." },
+      },
+      reasoning: {
+        steps: ["Scansione fatture · miglior candidata: Club Nautico Alassio · €18.500 · 45g", "Pre-approvazione Triver: 92% · anticipo €17.020 · commissione €259"],
+        status: { label: "Proposta pronta", number: "+€17.020", text: "Anticipa la fattura di Club Nautico — 45 giorni prima.", sub: "Commissione: €259 (1,4%). Chiude il gap con un tap. Richiesta la tua approvazione." },
+        advice: "Approva nel tab Previsione.",
+      },
+      factoring: {
+        reasoning: ["API Triver · fattura inviata · accettata", "€17.020 in transito · posizione di cassa aggiornata"],
+        status: { label: "Gap chiuso", number: "+€11.785", text: "Triver ha inviato €17.020. Il saldo è sopra lo zero.", sub: "Nessuna banca. Nessun prestito. Stagione coperta. 🌊" },
+      },
+      error: "Connessione fallita — riprova.",
+      placeholder: "Chiedi qualsiasi cosa a Flowra…",
+    },
+    thinking: { done: "Fatto", active: "Elaborazione…" },
+    execution: { label: "In esecuzione", done: "Fatto · modifiche applicate alla previsione", reasoningDone: "Fatto · previsione aggiornata" },
+    toolSteps: {
+      forecast: [{ label: "Simulazione a 90 giorni",               detail: "1.240 scenari · Monte Carlo" },          { label: "Identificazione finestre di rischio",    detail: "1 gap rilevato · giorni 12–18" }],
+      invoice:  [{ label: "Scansione registro fatture",            detail: "87 fatture aperte · €48.200 totale" },   { label: "Valutazione affidabilità controparte",  detail: "Capri: 94% puntuale · Riviera: 61%" }],
+      email:    [{ label: "Caricamento profilo fornitore",         detail: "Linea Ombrelloni · partner da 10 anni" }, { label: "Generazione bozza negoziazione",        detail: "3 varianti email pronte" }],
+      credit:   [{ label: "Interrogazione marketplace bancario",   detail: "3 offerte pre-approvate · aggiornate oggi" }, { label: "Ricalcolo profilo creditizio",       detail: "Punteggio: 81/100 · Fascia A" }],
+      tax:      [{ label: "Lettura calendario F24",                detail: "Prossimo: 16 mag · €6.200" },             { label: "Verifica idoneità rateizzazione",       detail: "Art. 15-ter · 0% interessi" }],
+      payroll:  [{ label: "Caricamento piano stipendi",            detail: "1 mag · 14 dipendenti stagionali" },      { label: "Verifica copertura cassa",              detail: "€18.400 disponibili · €11.800 necessari" }],
+      default:  [{ label: "Lettura contabilità",                   detail: "Ultima sincronizzazione: 2 min fa" },     { label: "Esecuzione analisi",                    detail: "Controllo posizioni di cassa" }],
+    },
+    executionSteps: {
+      'early-pay-capri':  [
+        { label: "Composizione email pagamento anticipato", detail: "Sconto 3% · 2 clienti · €9.065 potenziali" },
+        { label: "Inviata a Ristorante Capri",              detail: "info@ristorantecapri.it · 09:14" },
+        { label: "Inviata a Stabilimento Riviera",          detail: "contatti@riviera-alassio.it · 09:14" },
+        { label: "Previsione aggiornata",                   detail: "In attesa di risposta da entrambi" },
+      ],
+      'delay-ombrelloni': [
+        { label: "Redazione richiesta proroga 60 giorni",   detail: "Fa riferimento ai 10 anni di rapporto" },
+        { label: "Inviata a Linea Ombrelloni",              detail: "forniture@lineaombrelloni.it · 09:14" },
+        { label: "Pagamento rinviato",                      detail: "€2.800 liberati fino al 12 giugno" },
+      ],
+      'vat-rateation':    [
+        { label: "Invio piano di rateizzazione",            detail: "Art. 15-ter · Agenzia delle Entrate" },
+        { label: "4 promemoria F24 programmati",            detail: "16 mag · 16 giu · 16 lug · 16 ago" },
+        { label: "€4.650 rilasciati dalla riserva",         detail: "Disponibili per le operazioni di maggio" },
+      ],
+    },
+    forecast: {
+      title: "Previsione · 22 apr → 21 lug",
+      headline: "Tre mesi", headlineItalic: "alla stagione.",
+      cashToday: "Cassa oggi", forecastLow: "Minimo previsto", forecastHigh: "Massimo previsto",
+      withinFloor: "sopra la soglia", onDay14: "al giorno 14", onDay85: "al giorno 85",
+      withFlowra: "Con Flowra", noAction: "Senza intervento", belowZero: "Sotto zero", safeZone: "Zona sicura",
+      suggestedActions: "Azioni suggerite", closeGap: "Chiudi il gap", today: "oggi.",
+      combinedImpact: "Impatto combinato", awaitingCounterparty: "In attesa della controparte", immediate: "Immediato",
+      approve: "Approva", skip: "Salta",
+      keypoints: [
+        { date: "1 mag",  day: 9,  label: "Stipendi stagionali",  amount: "−€11.800", tone: "warn" },
+        { date: "6 mag",  day: 14, label: "Pagamento IVA (F24)", amount: "−€6.200",  tone: "risk" },
+        { date: "25 mag", day: 33, label: "Inizio stagione",      amount: "+€8.400/sett.", tone: "ok" },
+      ],
+      actions: [
+        { id: "early-pay-capri",  num: "01", category: "receivable", iconName: "ArrowDownLeft",
+          title: "Offri sconto 3% per pagamento anticipato", subtitle: "Ristorante Capri",
+          detail: "Invia un'offerta di pagamento anticipato del 3% a Ristorante Capri (fattura €4.500, scadenza tra 38 giorni). Se accettano, il pagamento arriva 23 giorni prima. Email redatta e pronta.",
+          impact: "+€4.365", timing: "In attesa della controparte" },
+        { id: "delay-ombrelloni", num: "02", category: "payable", iconName: "ArrowUpRight",
+          title: "Richiedi proroga pagamento 60 giorni",     subtitle: "Linea Ombrelloni",
+          detail: "Chiedi a Linea Ombrelloni di spostare il pagamento di €2.800 dal giorno 12 al 72. Partner da 10 anni — alta probabilità di accettazione. Libera €2.800 durante il gap.",
+          impact: "+€2.800", timing: "In attesa della controparte" },
+        { id: "vat-rateation",    num: "03", category: "tax", iconName: "FileText",
+          title: "Suddividi l'IVA di maggio in 4 rate",     subtitle: "F24 · art. 15-ter · senza interessi",
+          detail: "Il codice fiscale consente rate senza interessi fino a €5.000 ciascuna. Distribuisce il picco del 16 maggio su 4 mesi. Nessuna controparte — efficace immediatamente.",
+          impact: "+€4.650", timing: "Immediato" },
+      ],
+      statusLabels: {
+        emailSent:        "Email inviata · in attesa di risposta",
+        capriAccepted:    "✓ Capri ha accettato · +€4.365",
+        ombrelloniAgreed: "✓ Ombrelloni ha accettato · +€2.800",
+        declined:         "Rifiutato",
+        vatFiled:         "✓ Inviato · +€4.650 in previsione",
+        approvedSending:  "Approvato · invio in corso",
+        skipped:          "Saltato",
+      },
+      factoring: {
+        title:       "Factoring fattura tramite Triver",
+        funded:      "✓ Finanziato · €17.020 ricevuti",
+        processing:  "Elaborazione con Triver…",
+        recommended: "⚡ Consigliato · richiesta la tua approvazione",
+        feeInfo:     "24h · commissione 1,4%",
+        detail:      "Club Nautico Alassio · fattura €18.500 · 45 giorni rimanenti · rating AA.\nAnticipo: €17.020 (92%) · Commissione: 1,4% · €259 · Fondi disponibili entro 24 ore.\nIl tuo punteggio di 81/100 garantisce un'alta probabilità di approvazione con Triver.",
+        approveCta:  "Approva il factoring fattura",
+      },
+    },
+    terms: {
+      badge: "Allineamento termini",
+      headline: "Il tuo", headlineItalic: "gap strutturale.",
+      bodyPart1: "I tuoi clienti ti pagano in", bodyDays: "giorni in media. Tu paghi i fornitori in",
+      bodyMismatch: (gap) => `Questo disallineamento di ${gap} giorni`,
+      bodyEnd: "costa liquidità ogni mese, ed è solitamente gratis da correggere.",
+      dso: "Ti pagano (DSO)", dpo: "Li paghi (DPO)", days: "giorni",
+      avgGap: (gap) => `Gap medio: ${gap} giorni`,
+      gapExplain: "Stai finanziando i fornitori con denaro che non hai ancora incassato — per quasi 3 settimane.",
+      trapped: "~€7.200 bloccati",
+      renegotBadge: "Rinegoziazioni suggerite",
+      reviewDraft: "Rivedi bozza", send: "Invia", sent: "Inviato",
+      emailDraftBadge: "Bozza email", sendEmail: "Invia email", close: "Chiudi",
+      toLabel: "A: ", subjectLabel: "Oggetto: ",
+      renegotiations: [
+        { supplier: "Linea Ombrelloni",     current: "30 giorni", target: "60 giorni", reason: "Fornitore da 10 anni · stagionalità condivisa",              savings: "€2.800 liquidità" },
+        { supplier: "Fornitura Bar Vittoria",current: "30 giorni", target: "45 giorni", reason: "Zero ritardi · forte leva negoziale",                        savings: "€1.950 liquidità" },
+        { supplier: "Manutenzioni estive",  current: "30 giorni", target: "60 giorni", reason: "Servizio pagato dopo la stagione — abbinamento naturale",     savings: "€1.600 liquidità" },
+      ],
+    },
+    credit: {
+      badge: "Rating bancario · aggiornato oggi",
+      headline: "Capitale", headlineItalic: "più conveniente.",
+      subtext: "Ogni azione gestita bene da Flowra migliora il tuo profilo creditizio. Le banche lo vedono e ti offrono tassi migliori.",
+      scoreBadge: "Punteggio Flowra",
+      scoreDelta: (d) => `+${d} negli ultimi 6 mesi`,
+      tier: "Livello: Prime · Fascia A",
+      factors: [
+        { label: "Pagamenti puntuali",      value: 94,   target: 90, unit: "%"  },
+        { label: "Saldo medio",             value: 24.8, target: 15, unit: "k€" },
+        { label: "DSO (giorni di incasso)", value: 48,   target: 60, unit: "g", inverted: true },
+        { label: "Volatilità cassa",        value: 18,   target: 30, unit: "%", inverted: true },
+      ],
+      targetLabel: "Obiettivo:",
+      marketplaceBadge: "Marketplace · 3 offerte attive",
+      offersHeadline: "Offerte pre-approvate", offersItalic: "per te.",
+      disclaimer: "Flowra guadagna solo se accetti",
+      preApproved: "Pre-approvata", aprLabel: "TAN",
+      bpsLabel: (bps) => `−${bps} bps grazie al tuo profilo`,
+      apply: "Richiedi",
+      howItWorks: "Flowra condivide solo i dati che autorizzi con i partner bancari. Se scegli un'offerta, riceviamo una commissione dal fornitore — non da te. I tuoi dati restano tuoi, sempre.",
+      loanOffers: [
+        { bank: "Banca Alpina",     product: "Linea di credito estiva", amount: "€50.000", rate: 4.2, prevRate: 5.6, term: "12 mesi", preApproved: true },
+        { bank: "Credito Ligure",   product: "Anticipo fatture",         amount: "€35.000", rate: 5.1, prevRate: 6.3, term: "6 mesi",  preApproved: true },
+        { bank: "Finitalia Fintech",product: "Anticipo merchant",         amount: "€25.000", rate: 6.8, prevRate: 8.4, term: "9 mesi",  preApproved: false },
+      ],
+    },
+    workspace: {
+      tabs: { forecast: "Previsione", terms: "Termini", credit: "Credito" },
+      reviewMode: "Modalità revisione",
+    },
+    app: { demoLabel: "Demo · avanzamento rapido", skip48h: "Salta 48h · vedi risposte" },
+    emailDrafts: {
+      "Linea Ombrelloni": {
+        to: "forniture@lineaombrelloni.it",
+        subject: "Rinegoziazione termini di pagamento — Bagni Aurora",
+        body: `Ciao,\n\nIn vista della stagione estiva 2026, vorremmo discutere i termini di pagamento sui nostri ordini.\n\nAttualmente lavoriamo a 30 giorni. Vista la collaborazione decennale e la stagionalità condivisa — i principali incassi partono da maggio — proponiamo di estendere a 60 giorni.\n\nCiò allineerebbe i pagamenti ai flussi stagionali senza impatto sull'affidabilità. Il nostro storico parla da sé.\n\nSiamo disponibili a una breve chiamata questa settimana.\n\nCordiali saluti,\nChiara Bertolini\nBagni Aurora, Alassio`,
+      },
+      "Fornitura Bar Vittoria": {
+        to: "ordini@fornituraBV.it",
+        subject: "Richiesta estensione termini di pagamento — Bagni Aurora",
+        body: `Ciao,\n\nApprezziamo molto la nostra collaborazione e la qualità dei vostri prodotti.\n\nIn vista della stagione 2026, vorremmo richiedere un'estensione dei termini da 30 a 45 giorni.\n\nIl nostro storico è impeccabile — zero ritardi in tre anni. Questo ci aiuterebbe a gestire il flusso di cassa pre-stagione.\n\nGrazie per la considerazione.\n\nCordiali saluti,\nChiara Bertolini\nBagni Aurora`,
+      },
+      "Manutenzioni estive": {
+        to: "info@manutenzione-riviera.it",
+        subject: "Termini di pagamento per manutenzione stagionale",
+        body: `Ciao,\n\nPer i lavori di manutenzione stagionale 2026, proponiamo termini a 60 giorni dalla data fattura.\n\nI lavori si completano prima dell'apertura, ma i ricavi iniziano con la stagione. Un termine a 60 giorni allinea naturalmente i flussi per entrambi.\n\nIn cambio, siamo disponibili a formalizzare un accordo triennale.\n\nCordiali saluti,\nChiara Bertolini\nBagni Aurora`,
+      },
+    },
+  },
+};
+
+const LangCtx = React.createContext({ lang: 'en', setLang: () => {}, T: TRANSLATIONS.en });
+
+function LangProvider({ children }) {
+  const [lang, setLang] = React.useState(() => {
+    try { return localStorage.getItem('flowra-lang') || 'en'; } catch { return 'en'; }
+  });
+  React.useEffect(() => {
+    try { localStorage.setItem('flowra-lang', lang); } catch {}
+  }, [lang]);
+  const T = TRANSLATIONS[lang] || TRANSLATIONS.en;
+  return <LangCtx.Provider value={{ lang, setLang, T }}>{children}</LangCtx.Provider>;
+}
+
+function LanguageToggle() {
+  const { lang, setLang } = React.useContext(LangCtx);
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', borderRadius: 999, border: `1px solid ${P.line}`, overflow: 'hidden', flexShrink: 0 }}>
+      {['EN', 'IT'].map(l => (
+        <button key={l} onClick={() => setLang(l.toLowerCase())}
+          style={{
+            padding: '4px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer', border: 'none',
+            background: lang === l.toLowerCase() ? P.ink : 'transparent',
+            color: lang === l.toLowerCase() ? 'white' : P.muted,
+            letterSpacing: '0.06em', transition: 'background 0.15s, color 0.15s',
+            fontFamily: 'Manrope, sans-serif',
+          }}>
+          {l}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /* ---- Custom SVG Charts ---- */
 function polyPoints(data, xKey, yKey, w, h, minY, maxY) {
   return data.map((d, i) => {
@@ -700,6 +1176,7 @@ const TaskPill = ({ label }) => (
 
 /* ---- Landing ---- */
 function Landing({ onConnect }) {
+  const { T } = React.useContext(LangCtx);
   return (
     <div className="h-full w-full flex flex-col items-center justify-center relative overflow-hidden" style={{ background: P.cream }}>
       <div className="absolute inset-0 grain opacity-[0.35] pointer-events-none" />
@@ -723,28 +1200,28 @@ function Landing({ onConnect }) {
       <div className="relative z-10 max-w-3xl px-8 text-center fade-in">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full mb-10 border" style={{ background: P.paper, borderColor: P.line, color: P.inkSoft }}>
           <FlowraMark size={12} />
-          <span className="text-xs tracking-wide uppercase">Flowra · <span style={{ color: P.muted }}>Cash flow agent</span></span>
+          <span className="text-xs tracking-wide uppercase">Flowra · <span style={{ color: P.muted }}>{T.landing.badge}</span></span>
         </div>
         <h1 className="font-display leading-[0.95] mb-8" style={{ fontSize: 84, color: P.ink, fontWeight: 400 }}>
-          Cash flow that<br /><span style={{ color: P.forest, fontStyle: "italic" }}>thinks for itself.</span>
+          {T.landing.headline1}<br /><span style={{ color: P.forest, fontStyle: "italic" }}>{T.landing.headline2}</span>
         </h1>
         <p className="text-lg max-w-xl mx-auto mb-12 leading-relaxed" style={{ color: P.inkSoft }}>
-          Flowra watches your cash, forecasts gaps 90 days out, and proposes{" "}
-          <span style={{ color: P.ink, fontWeight: 500 }}>one thing to approve each day</span>.
-          No spreadsheets. No accountant-speak.
+          {T.landing.tagline}{" "}
+          <span style={{ color: P.ink, fontWeight: 500 }}>{T.landing.taglineEmphasis}</span>.{" "}
+          {T.landing.taglineEnd}
         </p>
         <button onClick={onConnect} className="inline-flex items-center gap-3 px-7 py-4 rounded-full text-white font-medium transition-all hover:opacity-90"
           style={{ background: P.ink, fontSize: 15, boxShadow: "0 10px 30px -10px rgba(20,32,26,0.4)" }}>
           <Sparkles size={16} strokeWidth={2} color="white" />
-          Connect your accounting
+          {T.landing.cta}
           <ArrowRight size={16} strokeWidth={2} color="white" />
         </button>
         <div className="flex items-center justify-center gap-8 mt-14 text-xs uppercase tracking-widest" style={{ color: P.muted }}>
-          <div className="flex items-center gap-2"><Lock size={11} color={P.muted} /> Your data stays yours</div>
+          <div className="flex items-center gap-2"><Lock size={11} color={P.muted} /> {T.landing.footerData}</div>
           <div className="w-px h-3" style={{ background: P.line }} />
-          <span>Xero · Fatture in Cloud · TeamSystem</span>
+          <span>{T.landing.footerPlatforms}</span>
           <div className="w-px h-3" style={{ background: P.line }} />
-          <span>90-day horizon</span>
+          <span>{T.landing.footerHorizon}</span>
         </div>
       </div>
 
@@ -754,15 +1231,8 @@ function Landing({ onConnect }) {
 
 /* ---- Connecting ---- */
 function Connecting({ onDone }) {
-  const steps = [
-    { label: "Reading invoices receivable", detail: "87 open invoices · €48,200 total" },
-    { label: "Reading invoices payable", detail: "34 open invoices · €29,450 total" },
-    { label: "Syncing payroll schedule", detail: "Next run: May 1 · €11,800" },
-    { label: "Syncing rent & insurance", detail: "3 recurring · €4,200/mo" },
-    { label: "Modeling VAT & withholdings", detail: "Next F24: May 16 · €6,200" },
-    { label: "Scoring payment reliability", detail: "47 counterparties ranked" },
-    { label: "Building 90-day forecast", detail: "1 cash gap detected · day 12–18" },
-  ];
+  const { T } = React.useContext(LangCtx);
+  const steps = T.connecting.steps;
   const [done, setDone] = useState(0);
   useEffect(() => {
     if (done < steps.length) {
@@ -780,10 +1250,10 @@ function Connecting({ onDone }) {
       <div className="relative z-10 w-full max-w-xl px-8">
         <div className="flex items-center gap-2 mb-2 text-xs uppercase tracking-widest" style={{ color: P.muted }}>
           <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: P.leaf }} />
-          Connecting · TeamSystem
+          {T.connecting.badge}
         </div>
         <h2 className="font-display text-4xl mb-10" style={{ color: P.ink, fontWeight: 400 }}>
-          Reading your <span style={{ fontStyle: "italic", color: P.forest }}>numbers</span>.
+          {T.connecting.headline} <span style={{ fontStyle: "italic", color: P.forest }}>{T.connecting.headlineItalic}</span>
         </h2>
         <div className="space-y-3">
           {steps.map((s, i) => {
@@ -827,6 +1297,7 @@ const ACTION_IMPACTS = {
 
 /* ---- Reveal Screen ---- */
 function Reveal({ onEnter }) {
+  const { T } = React.useContext(LangCtx);
   const [step, setStep] = useState(0);
   useEffect(() => {
     const timers = [
@@ -837,11 +1308,7 @@ function Reveal({ onEnter }) {
     return () => timers.forEach(clearTimeout);
   }, []);
 
-  const findings = [
-    { tone: "risk", label: "Cash gap", value: "€12,900", sub: "minimum on day 14 · below your €15k floor", bar: 0.26 },
-    { tone: "warn", label: "Liquidity trapped", value: "€7,200", sub: "20-day DSO/DPO mismatch · financing your suppliers", bar: 0.52 },
-    { tone: "ok", label: "Impact ready", value: "+€11,815", sub: "3 approved actions close the gap entirely", bar: 1.0 },
-  ];
+  const findings = T.reveal.findings;
   const toneC = { risk: P.terra, warn: P.amber, ok: P.forest };
   const toneBg = { risk: P.terraSoft, warn: P.amberSoft, ok: "#E8F0EA" };
 
@@ -855,10 +1322,10 @@ function Reveal({ onEnter }) {
       <div className="flex items-center justify-between px-8 h-16 border-b flex-shrink-0" style={{ borderColor: P.line, background: P.paper }}>
         <div className="flex items-center gap-2 text-xs uppercase tracking-widest" style={{ color: P.muted }}>
           <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: P.leaf }} />
-          Analysis complete
+          {T.reveal.badge}
         </div>
         <div className="font-display italic text-[24px]" style={{ color: P.ink, fontWeight: 500 }}>Flowra</div>
-        <div className="text-xs uppercase tracking-widest" style={{ color: P.muted }}>Bagni Aurora · Apr 22</div>
+        <div className="text-xs uppercase tracking-widest" style={{ color: P.muted }}>{T.reveal.date}</div>
       </div>
 
       {/* Main content */}
@@ -871,9 +1338,9 @@ function Reveal({ onEnter }) {
               <Sparkles size={14} color={P.gold} strokeWidth={2} />
             </div>
             <div>
-              <p className="text-[15px] mb-1 leading-relaxed" style={{ color: P.muted }}>While you were away, I read 87 invoices, modeled your next 90 days, and found a problem.</p>
+              <p className="text-[15px] mb-1 leading-relaxed" style={{ color: P.muted }}>{T.reveal.intro}</p>
               <h2 className="font-display leading-[1.0]" style={{ fontSize: 52, color: P.ink, fontWeight: 400 }}>
-                Your season starts in <span style={{ color: P.terra, fontStyle: 'italic' }}>the red.</span>
+                {T.reveal.headline} <span style={{ color: P.terra, fontStyle: 'italic' }}>{T.reveal.headlineItalic}</span>
               </h2>
             </div>
           </div>
@@ -908,11 +1375,11 @@ function Reveal({ onEnter }) {
               <button onClick={onEnter}
                 className="inline-flex items-center gap-3 px-7 py-3.5 rounded-full text-white font-medium hover:opacity-90 transition-all"
                 style={{ background: P.ink, fontSize: 15, boxShadow: "0 8px 24px -8px rgba(20,32,26,0.4)" }}>
-                Show me the three fixes
+                {T.reveal.cta}
                 <ArrowRight size={15} color="white" strokeWidth={2} />
               </button>
               <div className="text-[13px]" style={{ color: P.muted }}>
-                Each takes <strong style={{ color: P.ink }}>one approval</strong>. Flowra handles the rest.
+                {T.reveal.ctaSub} <strong style={{ color: P.ink }}>{T.reveal.ctaEmphasis}</strong>{T.reveal.ctaEnd}
               </div>
             </div>
           </div>
@@ -1005,6 +1472,7 @@ const LOAN_OFFERS = [
 
 /* ---- Header ---- */
 function Header({ roiUnlocked }) {
+  const { T } = React.useContext(LangCtx);
   const [prevRoi, setPrevRoi] = useState(roiUnlocked);
   const [flash, setFlash] = useState(false);
   useEffect(() => {
@@ -1027,25 +1495,26 @@ function Header({ roiUnlocked }) {
             <span className="text-[13px] font-medium truncate" style={{ color: P.ink }}>Bagni Aurora</span>
             <ChevronDown size={13} color={P.muted} />
           </div>
-          <div className="text-[11px] uppercase tracking-wider" style={{ color: P.muted }}>Alassio · Beach club</div>
+          <div className="text-[11px] uppercase tracking-wider" style={{ color: P.muted }}>{T.header.sub}</div>
         </div>
       </div>
       <div className="font-display italic text-[26px] absolute left-1/2 -translate-x-1/2" style={{ color: P.ink, fontWeight: 500 }}>Flowra</div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         {roiUnlocked > 0 ? (
           <div key={roiUnlocked} className="flex items-center gap-2 px-3 py-1.5 rounded-full count-up"
             style={{ background: "#E8F0EA", border: `1px solid ${flash ? P.leaf : "#D5E5DA"}`, transition: 'border-color 0.3s' }}>
             <span className="w-1.5 h-1.5 rounded-full" style={{ background: P.leaf }} />
             <span className="text-xs font-medium" style={{ color: P.forest }}>
-              +€{roiUnlocked.toLocaleString()} unlocked today
+              {T.header.unlocked(roiUnlocked)}
             </span>
           </div>
         ) : (
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border" style={{ borderColor: P.line }}>
             <span className="w-1.5 h-1.5 rounded-full pulse-dot" style={{ background: P.leaf }} />
-            <span className="text-xs" style={{ color: P.inkSoft }}>Synced · 2 min ago</span>
+            <span className="text-xs" style={{ color: P.inkSoft }}>{T.header.synced}</span>
           </div>
         )}
+        <LanguageToggle />
         <div className="w-8 h-8 rounded-full border flex items-center justify-center text-[11px] font-medium" style={{ borderColor: P.line, background: P.cream, color: P.inkSoft }}>CB</div>
       </div>
     </header>
@@ -1065,45 +1534,17 @@ Business context:
 
 Speak as Chiara's trusted financial advisor. Be concise, specific, always ground answers in the numbers above. Use € and Italian context naturally. Never be generic. Keep every answer to 1–2 sentences max — direct, no preamble.`;
 
-/* ---- Agent tool-step definitions ---- */
-const TOOL_STEPS_MAP = {
-  forecast: [{ label: "Running 90-day simulation", detail: "1,240 scenarios · Monte Carlo" }, { label: "Identifying risk windows", detail: "1 gap detected · days 12–18" }],
-  invoice:  [{ label: "Scanning invoice ledger", detail: "87 open invoices · €48,200 total" }, { label: "Scoring counterparty reliability", detail: "Capri: 94% on-time · Riviera: 61%" }],
-  email:    [{ label: "Loading supplier profile", detail: "Linea Ombrelloni · 10-yr partner" }, { label: "Generating negotiation draft", detail: "3 email variants ready" }],
-  credit:   [{ label: "Querying bank marketplace", detail: "3 pre-approved offers · updated today" }, { label: "Recalculating credit profile", detail: "Score: 81/100 · Band A" }],
-  tax:      [{ label: "Reading F24 calendar", detail: "Next: May 16 · €6,200" }, { label: "Checking installment eligibility", detail: "Art. 15-ter · 0% interest" }],
-  payroll:  [{ label: "Loading payroll schedule", detail: "May 1 · 14 seasonal staff" }, { label: "Checking cash coverage", detail: "€18,400 available · €11,800 needed" }],
-  default:  [{ label: "Reading your books", detail: "Last sync: 2 min ago" }, { label: "Running analysis", detail: "Checking all cash positions" }],
-};
-function getToolSteps(text) {
+/* ---- Agent tool-step definitions (translated via context) ---- */
+function getToolSteps(text, T) {
   const t = text.toLowerCase();
-  if (t.match(/forecast|projection|scenar|gap/)) return TOOL_STEPS_MAP.forecast;
-  if (t.match(/capri|invoice|receivable|riviera|hotel|eventi/)) return TOOL_STEPS_MAP.invoice;
-  if (t.match(/email|draft|letter|ombrelloni|supplier|renegot/)) return TOOL_STEPS_MAP.email;
-  if (t.match(/loan|credit|bank|offer|rate|borrow|financ/)) return TOOL_STEPS_MAP.credit;
-  if (t.match(/vat|tax|f24|iva|agenzia/)) return TOOL_STEPS_MAP.tax;
-  if (t.match(/payroll|staff|salary|stipend/)) return TOOL_STEPS_MAP.payroll;
-  return TOOL_STEPS_MAP.default;
+  if (t.match(/forecast|projection|scenar|gap|previsione|scenari/)) return T.toolSteps.forecast;
+  if (t.match(/capri|invoice|receivable|riviera|hotel|eventi|fattur/)) return T.toolSteps.invoice;
+  if (t.match(/email|draft|letter|ombrelloni|supplier|renegot|bozza|fornitore/)) return T.toolSteps.email;
+  if (t.match(/loan|credit|bank|offer|rate|borrow|financ|prestito|credito|banca/)) return T.toolSteps.credit;
+  if (t.match(/vat|tax|f24|iva|agenzia/)) return T.toolSteps.tax;
+  if (t.match(/payroll|staff|salary|stipend|stipendi/)) return T.toolSteps.payroll;
+  return T.toolSteps.default;
 }
-
-const EXECUTION_STEPS = {
-  'early-pay-capri': [
-    { label: "Composing early-pay offer emails", detail: "3% discount · 2 clients · €9,065 potential" },
-    { label: "Sent to Ristorante Capri", detail: "info@ristorantecapri.it · 09:14" },
-    { label: "Sent to Stabilimento Riviera", detail: "contatti@riviera-alassio.it · 09:14" },
-    { label: "Forecast updated", detail: "Awaiting replies from both" },
-  ],
-  'delay-ombrelloni': [
-    { label: "Drafting 60-day extension request", detail: "References 10-yr relationship" },
-    { label: "Sent to Linea Ombrelloni", detail: "forniture@lineaombrelloni.it · 09:14" },
-    { label: "Payment rescheduled", detail: "€2,800 freed until June 12" },
-  ],
-  'vat-rateation': [
-    { label: "Filing installment plan", detail: "Art. 15-ter · Agenzia delle Entrate" },
-    { label: "4 F24 reminders scheduled", detail: "May 16 · Jun 16 · Jul 16 · Aug 16" },
-    { label: "€4,650 released from reserve", detail: "Available for May operations" },
-  ],
-};
 
 const SUGGESTIONS = [
   "What's my biggest cash risk right now?",
@@ -1171,6 +1612,7 @@ function ToolStepsCard({ steps }) {
 
 /* ---- Execution card ---- */
 function ExecutionCard({ steps, actionTitle }) {
+  const { T } = React.useContext(LangCtx);
   const [visible, setVisible] = useState(0);
   useEffect(() => {
     if (visible < steps.length) {
@@ -1182,7 +1624,7 @@ function ExecutionCard({ steps, actionTitle }) {
     <div className="rounded-2xl border overflow-hidden" style={{ background: P.paper, borderColor: P.line }}>
       <div className="px-4 py-2.5 border-b flex items-center gap-2" style={{ borderColor: P.lineSoft, background: "#F0F5F2" }}>
         <Zap size={12} color={P.forest} strokeWidth={2.5} />
-        <span className="text-[11px] font-medium uppercase tracking-widest" style={{ color: P.forest }}>Executing</span>
+        <span className="text-[11px] font-medium uppercase tracking-widest" style={{ color: P.forest }}>{T.execution.label}</span>
         <span className="ml-2 text-[12px] truncate" style={{ color: P.inkSoft }}>{actionTitle}</span>
       </div>
       <div className="px-4 py-3 space-y-2">
@@ -1206,7 +1648,7 @@ function ExecutionCard({ steps, actionTitle }) {
         )}
         {visible >= steps.length && (
           <div className="pt-1 flex items-center gap-1.5 text-[12px]" style={{ color: P.forest }}>
-            <CheckCircle2 size={13} color={P.forest} strokeWidth={2.5} /> Done · changes reflected in forecast
+            <CheckCircle2 size={13} color={P.forest} strokeWidth={2.5} /> {T.execution.done}
           </div>
         )}
       </div>
@@ -1216,9 +1658,9 @@ function ExecutionCard({ steps, actionTitle }) {
 
 /* ---- Execution Reasoning Block ---- */
 function ExecutionReasoningBlock({ title, steps }) {
+  const { T } = React.useContext(LangCtx);
   const [visible, setVisible] = useState(0);
   const [done, setDone] = useState(false);
-  const impacts = { 'early-pay-capri': '+€4,365', 'delay-ombrelloni': '+€2,800', 'vat-rateation': '+€4,650' };
 
   useEffect(() => {
     const timers = steps.map((_, i) => setTimeout(() => setVisible(i + 1), i * 420 + 200));
@@ -1229,7 +1671,7 @@ function ExecutionReasoningBlock({ title, steps }) {
   return (
     <div className="fade-up">
       <div className="text-[12px] mb-1.5" style={{ color: P.inkSoft }}>
-        <span style={{ fontStyle: 'italic' }}>Executing</span> · {title}
+        <span style={{ fontStyle: 'italic' }}>{T.execution.label}</span> · {title}
       </div>
       <div className="pl-2.5 space-y-0.5" style={{ borderLeft: `1.5px solid ${P.lineSoft}` }}>
         {steps.slice(0, visible).map((s, i) => (
@@ -1241,7 +1683,7 @@ function ExecutionReasoningBlock({ title, steps }) {
         {done && (
           <div className="flex items-center gap-1 text-[11px] pt-0.5" style={{ color: P.forest }}>
             <CheckCircle2 size={10} color={P.forest} strokeWidth={2.5} />
-            Done · forecast updated
+            {T.execution.reasoningDone}
           </div>
         )}
       </div>
@@ -1251,6 +1693,7 @@ function ExecutionReasoningBlock({ title, steps }) {
 
 /* ---- Reasoning Block ---- */
 function ReasoningBlock({ steps }) {
+  const { T } = React.useContext(LangCtx);
   const [visible, setVisible] = useState(0);
   const [done, setDone] = useState(false);
   const [gone, setGone] = useState(false);
@@ -1284,7 +1727,7 @@ function ReasoningBlock({ steps }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
         {!done && <span style={{ display: 'inline-flex', gap: 3 }}>{[0,1,2].map(j=><span key={j} className="w-1 h-1 rounded-full pulse-dot" style={{ background: P.muted, animationDelay: j*200+'ms', display:'inline-block' }} />)}</span>}
         <span style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.08em', color: P.muted }}>
-          {done ? 'Done' : 'Thinking…'}
+          {done ? T.thinking.done : T.thinking.active}
         </span>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -1301,6 +1744,7 @@ function ReasoningBlock({ steps }) {
 
 /* ---- Chat Panel ---- */
 function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombrelloniStatus, setOmbrelloniStatus, vatApplied, factoringState, setFactoringState, triverDone, setTriverDone, onSwitchTab }) {
+  const { T } = React.useContext(LangCtx);
   const scrollRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [inputVal, setInputVal] = useState("");
@@ -1316,15 +1760,12 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
 
   // Phase: opening
   useEffect(() => {
+    const tc = T.chat.opening;
     const t = [];
-    t.push(setTimeout(() => addMsg({ type: 'time', text: 'Today · 09:14' }), 300));
-    t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: [
-      'Syncing accounts · cash balance €18,400',
-      'Gap detected · day 17 · −€9,600',
-      '3 interventions ready',
-    ]}), 600));
-    t.push(setTimeout(() => addMsg({ type: 'status', variant: 'danger', label: 'Cash gap in 17 days', number: '−€9,600', text: 'Payroll + VAT hit before season revenue arrives.', sub: 'Without action: Bagni Aurora goes negative on day 17.' }), 2800));
-    t.push(setTimeout(() => addMsg({ type: 'text', text: 'I found 3 fixes — no bank needed. Open Forecast tab.' }), 3600));
+    t.push(setTimeout(() => addMsg({ type: 'time', text: tc.time }), 300));
+    t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: tc.reasoning }), 600));
+    t.push(setTimeout(() => addMsg({ type: 'status', variant: 'danger', label: tc.status.label, number: tc.status.number, text: tc.status.text, sub: tc.status.sub }), 2800));
+    t.push(setTimeout(() => addMsg({ type: 'text', text: tc.advice }), 3600));
     t.push(setTimeout(() => setDemoPhase('proposed'), 4200));
     return () => t.forEach(clearTimeout);
   }, []);
@@ -1334,24 +1775,21 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
   useEffect(() => {
     if (!vatApplied || vatMsgSent.current) return;
     vatMsgSent.current = true;
-    addMsg({ type: 'text', text: 'VAT split into 4 installments. +€4,650 freed up — reflected in the forecast now.' });
+    addMsg({ type: 'text', text: T.chat.vatApplied });
   }, [vatApplied]);
 
   // Phase: replies
   useEffect(() => {
     if (demoPhase !== 'replies') return;
+    const tc = T.chat.replies;
     const t = [];
-    t.push(setTimeout(() => addMsg({ type: 'time', text: '48h later · Thu May 2 · 09:14' }), 300));
+    t.push(setTimeout(() => addMsg({ type: 'time', text: tc.time }), 300));
     t.push(setTimeout(() => {
       setCapriStatus('accepted');
       setOmbrelloniStatus('declined');
     }, 700));
-    t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: [
-      'Capri accepted · +€4,365 · payment moved to May 15',
-      'Ombrelloni declined · payment stays on day 12',
-      'New minimum: −€5,235 · still negative',
-    ]}), 600));
-    t.push(setTimeout(() => addMsg({ type: 'status', variant: 'warn', label: 'Partially accepted', number: '−€5,235', text: 'Capri said yes (+€4,365). Ombrelloni declined.', sub: 'Still negative — one more move needed.' }), 2800));
+    t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: tc.reasoning }), 600));
+    t.push(setTimeout(() => addMsg({ type: 'status', variant: 'warn', label: tc.status.label, number: tc.status.number, text: tc.status.text, sub: tc.status.sub }), 2800));
     t.push(setTimeout(() => setDemoPhase('reasoning'), 3400));
     return () => t.forEach(clearTimeout);
   }, [demoPhase]);
@@ -1359,13 +1797,11 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
   // Phase: invoice scanning
   useEffect(() => {
     if (demoPhase !== 'reasoning') return;
+    const tc = T.chat.reasoning;
     const t = [];
-    t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: [
-      'Scanning invoices · best candidate: Club Nautico Alassio · €18,500 · 45d',
-      'Triver pre-approval: 92% · advance €17,020 · fee €259',
-    ]}), 300));
-    t.push(setTimeout(() => addMsg({ type: 'status', variant: 'warn', label: 'Proposal ready', number: '+€17,020', text: 'Advance the Club Nautico invoice — 45 days early.', sub: 'Fee: €259 (1.4%). Clears the gap with one tap. Your approval needed.' }), 2800));
-    t.push(setTimeout(() => addMsg({ type: 'text', text: 'Approve in the Forecast tab.' }), 3500));
+    t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: tc.steps }), 300));
+    t.push(setTimeout(() => addMsg({ type: 'status', variant: 'warn', label: tc.status.label, number: tc.status.number, text: tc.status.text, sub: tc.status.sub }), 2800));
+    t.push(setTimeout(() => addMsg({ type: 'text', text: tc.advice }), 3500));
     t.push(setTimeout(() => setDemoPhase('factoring-proposed'), 4000));
     return () => t.forEach(clearTimeout);
   }, [demoPhase]);
@@ -1375,13 +1811,11 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
   useEffect(() => {
     if (factoringState !== 'approved' || factoringMsgSent.current) return;
     factoringMsgSent.current = true;
+    const tc = T.chat.factoring;
     const t = [];
-    t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: [
-      'Triver API · invoice submitted · accepted',
-      '€17,020 in transit · cash position updated',
-    ]}), 300));
+    t.push(setTimeout(() => addMsg({ type: 'reasoning', steps: tc.reasoning }), 300));
     t.push(setTimeout(() => { setTriverDone(true); setFactoringState('done'); }, 2500));
-    t.push(setTimeout(() => addMsg({ type: 'status', variant: 'success', label: 'Gap closed', number: '+€11,785', text: 'Triver sent €17,020. Balance is safely above zero.', sub: 'No bank. No loan. Season covered. 🌊' }), 3000));
+    t.push(setTimeout(() => addMsg({ type: 'status', variant: 'success', label: tc.status.label, number: tc.status.number, text: tc.status.text, sub: tc.status.sub }), 3000));
     t.push(setTimeout(() => setDemoPhase('done'), 3600));
     return () => t.forEach(clearTimeout);
   }, [factoringState]);
@@ -1399,7 +1833,7 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
       });
       addMsg({ type: 'agent-reply', text: reply });
     } catch {
-      addMsg({ type: 'agent-reply', text: "Couldn't connect — try again." });
+      addMsg({ type: 'agent-reply', text: T.chat.error });
     } finally {
       setIsLoading(false);
     }
@@ -1475,7 +1909,7 @@ function ChatPanel({ demoPhase, setDemoPhase, capriStatus, setCapriStatus, ombre
           <input value={inputVal}
             onChange={e => setInputVal(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSend()}
-            placeholder="Ask Flowra anything…"
+            placeholder={T.chat.placeholder}
             className="flex-1 bg-transparent outline-none text-[14px]"
             style={{ color: P.ink, fontFamily: 'Manrope, sans-serif', caretColor: P.forest, outline: 'none', WebkitTextFillColor: P.ink, WebkitBoxShadow: '0 0 0px 1000px transparent inset', backgroundClip: 'text' }} />
           <button onClick={() => handleSend()}
@@ -1537,6 +1971,7 @@ function CashList({ title, items, direction }) {
 }
 
 function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionStates = {}, onAction, demoPhase, factoringState, onFactoringApprove }) {
+  const { T } = React.useContext(LangCtx);
   const anyApproved = approvedIds.length > 0;
   const [expandedId, setExpandedId] = useState(null);
   const [animating, setAnimating] = useState({});
@@ -1562,25 +1997,21 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
       setAnimating(prev => { const n = { ...prev }; delete n[id]; return n; });
     }, 1100);
   };
-  const keyPoints = [
-    { date: "May 1", day: 9, label: "Seasonal payroll", amount: "−€11,800", tone: "warn" },
-    { date: "May 6", day: 14, label: "VAT payment (F24)", amount: "−€6,200", tone: "risk" },
-    { date: "May 25", day: 33, label: "Season opens", amount: "+€8,400/week", tone: "ok" },
-  ];
+  const keyPoints = T.forecast.keypoints;
   return (
     <div className="p-5" style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div>
         <div className="text-[11px] uppercase tracking-widest mb-1 flex items-center gap-2" style={{ color: P.muted }}>
-          <Calendar size={11} color={P.muted} /> Forecast · Apr 22 → Jul 21
+          <Calendar size={11} color={P.muted} /> {T.forecast.title}
         </div>
         <div className="flex items-end gap-6 flex-wrap">
           <h2 className="font-display text-[28px] leading-[1.05]" style={{ color: P.ink, fontWeight: 400 }}>
-            Three months<br /><span style={{ fontStyle: "italic", color: P.forest }}>to the season.</span>
+            {T.forecast.headline}<br /><span style={{ fontStyle: "italic", color: P.forest }}>{T.forecast.headlineItalic}</span>
           </h2>
           <div className="flex gap-8 ml-auto">
-            <Metric label="Cash today" value="€18,400" tone="neutral" />
-            <Metric label="Forecast low" value="€12,900" tone={anyApproved ? "ok" : "risk"} sub={anyApproved ? "within floor" : "on day 14"} />
-            <Metric label="Forecast high" value="€44,600" tone="ok" sub="on day 85" />
+            <Metric label={T.forecast.cashToday} value="€18,400" tone="neutral" />
+            <Metric label={T.forecast.forecastLow} value="€12,900" tone={anyApproved ? "ok" : "risk"} sub={anyApproved ? T.forecast.withinFloor : T.forecast.onDay14} />
+            <Metric label={T.forecast.forecastHigh} value="€44,600" tone="ok" sub={T.forecast.onDay85} />
           </div>
         </div>
       </div>
@@ -1591,20 +2022,20 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
           {approvedIds.length > 0 && (
             <div className="flex items-center gap-1.5">
               <span className="w-3 h-0.5 inline-block" style={{ background: P.forest }} />
-              <span style={{ color: P.inkSoft }}>With Flowra</span>
+              <span style={{ color: P.inkSoft }}>{T.forecast.withFlowra}</span>
             </div>
           )}
           <div className="flex items-center gap-1.5">
             <span className="w-3 inline-block border-t border-dashed" style={{ borderColor: P.muted, borderWidth: "1.5px" }} />
-            <span style={{ color: P.muted }}>No action</span>
+            <span style={{ color: P.muted }}>{T.forecast.noAction}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-2 inline-block rounded-sm" style={{ background: P.terra, opacity: 0.25 }} />
-            <span style={{ color: P.terra }}>Below zero</span>
+            <span style={{ color: P.terra }}>{T.forecast.belowZero}</span>
           </div>
           <div className="flex items-center gap-1.5 ml-2">
             <span className="w-3 h-2 inline-block rounded-sm" style={{ background: P.mist, opacity: 0.5 }} />
-            <span style={{ color: P.muted }}>Safe zone</span>
+            <span style={{ color: P.muted }}>{T.forecast.safeZone}</span>
           </div>
         </div>
         <ForecastChart data={BASE_FORECAST} approvedIds={approvedIds} />
@@ -1614,37 +2045,21 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
       <div>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 10 }}>
           <div>
-            <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, marginBottom: 2 }}>Suggested actions</div>
+            <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, marginBottom: 2 }}>{T.forecast.suggestedActions}</div>
             <div style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 400, color: P.ink, lineHeight: 1.05 }}>
-              Close the gap <span style={{ fontStyle: 'italic', color: P.forest }}>today.</span>
+              {T.forecast.closeGap} <span style={{ fontStyle: 'italic', color: P.forest }}>{T.forecast.today}</span>
             </div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, marginBottom: 2 }}>Combined impact</div>
+            <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, marginBottom: 2 }}>{T.forecast.combinedImpact}</div>
             <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 22, fontWeight: 500, color: P.forest }}>+€11,815</div>
           </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {[
-            { id: "early-pay-capri",  num: "01", category: "receivable", iconName: "ArrowDownLeft",
-              title: "Offer 3% early-pay discount",
-              subtitle: "Ristorante Capri",
-              detail: "Send a 3% early-payment offer to Ristorante Capri (€4,500 invoice, due in 38 days). If they accept, payment arrives 23 days earlier. Email drafted and ready to send.",
-              impact: "+€4,365", timing: "Awaiting counterparty",
-              cpStatus: capriStatus },
-            { id: "delay-ombrelloni", num: "02", category: "payable", iconName: "ArrowUpRight",
-              title: "Request 60-day payment delay",
-              subtitle: "Linea Ombrelloni",
-              detail: "Ask Linea Ombrelloni to push the €2,800 payment from day 12 to day 72. 10-year partner — high acceptance likelihood. Frees up €2,800 through the cash gap window.",
-              impact: "+€2,800", timing: "Awaiting counterparty",
-              cpStatus: ombrelloniStatus },
-            { id: "vat-rateation",    num: "03", category: "tax", iconName: "FileText",
-              title: "Split May VAT into 4 installments",
-              subtitle: "F24 · art. 15-ter · interest-free",
-              detail: "Italian tax code allows interest-free installments up to €5,000 each. Smooths the May 16 spike across 4 months. No counterparty needed — takes effect immediately.",
-              impact: "+€4,650", timing: "Immediate",
-              cpStatus: null },
-          ].sort((a, b) => {
+          {T.forecast.actions.map(m => ({
+            ...m,
+            cpStatus: m.id === 'early-pay-capri' ? capriStatus : m.id === 'delay-ombrelloni' ? ombrelloniStatus : null,
+          })).sort((a, b) => {
             const aActioned = actionStates[a.id] ? 1 : 0;
             const bActioned = actionStates[b.id] ? 1 : 0;
             return aActioned - bActioned;
@@ -1661,14 +2076,15 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
             const isExpanded = expandedId === m.id;
 
             let statusLabel = null, statusColor = P.muted;
+            const sl = T.forecast.statusLabels;
             if (state === 'approved') {
-              if (m.cpStatus === 'awaiting')    { statusLabel = 'Email sent · awaiting reply';  statusColor = P.amber; }
-              else if (m.cpStatus === 'accepted' && m.id === 'early-pay-capri') { statusLabel = '✓ Capri accepted · +€4,365'; statusColor = P.forest; }
-              else if (m.cpStatus === 'accepted' && m.id === 'delay-ombrelloni') { statusLabel = '✓ Ombrelloni agreed · +€2,800'; statusColor = P.forest; }
-              else if (m.cpStatus === 'declined') { statusLabel = 'Declined'; statusColor = P.terra; }
-              else if (m.id === 'vat-rateation') { statusLabel = '✓ Filed · +€4,650 in forecast'; statusColor = P.forest; }
-              else { statusLabel = 'Approved · sending'; statusColor = P.forest; }
-            } else if (state === 'rejected') { statusLabel = 'Skipped'; statusColor = P.muted; }
+              if (m.cpStatus === 'awaiting')    { statusLabel = sl.emailSent;        statusColor = P.amber; }
+              else if (m.cpStatus === 'accepted' && m.id === 'early-pay-capri')  { statusLabel = sl.capriAccepted;    statusColor = P.forest; }
+              else if (m.cpStatus === 'accepted' && m.id === 'delay-ombrelloni') { statusLabel = sl.ombrelloniAgreed; statusColor = P.forest; }
+              else if (m.cpStatus === 'declined') { statusLabel = sl.declined;       statusColor = P.terra; }
+              else if (m.id === 'vat-rateation')  { statusLabel = sl.vatFiled;       statusColor = P.forest; }
+              else { statusLabel = sl.approvedSending; statusColor = P.forest; }
+            } else if (state === 'rejected') { statusLabel = sl.skipped; statusColor = P.muted; }
 
             const isFadingOut = fadingPhase && actionStates[m.id];
             const anim = animating[m.id];
@@ -1779,11 +2195,11 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
                       <div style={{ display: 'flex', gap: 8 }}>
                         <button onClick={() => handleAction(m.id, 'approved')}
                           style={{ padding: '9px 28px', borderRadius: 999, background: P.ink, color: 'white', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer', letterSpacing: '0.01em' }}>
-                          Approve
+                          {T.forecast.approve}
                         </button>
                         <button onClick={() => handleAction(m.id, 'rejected')}
                           style={{ padding: '9px 20px', borderRadius: 999, border: `1px solid ${P.line}`, color: P.inkSoft, fontSize: 13, background: 'transparent', cursor: 'pointer' }}>
-                          Skip
+                          {T.forecast.skip}
                         </button>
                       </div>
                     ) : (
@@ -1812,14 +2228,14 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke={P.forest} strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 14, fontWeight: 600, color: P.ink, lineHeight: 1.25 }}>Invoice factoring via Triver</p>
+                    <p style={{ fontSize: 14, fontWeight: 600, color: P.ink, lineHeight: 1.25 }}>{T.forecast.factoring.title}</p>
                     <p style={{ fontSize: 12, color: fState === 'done' ? P.forest : fState ? P.amber : P.forest, marginTop: 3, fontStyle: fState ? 'italic' : 'normal', fontWeight: fState ? 400 : 500 }}>
-                      {fState === 'done' ? '✓ Funded · €17,020 received' : fState ? 'Processing with Triver…' : '⚡ Recommended · your approval needed'}
+                      {fState === 'done' ? T.forecast.factoring.funded : fState ? T.forecast.factoring.processing : T.forecast.factoring.recommended}
                     </p>
                   </div>
                   <div style={{ textAlign: 'right', flexShrink: 0 }}>
                     <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 18, fontWeight: 600, color: P.forest, lineHeight: 1 }}>+€17,020</div>
-                    <div style={{ fontSize: 10, color: P.muted, marginTop: 3 }}>24h · 1.4% fee</div>
+                    <div style={{ fontSize: 10, color: P.muted, marginTop: 3 }}>{T.forecast.factoring.feeInfo}</div>
                   </div>
                   {!fState && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={P.muted} strokeWidth="2.5"
                     style={{ flexShrink: 0, transform: isExpanded ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}><polyline points="6 9 12 15 18 9"/></svg>}
@@ -1827,13 +2243,11 @@ function ForecastTab({ approvedIds = [], capriStatus, ombrelloniStatus, actionSt
                 {isExpanded && !fState && (
                   <div style={{ padding: '14px 18px 18px', background: P.cream, borderTop: `1px solid ${P.lineSoft}` }}>
                     <p style={{ fontSize: 13, color: P.inkSoft, lineHeight: 1.65, marginBottom: 16 }}>
-                      Club Nautico Alassio · €18,500 invoice · 45 days remaining · AA credit rating.<br/>
-                      Advance: €17,020 (92%) · Fee: 1.4% · €259 · Funds available within 24 hours.<br/>
-                      Your credit score of 81/100 gives a very high approval probability with Triver.
+                      {T.forecast.factoring.detail.split('\n').map((line, i) => <React.Fragment key={i}>{line}{i < T.forecast.factoring.detail.split('\n').length - 1 && <br/>}</React.Fragment>)}
                     </p>
                     <button onClick={() => { onFactoringApprove(); setExpandedId(null); }}
                       style={{ width: '100%', padding: '10px 0', borderRadius: 999, background: P.forest, color: 'white', fontSize: 13, fontWeight: 600, border: 'none', cursor: 'pointer' }}>
-                      Approve invoice factoring
+                      {T.forecast.factoring.approveCta}
                     </button>
                   </div>
                 )}
@@ -1991,26 +2405,23 @@ Bagni Aurora`
 };
 
 function TermsTab() {
+  const { T } = React.useContext(LangCtx);
   const avgIn = COUNTERPARTIES_IN.reduce((s,c) => s + c.days * c.weight, 0) / 100;
   const avgOut = COUNTERPARTIES_OUT.reduce((s,c) => s + c.days * c.weight, 0) / 100;
   const gap = avgIn - avgOut;
   const [reviewDraft, setReviewDraft] = useState(null); // supplier name
   const [sentIds, setSentIds] = useState([]);
-  const renegotiations = [
-    { supplier: "Linea Ombrelloni", current: "30 days", target: "60 days", reason: "10-year supplier · shared seasonality", savings: "€2,800 liquidity" },
-    { supplier: "Fornitura Bar Vittoria", current: "30 days", target: "45 days", reason: "Zero late history · strong leverage", savings: "€1,950 liquidity" },
-    { supplier: "Summer maintenance", current: "30 days", target: "60 days", reason: "Service paid after season ends — natural fit", savings: "€1,600 liquidity" },
-  ];
+  const renegotiations = T.terms.renegotiations;
   return (
     <div className="p-8 space-y-6">
       <div>
-        <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>Term alignment</div>
+        <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>{T.terms.badge}</div>
         <h2 className="font-display text-[32px] leading-tight mb-3" style={{ color: P.ink, fontWeight: 400 }}>
-          Your <span style={{ fontStyle: "italic", color: P.forest }}>structural gap.</span>
+          {T.terms.headline} <span style={{ fontStyle: "italic", color: P.forest }}>{T.terms.headlineItalic}</span>
         </h2>
         <p className="text-[14px] max-w-2xl leading-relaxed" style={{ color: P.inkSoft }}>
-          Your clients pay you in <strong>{avgIn.toFixed(0)} days</strong> on average. You pay suppliers in{" "}
-          <strong>{avgOut.toFixed(0)} days</strong>. This <span style={{ color: P.terra, fontWeight: 600 }}>{gap.toFixed(0)}-day mismatch</span> costs liquidity every month, and it's usually free to fix.
+          {T.terms.bodyPart1} <strong>{avgIn.toFixed(0)} {T.terms.days}</strong> {T.terms.bodyDays}{" "}
+          <strong>{avgOut.toFixed(0)} {T.terms.days}</strong>. <span style={{ color: P.terra, fontWeight: 600 }}>{T.terms.bodyMismatch(gap.toFixed(0))}</span> {T.terms.bodyEnd}
         </p>
       </div>
       <div className="rounded-2xl border p-6" style={{ background: P.paper, borderColor: P.line }}>
@@ -2018,9 +2429,9 @@ function TermsTab() {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <ArrowDownLeft size={14} color={P.forest} />
-              <span className="text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>They pay you (DSO)</span>
+              <span className="text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>{T.terms.dso}</span>
             </div>
-            <div className="font-mono text-[42px] mb-4" style={{ color: P.ink }}>{avgIn.toFixed(0)} <span className="text-[16px]" style={{ color: P.muted }}>days</span></div>
+            <div className="font-mono text-[42px] mb-4" style={{ color: P.ink }}>{avgIn.toFixed(0)} <span className="text-[16px]" style={{ color: P.muted }}>{T.terms.days}</span></div>
             <div className="space-y-2">
               {COUNTERPARTIES_IN.map((c, i) => (
                 <div key={i} className="flex items-center gap-3">
@@ -2036,9 +2447,9 @@ function TermsTab() {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <ArrowUpRight size={14} color={P.amber} />
-              <span className="text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>You pay them (DPO)</span>
+              <span className="text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>{T.terms.dpo}</span>
             </div>
-            <div className="font-mono text-[42px] mb-4" style={{ color: P.ink }}>{avgOut.toFixed(0)} <span className="text-[16px]" style={{ color: P.muted }}>days</span></div>
+            <div className="font-mono text-[42px] mb-4" style={{ color: P.ink }}>{avgOut.toFixed(0)} <span className="text-[16px]" style={{ color: P.muted }}>{T.terms.days}</span></div>
             <div className="space-y-2">
               {COUNTERPARTIES_OUT.map((c, i) => (
                 <div key={i} className="flex items-center gap-3">
@@ -2055,14 +2466,14 @@ function TermsTab() {
         <div className="mt-8 pt-6 border-t flex items-center gap-4" style={{ borderColor: P.lineSoft }}>
           <AlertTriangle size={16} color={P.terra} />
           <div className="flex-1">
-            <div className="text-[13px] font-medium" style={{ color: P.ink }}>Average gap: {gap.toFixed(0)} days</div>
-            <div className="text-[12px]" style={{ color: P.inkSoft }}>You're financing suppliers with money you haven't collected yet — for almost 3 weeks.</div>
+            <div className="text-[13px] font-medium" style={{ color: P.ink }}>{T.terms.avgGap(gap.toFixed(0))}</div>
+            <div className="text-[12px]" style={{ color: P.inkSoft }}>{T.terms.gapExplain}</div>
           </div>
-          <div className="font-mono text-[18px]" style={{ color: P.terra }}>~€7,200 trapped</div>
+          <div className="font-mono text-[18px]" style={{ color: P.terra }}>{T.terms.trapped}</div>
         </div>
       </div>
       <div>
-        <div className="text-[11px] uppercase tracking-widest font-medium mb-3" style={{ color: P.muted }}>Suggested renegotiations</div>
+        <div className="text-[11px] uppercase tracking-widest font-medium mb-3" style={{ color: P.muted }}>{T.terms.renegotBadge}</div>
         <div className="space-y-2">
           {renegotiations.map((r, i) => {
             const isSent = sentIds.includes(r.supplier);
@@ -2084,19 +2495,19 @@ function TermsTab() {
                   <div className="font-mono text-[12px]" style={{ color: P.forest }}>+{r.savings}</div>
                   {isSent ? (
                     <div className="flex items-center gap-1.5 text-[12px]" style={{ color: P.forest }}>
-                      <CheckCircle2 size={11} color={P.forest} strokeWidth={2.5} /> Sent
+                      <CheckCircle2 size={11} color={P.forest} strokeWidth={2.5} /> {T.terms.sent}
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <button onClick={() => setReviewDraft(r.supplier)}
                         className="text-[12px] px-3 py-1.5 rounded-full border hover:bg-white transition-all"
                         style={{ borderColor: P.line, color: P.inkSoft }}>
-                        Review draft
+                        {T.terms.reviewDraft}
                       </button>
                       <button onClick={() => setSentIds(s => [...s, r.supplier])}
                         className="text-[12px] px-3 py-1.5 rounded-full text-white hover:opacity-90 transition-all"
                         style={{ background: P.ink }}>
-                        Send
+                        {T.terms.send}
                       </button>
                     </div>
                   )}
@@ -2109,7 +2520,7 @@ function TermsTab() {
 
       {/* Email preview modal */}
       {reviewDraft && (() => {
-        const draft = EMAIL_DRAFTS[reviewDraft];
+        const draft = T.emailDrafts[reviewDraft];
         return (
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(20,32,26,0.4)', zIndex: 50, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 32 }}
             onClick={() => setReviewDraft(null)}>
@@ -2118,7 +2529,7 @@ function TermsTab() {
               {/* Modal header */}
               <div style={{ padding: '16px 20px', borderBottom: `1px solid ${P.line}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div>
-                  <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, marginBottom: 2 }}>Email draft</div>
+                  <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.1em', color: P.muted, marginBottom: 2 }}>{T.terms.emailDraftBadge}</div>
                   <div style={{ fontSize: 14, fontWeight: 600, color: P.ink }}>{reviewDraft}</div>
                 </div>
                 <button onClick={() => setReviewDraft(null)} style={{ width: 28, height: 28, borderRadius: '50%', border: `1px solid ${P.line}`, background: P.cream, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
@@ -2127,8 +2538,8 @@ function TermsTab() {
               </div>
               {/* Email meta */}
               <div style={{ padding: '12px 20px', borderBottom: `1px solid ${P.lineSoft}`, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <div style={{ fontSize: 12, color: P.inkSoft }}><span style={{ color: P.muted }}>To: </span>{draft.to}</div>
-                <div style={{ fontSize: 12, color: P.inkSoft }}><span style={{ color: P.muted }}>Subject: </span>{draft.subject}</div>
+                <div style={{ fontSize: 12, color: P.inkSoft }}><span style={{ color: P.muted }}>{T.terms.toLabel}</span>{draft.to}</div>
+                <div style={{ fontSize: 12, color: P.inkSoft }}><span style={{ color: P.muted }}>{T.terms.subjectLabel}</span>{draft.subject}</div>
               </div>
               {/* Editable email body */}
               <div style={{ flex: 1, overflowY: 'auto', padding: '12px 20px' }}>
@@ -2138,11 +2549,11 @@ function TermsTab() {
               <div style={{ padding: '12px 20px', borderTop: `1px solid ${P.line}`, display: 'flex', gap: 8 }}>
                 <button onClick={() => { setSentIds(s => [...s, reviewDraft]); setReviewDraft(null); }}
                   style={{ flex: 1, padding: '9px 0', borderRadius: 999, background: P.ink, color: 'white', fontSize: 13, fontWeight: 500, border: 'none', cursor: 'pointer' }}>
-                  Send email
+                  {T.terms.sendEmail}
                 </button>
                 <button onClick={() => setReviewDraft(null)}
                   style={{ padding: '9px 20px', borderRadius: 999, border: `1px solid ${P.line}`, color: P.inkSoft, fontSize: 13, background: 'transparent', cursor: 'pointer' }}>
-                  Close
+                  {T.terms.close}
                 </button>
               </div>
             </div>
@@ -2155,22 +2566,18 @@ function TermsTab() {
 
 /* ---- Credit Tab ---- */
 function CreditTab() {
+  const { T } = React.useContext(LangCtx);
   const score = 81, prevScore = 62, delta = score - prevScore;
-  const factors = [
-    { label: "On-time payments", value: 94, target: 90, unit: "%" },
-    { label: "Average balance", value: 24.8, target: 15, unit: "k€" },
-    { label: "DSO (collection days)", value: 48, target: 60, unit: "d", inverted: true },
-    { label: "Cash volatility", value: 18, target: 30, unit: "%", inverted: true },
-  ];
+  const factors = T.credit.factors;
   return (
     <div className="p-8 space-y-6">
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>Bank credit standing · updated today</div>
+        <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>{T.credit.badge}</div>
         <h2 className="font-display text-[32px] leading-tight" style={{ color: P.ink, fontWeight: 400 }}>
-          Cheaper <span style={{ fontStyle: "italic", color: P.forest }}>capital.</span>
+          {T.credit.headline} <span style={{ fontStyle: "italic", color: P.forest }}>{T.credit.headlineItalic}</span>
         </h2>
         <p className="text-[14px] max-w-2xl mt-2 leading-relaxed" style={{ color: P.inkSoft }}>
-          Every action Flowra handles well improves your credit profile. Banks see it, and offer you better rates.
+          {T.credit.subtext}
         </p>
         {/* Decorative palm — top right */}
         <svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -2192,16 +2599,16 @@ function CreditTab() {
       <div className="rounded-2xl border p-6" style={{ background: P.paper, borderColor: P.line }}>
         <div className="grid gap-6 items-center" style={{ gridTemplateColumns: "2fr 3fr" }}>
           <div>
-            <div className="text-[11px] uppercase tracking-widest mb-2" style={{ color: P.muted }}>Flowra score</div>
+            <div className="text-[11px] uppercase tracking-widest mb-2" style={{ color: P.muted }}>{T.credit.scoreBadge}</div>
             <div className="flex items-baseline gap-3">
               <div className="font-display leading-none" style={{ fontSize: 72, color: P.forest, fontWeight: 500 }}>{score}</div>
               <div className="text-[14px]" style={{ color: P.muted }}>/ 100</div>
             </div>
             <div className="flex items-center gap-1.5 mt-2 text-[12px]" style={{ color: P.forest }}>
               <TrendingUp size={13} color={P.forest} />
-              <span>+{delta} over last 6 months</span>
+              <span>{T.credit.scoreDelta(delta)}</span>
             </div>
-            <div className="mt-2"><StatusBadge tone="ok">Tier: Prime · Band A</StatusBadge></div>
+            <div className="mt-2"><StatusBadge tone="ok">{T.credit.tier}</StatusBadge></div>
           </div>
           <div style={{ height: 140, overflow: 'hidden' }}>
             <CreditLineChart data={CREDIT_TREND} />
@@ -2217,7 +2624,7 @@ function CreditTab() {
                   <div className="font-mono text-[20px]" style={{ color: hit ? P.forest : P.amber }}>{f.value}</div>
                   <div className="text-[11px]" style={{ color: P.muted }}>{f.unit}</div>
                 </div>
-                <div className="text-[10px] mt-0.5" style={{ color: P.muted }}>Target: {f.inverted ? "<" : "≥"} {f.target}{f.unit}</div>
+                <div className="text-[10px] mt-0.5" style={{ color: P.muted }}>{T.credit.targetLabel} {f.inverted ? "<" : "≥"} {f.target}{f.unit}</div>
               </div>
             );
           })}
@@ -2226,17 +2633,17 @@ function CreditTab() {
       <div>
         <div className="flex items-end justify-between mb-3">
           <div>
-            <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>Marketplace · 3 active offers</div>
+            <div className="text-[11px] uppercase tracking-widest mb-1" style={{ color: P.muted }}>{T.credit.marketplaceBadge}</div>
             <h3 className="font-display text-[22px] leading-tight" style={{ color: P.ink, fontWeight: 400 }}>
-              Pre-approved offers <span style={{ fontStyle: "italic" }}>for you.</span>
+              {T.credit.offersHeadline} <span style={{ fontStyle: "italic" }}>{T.credit.offersItalic}</span>
             </h3>
           </div>
           <div className="text-[11px] uppercase tracking-widest flex items-center gap-1.5" style={{ color: P.muted }}>
-            <Info size={11} color={P.muted} /> Flowra earns only if you accept
+            <Info size={11} color={P.muted} /> {T.credit.disclaimer}
           </div>
         </div>
         <div className="space-y-3">
-          {LOAN_OFFERS.map((o, i) => (
+          {T.credit.loanOffers.map((o, i) => (
             <div key={i} className="rounded-2xl border p-5 flex items-center gap-5 hover:shadow-sm" style={{ background: P.paper, borderColor: P.line }}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: o.preApproved ? "#E8F0EA" : P.lineSoft }}>
                 <Building2 size={18} color={o.preApproved ? P.forest : P.muted} strokeWidth={1.8} />
@@ -2244,20 +2651,20 @@ function CreditTab() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <div className="text-[15px] font-medium" style={{ color: P.ink }}>{o.bank}</div>
-                  {o.preApproved && <StatusBadge tone="ok">Pre-approved</StatusBadge>}
+                  {o.preApproved && <StatusBadge tone="ok">{T.credit.preApproved}</StatusBadge>}
                 </div>
                 <div className="text-[13px]" style={{ color: P.inkSoft }}>{o.product} · up to {o.amount} · {o.term}</div>
               </div>
               <div className="text-right">
-                <div className="text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>APR</div>
+                <div className="text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>{T.credit.aprLabel}</div>
                 <div className="flex items-baseline gap-2">
                   <span className="font-mono text-[20px]" style={{ color: P.forest }}>{o.rate}%</span>
                   <span className="font-mono text-[11px] line-through" style={{ color: P.muted }}>{o.prevRate}%</span>
                 </div>
-                <div className="text-[10px]" style={{ color: P.forest }}>−{((o.prevRate - o.rate) * 100).toFixed(0)} bps from your profile</div>
+                <div className="text-[10px]" style={{ color: P.forest }}>{T.credit.bpsLabel(((o.prevRate - o.rate) * 100).toFixed(0))}</div>
               </div>
               <button className="px-4 py-2 rounded-full text-[13px] font-medium text-white flex items-center gap-1.5 hover:opacity-90" style={{ background: P.ink }}>
-                Apply <ArrowRight size={12} color="white" />
+                {T.credit.apply} <ArrowRight size={12} color="white" />
               </button>
             </div>
           ))}
@@ -2265,7 +2672,7 @@ function CreditTab() {
         <div className="mt-4 p-4 rounded-xl flex items-start gap-3 border" style={{ background: P.cream, borderColor: P.lineSoft }}>
           <Sparkles size={14} color={P.forest} style={{ flexShrink: 0, marginTop: 2 }} />
           <div className="text-[12px] leading-relaxed" style={{ color: P.inkSoft }}>
-            <strong style={{ color: P.ink }}>How it works.</strong> Flowra only shares data you authorize with banking partners. If you pick an offer, we earn a fee from the capital provider — not from you. Your data stays yours, always.
+            {T.credit.howItWorks}
           </div>
         </div>
       </div>
@@ -2359,10 +2766,11 @@ function SummaryTab({ onSwitchTab }) {
 
 /* ---- Workspace Panel ---- */
 function WorkspacePanel({ tab, setTab, chartApprovedIds = [], capriStatus, ombrelloniStatus, actionStates = {}, onAction, demoPhase, factoringState, onFactoringApprove }) {
+  const { T } = React.useContext(LangCtx);
   const tabs = [
-    { id: "forecast", label: "Forecast", Icon: TrendingUp },
-    { id: "terms", label: "Terms", Icon: Clock },
-    { id: "credit", label: "Credit", Icon: Landmark, highlight: true },
+    { id: "forecast", label: T.workspace.tabs.forecast, Icon: TrendingUp },
+    { id: "terms", label: T.workspace.tabs.terms, Icon: Clock },
+    { id: "credit", label: T.workspace.tabs.credit, Icon: Landmark, highlight: true },
   ];
   return (
     <div className="flex flex-col h-full" style={{ background: P.cream }}>
@@ -2388,11 +2796,11 @@ function WorkspacePanel({ tab, setTab, chartApprovedIds = [], capriStatus, ombre
           })}
         </div>
         <div className="ml-auto flex items-center gap-2 text-[11px] uppercase tracking-widest" style={{ color: P.muted }}>
-          <Shield size={11} color={P.muted} /> Review mode
+          <Shield size={11} color={P.muted} /> {T.workspace.reviewMode}
         </div>
       </div>
       <div className="flex-1 overflow-y-auto subtle-scrollbar">
-        {tab === "forecast" && <ForecastTab approvedIds={chartApprovedIds} capriStatus={capriStatus} ombrelloniStatus={ombrelloniStatus} actionStates={actionStates} onAction={onAction} demoPhase={demoPhase} factoringState={factoringState} onFactoringApprove={onFactoringApprove} />}}
+        {tab === "forecast" && <ForecastTab approvedIds={chartApprovedIds} capriStatus={capriStatus} ombrelloniStatus={ombrelloniStatus} actionStates={actionStates} onAction={onAction} demoPhase={demoPhase} factoringState={factoringState} onFactoringApprove={onFactoringApprove} />}
         {tab === "terms" && <TermsTab />}
         {tab === "credit" && <CreditTab />}
       </div>
@@ -2402,6 +2810,7 @@ function WorkspacePanel({ tab, setTab, chartApprovedIds = [], capriStatus, ombre
 
 /* ---- App Root ---- */
 function App({ splitW: initialSplitW = "25%" }) {
+  const { T } = React.useContext(LangCtx);
   const [stage, setStage] = useState("landing");
   const [tab, setTab] = useState("forecast");
   const [chatWidth, setChatWidth] = useState(initialSplitW);
@@ -2484,9 +2893,9 @@ function App({ splitW: initialSplitW = "25%" }) {
             </div>
             {showSkip && (
               <div style={{ position: 'absolute', bottom: 28, left: '50%', transform: 'translateX(-50%)', zIndex: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, pointerEvents: 'none' }}>
-                <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: P.muted, background: P.cream, padding: '2px 10px', borderRadius: 999, border: `1px solid ${P.line}`, pointerEvents: 'auto' }}>Demo · fast-forward</div>
+                <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: P.muted, background: P.cream, padding: '2px 10px', borderRadius: 999, border: `1px solid ${P.line}`, pointerEvents: 'auto' }}>{T.app.demoLabel}</div>
                 <button onClick={() => setDemoPhase('replies')} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 24px', borderRadius: 999, background: P.ink, color: 'white', fontSize: 13, fontWeight: 500, border: 'none', cursor: 'pointer', boxShadow: '0 6px 24px -6px rgba(20,32,26,0.5)', pointerEvents: 'auto' }}>
-                  Skip 48h · see replies
+                  {T.app.skip48h}
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M5 4l10 8-10 8V4z"/><line x1="19" y1="4" x2="19" y2="20"/></svg>
                 </button>
               </div>
@@ -2559,7 +2968,7 @@ function TweakedApp() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<TweakedApp />);
+ReactDOM.createRoot(document.getElementById("root")).render(<LangProvider><TweakedApp /></LangProvider>);
 </script>
 </body>
 </html>
