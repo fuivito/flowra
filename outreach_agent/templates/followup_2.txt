@@ -1,5 +1,5 @@
 Ciao {{first_name}},
 
-ti mando un'ultima mail, in caso non hai visto quelle prima. Fammi sapere se hai un attimo di tempo nei prossimi giorni per far due parole.
+ti mando un'ultima mail, in caso non hai visto quelle prima. Fammi sapere se hai tempo nei prossimi giorni per far due parole.
 
 Paolo
