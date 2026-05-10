@@ -31,6 +31,8 @@ PROP_FOLLOWUP2_SENT_AT = "Follow-up 2 sent at"
 PROP_LAST_EMAIL_SENT_AT = "Last email sent at"
 PROP_FOLLOWUP_COUNT = "Follow-up count"
 PROP_AGENT_NOTES = "Agent notes"
+PROP_THREAD_MESSAGE_ID = "Thread Message ID"
+PROP_THREAD_SUBJECT = "Thread Subject"
 
 # Status values
 STATUS_TO_REACH_OUT = "To reach out"
@@ -76,12 +78,14 @@ class NotionOutreachClient:
     def lock_contact(self, page_id: str) -> None:
         self._update(page_id, {PROP_STATUS: {"select": {"name": STATUS_SENDING}}})
 
-    def mark_email1_sent(self, page_id: str, sent_at: str) -> None:
+    def mark_email1_sent(self, page_id: str, sent_at: str, message_id: str, subject: str) -> None:
         self._update(page_id, {
             PROP_STATUS: {"select": {"name": STATUS_EMAIL1_SENT}},
             PROP_EMAIL1_SENT_AT: {"date": {"start": sent_at}},
             PROP_LAST_EMAIL_SENT_AT: {"date": {"start": sent_at}},
             PROP_FOLLOWUP_COUNT: {"number": 0},
+            PROP_THREAD_MESSAGE_ID: {"rich_text": [{"text": {"content": message_id}}]},
+            PROP_THREAD_SUBJECT: {"rich_text": [{"text": {"content": subject[:2000]}}]},
         })
 
     def mark_followup_sent(self, page_id: str, followup_num: int, sent_at: str) -> None:
@@ -184,4 +188,6 @@ class NotionOutreachClient:
             "status": text(PROP_STATUS),
             "followup_count": number(PROP_FOLLOWUP_COUNT),
             "last_email_sent_at": date(PROP_LAST_EMAIL_SENT_AT),
+            "thread_message_id": text(PROP_THREAD_MESSAGE_ID),
+            "thread_subject": text(PROP_THREAD_SUBJECT),
         }

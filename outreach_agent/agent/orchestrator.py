@@ -50,10 +50,10 @@ def run(config: Config | None = None) -> None:
         notion.lock_contact(page_id)
 
         sent_at = _now_iso()
-        success = sender.send(email, subject, body)
+        success, message_id = sender.send(email, subject, body)
 
         if success:
-            notion.mark_email1_sent(page_id, sent_at)
+            notion.mark_email1_sent(page_id, sent_at, message_id, subject)
             logger.info("[NEW] Sent to %s (%s)", name, email)
             sent_new += 1
         else:
@@ -96,7 +96,11 @@ def run(config: Config | None = None) -> None:
         notion.lock_contact(page_id)
 
         sent_at = _now_iso()
-        success = sender.send(email, subject, body)
+        success, _ = sender.send(
+            email, subject, body,
+            reply_to_message_id=contact.get("thread_message_id") or None,
+            reply_to_subject=contact.get("thread_subject") or None,
+        )
 
         if success:
             notion.mark_followup_sent(page_id, followup_num, sent_at)
