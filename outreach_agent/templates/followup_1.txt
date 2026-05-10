@@ -1,0 +1,9 @@
+Ciao {{first_name}},
+
+volevo riprendere la mail dell'altro giorno.
+
+Mi interessa capire come gestite la liquidità in {{company_name}}; vorrei capire se il problema che sto risolvendo è lo stesso che avete anche voi.
+
+Hai 15 minuti questa settimana?
+
+Paolo

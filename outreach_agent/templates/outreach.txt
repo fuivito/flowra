@@ -1,0 +1,7 @@
+Ciao {{first_name}},
+
+sto sviluppando uno strumento per aiutare le aziende a gestire il flusso di cassa in modo più proattivo: solleciti automatici ai clienti in ritardo, previsione della liquidità a 60/90 giorni e azioni concrete per evitare di trovarsi scoperti a fine mese.
+
+Sto parlando con un gruppo ristretto di operatori del settore per testare l'idea prima del lancio.
+
+Saresti disponibile per una call informale di 15 minuti?
