@@ -14,6 +14,13 @@ logger = logging.getLogger(__name__)
 
 _SEND_DELAY = 2  # seconds between sends to respect Gmail rate limits
 
+_AB_SUBJECTS = [
+    "15 minuti – flusso di cassa",
+    "Domanda",
+    "Feedback rapido su un'idea",
+    "Hai 15 minuti, {{first_name}}?",
+]
+
 
 def run(config: Config | None = None) -> None:
     if config is None:
@@ -33,13 +40,16 @@ def run(config: Config | None = None) -> None:
     new_contacts = notion.fetch_contacts_to_reach_out()
     logger.info("Found %d contact(s) to reach out to", len(new_contacts))
 
-    for contact in new_contacts:
+    for i, contact in enumerate(new_contacts):
         page_id = contact["page_id"]
         email = contact["email"]
         name = contact.get("full_name") or contact.get("first_name") or email
 
+        raw_subject = _AB_SUBJECTS[i % len(_AB_SUBJECTS)]
+        subject_override = raw_subject.replace("{{first_name}}", contact.get("first_name") or "")
+
         try:
-            subject, body = gemini.personalize_email(config.template_path, contact)
+            subject, body = gemini.personalize_email(config.template_path, contact, subject_override)
         except Exception as e:
             logger.error("Gemini failed for %s: %s", name, e)
             notion.write_agent_note(page_id, f"Gemini error: {e}")

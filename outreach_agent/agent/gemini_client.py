@@ -39,11 +39,18 @@ class GeminiDrafter:
             system_instruction=_SYSTEM_PROMPT,
         )
 
-    def personalize_email(self, template_path: str, contact: dict) -> tuple[str, str]:
+    def personalize_email(
+        self,
+        template_path: str,
+        contact: dict,
+        subject_override: str | None = None,
+    ) -> tuple[str, str]:
         template = self._load_template(template_path)
-        prompt = self._build_prompt(template, contact)
+        prompt = self._build_prompt(template, contact, subject_override)
         raw = self._call_with_backoff(prompt)
-        return self._parse_response(raw)
+        generated_subject, body = self._parse_response(raw)
+        subject = subject_override if subject_override is not None else generated_subject
+        return subject, body
 
     # ── Internal helpers ───────────────────────────────────────────────────────
 
@@ -59,7 +66,12 @@ class GeminiDrafter:
             raise ValueError(f"Template at '{path}' is empty. Add your email content first.")
         return content
 
-    def _build_prompt(self, template: str, contact: dict) -> str:
+    def _build_prompt(self, template: str, contact: dict, subject_override: str | None = None) -> str:
+        subject_instruction = (
+            f"\nSUBJECT LINE: Use exactly this subject in the JSON subject field: {subject_override}"
+            if subject_override is not None
+            else ""
+        )
         return (
             f"TEMPLATE:\n{template}\n\n"
             f"RECIPIENT DETAILS:\n"
@@ -69,7 +81,8 @@ class GeminiDrafter:
             f"- Job title: {contact.get('job_title', '')}\n"
             f"- Company: {contact.get('company_name', '')}\n"
             f"- Company domain: {contact.get('company_domain', '')}\n"
-            f"- Location: {contact.get('location', '')}\n\n"
+            f"- Location: {contact.get('location', '')}\n"
+            f"{subject_instruction}\n"
             "Personalize the template for this recipient and return JSON."
         )
 
