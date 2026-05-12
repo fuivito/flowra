@@ -106,6 +106,9 @@ class NotionOutreachClient:
             patch[PROP_STATUS] = {"select": {"name": STATUS_DONE}}
         self._update(page_id, patch)
 
+    def mark_replied(self, page_id: str) -> None:
+        self._update(page_id, {PROP_STATUS: {"select": {"name": STATUS_REPLIED}}})
+
     def revert_to_reach_out(self, page_id: str) -> None:
         self._update(page_id, {PROP_STATUS: {"select": {"name": STATUS_TO_REACH_OUT}}})
 

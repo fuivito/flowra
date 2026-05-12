@@ -15,14 +15,19 @@ logger = logging.getLogger(__name__)
 _SEND_DELAY = 2  # seconds between sends to respect Gmail rate limits
 
 _AB_SUBJECTS = [
-    "15 minuti – flusso di cassa",
-    "Domanda",
-    "Feedback rapido su un'idea",
-    "Hai 15 minuti, {{first_name}}?",
+    "Agente AI per la liquidità - cerco feedback prima del lancio",
+    "Liquidità a 60/90 giorni - cerco feedback prima del lancio",
+    "AI per il cash flow - cerco feedback prima del lancio",
+    "Gestione flusso di cassa - cerco feedback prima del lancio",
 ]
 
 
-def run(config: Config | None = None) -> None:
+def run(
+    config: Config | None = None,
+    *,
+    check_replies: bool = False,
+    force_followups: bool = False,
+) -> None:
     if config is None:
         config = load_config()
 
@@ -33,7 +38,26 @@ def run(config: Config | None = None) -> None:
     sent_new = 0
     sent_followup = 0
     skipped = 0
+    marked_replied = 0
     errors = 0
+
+    # ── Phase 0: reply detection ───────────────────────────────────────────────
+    if check_replies:
+        from .gmail_reader import fetch_reply_senders
+
+        logger.info("Phase 0 — checking Gmail inbox for replies")
+        pipeline_contacts = notion.fetch_contacts_due_for_followup()
+        contact_emails = [c["email"] for c in pipeline_contacts if c["email"]]
+        replied_emails = fetch_reply_senders(
+            config.gmail_address, config.gmail_app_password, contact_emails
+        )
+        for contact in pipeline_contacts:
+            if contact["email"].lower() in replied_emails:
+                notion.mark_replied(contact["page_id"])
+                name = contact.get("full_name") or contact.get("first_name") or contact["email"]
+                logger.info("[REPLIED] Marked %s as Replied", name)
+                marked_replied += 1
+        logger.info("Phase 0 complete — %d contact(s) marked as Replied", marked_replied)
 
     # ── Phase A: initial outreach ──────────────────────────────────────────────
     logger.info("Phase A — fetching contacts with status 'To reach out'")
@@ -85,7 +109,7 @@ def run(config: Config | None = None) -> None:
         followup_count = contact["followup_count"]
         previous_status = contact["status"]
 
-        if not scheduler.is_due(contact, config.followup_intervals_days):
+        if not force_followups and not scheduler.is_due(contact, config.followup_intervals_days):
             skipped += 1
             continue
 
@@ -124,8 +148,8 @@ def run(config: Config | None = None) -> None:
         time.sleep(_SEND_DELAY)
 
     logger.info(
-        "Run complete — new: %d, follow-ups: %d, skipped (not due): %d, errors: %d",
-        sent_new, sent_followup, skipped, errors,
+        "Run complete — new: %d, follow-ups: %d, replied: %d, skipped (not due): %d, errors: %d",
+        sent_new, sent_followup, marked_replied, skipped, errors,
     )
 
 
